@@ -3,3 +3,4 @@ tools/imagegen/out/
 __pycache__/
 *.log
 .tmp/
+out/
