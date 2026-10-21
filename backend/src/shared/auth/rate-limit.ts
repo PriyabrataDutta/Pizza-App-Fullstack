@@ -16,3 +16,18 @@ export function recordFailure(email: string) {
 export function clearFailures(email: string) {
   attempts.delete(email.trim().toLowerCase());
 }
+
+// Per address, across all emails: stops one machine from trying one password against many accounts. Looser than the per-email
+// limit because several staff may share the restaurant's connection.
+const byIp = new Map<string, { count: number; resetAt: number }>();
+const IP_MAX = 30;
+
+export function isIpLocked(ip: string): boolean {
+  const a = byIp.get(ip);
+  return !!a && a.resetAt > Date.now() && a.count >= IP_MAX;
+}
+export function recordIpFailure(ip: string) {
+  const a = byIp.get(ip);
+  if (!a || a.resetAt <= Date.now()) byIp.set(ip, { count: 1, resetAt: Date.now() + WINDOW });
+  else a.count += 1;
+}

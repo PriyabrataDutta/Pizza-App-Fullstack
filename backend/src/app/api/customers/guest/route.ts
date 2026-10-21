@@ -8,7 +8,7 @@ import { allow } from "@/modules/checkout/rate-limit";
 // later request. The server stores only a hash of it.
 export async function POST(req: NextRequest) {
   try {
-    if (!allow(`guest:${clientIp(req)}`, 10, 60 * 60 * 1000)) return errorResponse(429, "RATE_LIMITED", "Too many new devices from this network. Try again later.");
+    if (!allow(`guest:${clientIp(req)}`, 100, 60 * 60 * 1000)) return errorResponse(429, "RATE_LIMITED", "Too many new devices from this network. Try again later.");
     return NextResponse.json(await checkout.registerGuest(), { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return toErrorResponse(error);

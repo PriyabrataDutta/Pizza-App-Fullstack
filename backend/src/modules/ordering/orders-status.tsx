@@ -1,8 +1,10 @@
 "use client";
 
-import { BellRing, CircleAlert, RefreshCw, WifiOff, X } from "lucide-react";
+import { useSyncExternalStore } from "react";
+import { BellRing, CircleAlert, RefreshCw, Volume2, VolumeX, WifiOff, X } from "lucide-react";
 import { formatTime } from "@/shared/format";
 import { formatEuro } from "@/modules/catalog/money";
+import { prepareChime, setSoundOn, soundOn, subscribeSound } from "./chime";
 import { useOrders } from "./orders-store";
 
 /**
@@ -11,6 +13,7 @@ import { useOrders } from "./orders-store";
  */
 export function OrdersStatus() {
   const { error, clearError, offline, updatedAt, arrivals, dismissArrivals, refresh } = useOrders();
+  const sound = useSyncExternalStore(subscribeSound, soundOn, () => true);
   return (
     <div className="mb-4 space-y-2">
       {arrivals.length > 0 && (
@@ -46,6 +49,14 @@ export function OrdersStatus() {
         )}
         <button onClick={() => void refresh()} className="inline-flex min-h-8 items-center gap-1 font-medium text-brand hover:underline">
           <RefreshCw className="size-3.5" aria-hidden /> Refresh
+        </button>
+        <button
+          onClick={() => { prepareChime(); setSoundOn(!sound); }}
+          aria-pressed={sound}
+          className="inline-flex min-h-8 items-center gap-1 font-medium text-ink-2 hover:text-ink"
+        >
+          {sound ? <Volume2 className="size-3.5" aria-hidden /> : <VolumeX className="size-3.5" aria-hidden />}
+          New order sound: {sound ? "on" : "off"}
         </button>
       </div>
     </div>

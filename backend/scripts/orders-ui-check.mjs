@@ -66,16 +66,27 @@ try {
   ok("the ticket shows what to make and the money in euros", await js(`(() => { const t=${lane("Placed")}; return t.includes('Salami') && t.includes('2×') && /\\d,\\d\\d\\s?€/.test(t); })()`));
   ok("the ticket identifies the guest by street", (await js(lane("Placed"))).includes("Hohe Straße 12"));
   ok("the demo notice is gone, a live indicator is shown", await js(`!document.body.innerText.includes('Seeded demo orders') && document.body.innerText.includes('Live')`));
+  ok("the tab title shows the waiting count", await waitFor(`document.title.startsWith('(1) ')`, 8000), await js("document.title"));
+  ok("the new-order sound switch is shown (on by default)", await js(`document.body.innerText.includes('New order sound: on')`));
   await shot("1-board");
 
   // 2. accept it from the ticket
   await js(`(() => { const li=[...document.querySelectorAll('li.ticket-wrap')].find(x=>x.innerText.includes(${JSON.stringify(first.number)})); [...li.querySelectorAll('button')].find(b=>b.innerText.includes('Accept order')).click(); })()`);
   ok("after Accept the order moves to the Accepted lane", await waitFor(`(${lane("Accepted")}).includes(${JSON.stringify(first.number)})`, 10000));
   const row = (await sb.from("orders").select("status").eq("id", first.id).single()).data;
+  ok("once nothing is waiting the tab title is plain again", await waitFor(`!document.title.startsWith('(')`, 8000), await js("document.title"));
   ok("and the database says accepted", row.status === "accepted", JSON.stringify(row));
   const hist = (await sb.from("order_status_history").select("new_status,actor_label").eq("order_id", first.id).order("created_at")).data;
   ok("with the change recorded by a staff member", hist.map((h) => h.new_status).join(">") === "placed>accepted" && hist[1].actor_label.includes("@"), JSON.stringify(hist));
 
+  // sound switch is remembered across a reload
+  await js(`[...document.querySelectorAll('button')].find(b=>b.innerText.includes('New order sound'))?.click()`);
+  ok("switching sound off shows 'off'", await waitFor(`document.body.innerText.includes('New order sound: off')`, 4000));
+  await send("Page.reload");
+  ok("and the choice survives a reload", await waitFor(`document.body.innerText.includes('New order sound: off')`, 40000));
+  await js(`[...document.querySelectorAll('button')].find(b=>b.innerText.includes('New order sound'))?.click()`);
+
+  await waitFor(`document.body.innerText.includes(${JSON.stringify(first.number)})`, 40000);
   // 3. open it
   await js(`[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')?.includes(${JSON.stringify(first.number)}))?.click()`);
   ok("the drawer shows address, note, items, price and history", await waitFor(`(() => { const t=document.body.innerText; return t.includes('Hohe Straße 12, Wesel-Mitte, 46483 Wesel') && t.includes('Bitte zweimal klingeln') && t.includes('Salami') && t.includes('Total') && t.includes('Status history'); })()`, 8000));

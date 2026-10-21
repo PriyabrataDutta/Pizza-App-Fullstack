@@ -23,19 +23,36 @@ export interface CustomerCall<P> {
   params: P;
 }
 
+/** The largest request body any customer endpoint accepts. A real cart is a few kilobytes. */
+const MAX_BODY_BYTES = 64 * 1024;
+
 async function readBody<T>(req: NextRequest, schema: ZodType<T>): Promise<T> {
   let body: unknown;
   try {
-    body = await req.json();
-  } catch {
+    const declared = Number(req.headers.get("content-length") ?? 0);
+    if (declared > MAX_BODY_BYTES) throw new CheckoutError(413, "PAYLOAD_TOO_LARGE", "That request is too large.");
+    const text = await req.text();
+    if (text.length > MAX_BODY_BYTES) throw new CheckoutError(413, "PAYLOAD_TOO_LARGE", "That request is too large.");
+    body = JSON.parse(text);
+  } catch (error) {
+    if (error instanceof CheckoutError) throw error;
     throw new CheckoutError(400, "VALIDATION_ERROR", "The request body must be valid JSON.");
   }
   return schema.parse(body);
 }
 export { readBody };
 
+/**
+ * The caller's address, for rate limits. Prefers the header the hosting platform sets itself (a client cannot forge it), then
+ * x-real-ip. The first x-forwarded-for entry is only a last resort: on a host that does not overwrite it, a client can fake it.
+ */
 export function clientIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "local";
+  return (
+    req.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "local"
+  );
 }
 
 /** Maps anything thrown by a handler to the error envelope. Unknown errors are logged and reported without details. */
@@ -55,10 +72,16 @@ export function toErrorResponse(error: unknown): Response {
  */
 export function customerRoute<P = Record<string, never>>(
   handler: (call: CustomerCall<P>) => Promise<unknown>,
-  opts: { status?: number; limit?: { max: number; windowMs: number; name: string } } = {},
+  opts: { status?: number; limit?: { max: number; windowMs: number; name: string }; ipLimit?: { max: number; windowMs: number; name: string } } = {},
 ) {
   return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
     try {
+      // Before any database work: a flood of requests (valid token or not) from one address is stopped here.
+      const ip = clientIp(req);
+      if (!allow(`ip:${ip}`, 600, 60_000)) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
+      if (opts.ipLimit && !allow(`${opts.ipLimit.name}-ip:${ip}`, opts.ipLimit.max, opts.ipLimit.windowMs)) {
+        return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
+      }
       const token = bearerToken(req.headers.get("authorization"));
       if (!token) return errorResponse(401, "UNAUTHENTICATED", "Open the app again to continue.");
       const customer = await checkout.authenticate(token);

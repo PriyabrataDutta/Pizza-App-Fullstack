@@ -37,3 +37,12 @@ Realtime subscriptions must not reveal other customers' orders. Test authorizati
 
 ## Demo payments
 Do not collect card numbers or claim real payment processing. Simulated payment records must be clearly marked as demo. Real gateway integration requires verified webhooks and provider-specific security review.
+
+## Hardening checks (2026-10-21)
+Verified live against the project (`backend/scripts/abuse-check.mjs`, `limited-user-check.mjs`, `orders-ui-check.mjs`):
+- **Customer API limits:** each address may make 600 requests a minute before any database work; guest sign-up is capped at 100 per hour per address; checkout at 30 per hour per customer and 60 per hour per address; request bodies over 64 KB get 413; malformed, empty or wrongly shaped bodies, more than 50 cart lines and absurd quantities get a clean 400; a search containing filter syntax and an order id that looks like SQL are harmless.
+- **Staff access:** a view-only staff member can read orders but every change is refused (403) and the buttons are not shown; a user without the orders module gets 403 on every orders endpoint, is sent to "no access", and the dashboard never requests orders for them; a deactivated account and a session for a deleted user are refused at once.
+- **Admin login:** 5 failed attempts per email and 30 per address in 15 minutes.
+- **Headers on every response:** `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY` with `frame-ancestors 'none'`, a referrer policy, a permissions policy, and HSTS in production.
+- **Known limits:** the rate limiters are in memory, per server instance; with several instances (for example serverless) each keeps its own count, so a shared store (Redis or a database table) is needed for strict limits. The address comes from `x-vercel-forwarded-for`, then `x-real-ip`, then `x-forwarded-for`; behind a proxy that does not overwrite these a client could fake its address. Fake COD orders are possible for anyone who can reach the API (each needs a delivery address in the zone); phone verification would be the next step.
+

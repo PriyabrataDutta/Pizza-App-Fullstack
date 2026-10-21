@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAccess } from "@/modules/access/access-context";
 import { adminApi, ApiError } from "@/modules/catalog/admin-client";
 import { nextTransitions, type Order, type OrderStatus } from "./domain";
+import { playChime, prepareChime } from "./chime";
 import { fromAdminOrder } from "./from-api";
 
 interface OrdersApi {
@@ -59,7 +60,10 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
       const merged = fresh.map((o) => (inFlight.current.has(o.id) ? current.current.find((c) => c.id === o.id) ?? o : o));
       if (known.current) {
         const added = merged.filter((o) => !known.current!.has(o.id) && o.status === "placed");
-        if (added.length > 0) setArrivals((prev) => [...added, ...prev].slice(0, 5));
+        if (added.length > 0) {
+          setArrivals((prev) => [...added, ...prev].slice(0, 5));
+          playChime();
+        }
       }
       known.current = new Set(merged.map((o) => o.id));
       current.current = merged;
@@ -80,6 +84,9 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
     mounted.current = true;
     if (!allowed) return () => { mounted.current = false; };
     void load();
+    // Browsers allow sound only after the first click or tap on the page.
+    window.addEventListener("pointerdown", prepareChime, { once: true });
+    window.addEventListener("keydown", prepareChime, { once: true });
     const timer = setInterval(() => {
       if (document.visibilityState === "visible") void load();
     }, POLL_MS);
@@ -91,8 +98,19 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
       mounted.current = false;
       clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pointerdown", prepareChime);
+      window.removeEventListener("keydown", prepareChime);
     };
   }, [allowed, load]);
+
+  // The tab title shows how many orders are waiting, so it is noticed from another tab or window.
+  const waiting = orders.filter((o) => o.status === "placed").length;
+  useEffect(() => {
+    if (!allowed || waiting === 0) return;
+    const original = document.title;
+    document.title = `(${waiting}) ${original}`;
+    return () => { document.title = original; };
+  }, [allowed, waiting]);
 
   const transition = useCallback(async (id: string, to: OrderStatus, reason?: string) => {
     const order = current.current.find((o) => o.id === id);
