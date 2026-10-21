@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
 import { ZodError, type ZodType } from "zod";
-import { catalog, errorResponse } from "../catalog/http";
+import { catalog, catalogSnapshot, errorResponse } from "../catalog/http";
 import { allow } from "./rate-limit";
 import { supabaseCheckoutRepository } from "./repository";
 import { CheckoutError, createCheckoutService } from "./service";
@@ -11,7 +11,11 @@ import type { Customer } from "./types";
 // Shared plumbing for the customer API: the service wired to Supabase and the product catalog, token sign-in, rate limits, and the
 // standard error envelope. Customers are guests identified by a device token (Authorization: Bearer cc1_...).
 
-export const checkout = createCheckoutService({ repo: supabaseCheckoutRepository, loadProduct: (id) => catalog.product(id) });
+export const checkout = createCheckoutService({ repo: supabaseCheckoutRepository, loadProduct: async (id) => {
+    // Orders are priced from the freshest menu: re-check the version (at most every half second) so a price changed a moment ago counts.
+    await catalogSnapshot.refresh(500);
+    return catalog.product(id);
+  }, });
 
 export interface CustomerCall<P> {
   customer: Customer;

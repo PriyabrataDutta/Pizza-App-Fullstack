@@ -72,12 +72,16 @@ fun Modifier.pressScale(source: MutableInteractionSource, pressed: Float = 0.97f
  * Fades and lifts an item in once, with a small delay per [index] so a list arrives as a gentle wave, not all at once.
  * Only the first screenful is staggered; later items (index above [maxStaggered]) appear without delay.
  */
-fun Modifier.staggeredEntrance(index: Int, maxStaggered: Int = 8, stepMs: Long = 25L): Modifier = composed {
+fun Modifier.staggeredEntrance(index: Int, maxStaggered: Int = 8, stepMs: Long = 25L): Modifier =
+    // Rows past the first screenful just appear: animating every row that scrolls into view makes the list look late and blank.
+    if (index >= maxStaggered) this else entranceAnimation(index, stepMs)
+
+private fun Modifier.entranceAnimation(index: Int, stepMs: Long): Modifier = composed {
     val reduced = rememberReducedMotion()
     val progress = remember { Animatable(if (reduced) 1f else 0f) }
     LaunchedEffect(Unit) {
         if (!reduced) {
-            delay(index.coerceAtMost(maxStaggered) * stepMs)
+            delay(index * stepMs)
             progress.animateTo(1f, tween(Motion.Medium, easing = Motion.Enter))
         }
     }

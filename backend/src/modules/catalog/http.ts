@@ -1,7 +1,8 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { supabaseCatalogRepository } from "./repository";
+import { supabaseCatalogSource } from "./repository";
+import { createSnapshotRepository } from "./snapshot";
 import { createCatalogService, ValidationError } from "./service";
 
 // Shared plumbing for the public catalog routes: the service wired to Supabase, the error envelope from docs/api-contract.md,
@@ -14,7 +15,9 @@ function imageUrl(path: string | null): string | null {
   return `${base.replace(/\/$/, "")}/storage/v1/object/public/product-images/${path.split("/").map(encodeURIComponent).join("/")}`;
 }
 
-export const catalog = createCatalogService(supabaseCatalogRepository, imageUrl);
+// Every read is answered from one in-memory copy of the menu (snapshot.ts); the database is asked only when the catalog version changes.
+export const catalogSnapshot = createSnapshotRepository(supabaseCatalogSource);
+export const catalog = createCatalogService(catalogSnapshot, imageUrl);
 
 export function errorResponse(status: number, code: string, message: string, details: unknown[] = []) {
   return NextResponse.json({ error: { code, message, details } }, { status });

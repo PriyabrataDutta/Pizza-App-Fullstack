@@ -36,6 +36,8 @@ Public, no login. Code: `backend/src/modules/catalog`. Plan: `docs/catalog-imple
 | `GET /api/products/{id}` | One product, fully resolved: `portions`, and `groups` of extras and choices with `prices` per portion key already resolved (product price, then category price, then the option's default). |
 | `GET /api/filters` | `{ diet, flags, tags }`: the filter chips the app shows. |
 
+**How the server answers these quickly:** the whole menu is read from Supabase once, in one parallel round trip, and kept in server memory (`backend/src/modules/catalog/snapshot.ts`). Every read (lists, search, filters, product detail) is answered from memory. The only database call is a tiny check of `catalog_meta.version`, at most once every 3 seconds, and the menu is reloaded only when that version changes (every dashboard edit bumps it). If Supabase cannot be reached the last copy keeps being served. Checkout re-checks the version just before pricing, so an order never uses a price older than half a second.
+
 All of these send `ETag` and `Cache-Control: public, max-age=30, stale-while-revalidate=300`, answer `304` to a matching `If-None-Match`, and use the error envelope above (`VALIDATION_ERROR` 400, `PRODUCT_NOT_FOUND` 404).
 
 ### Catalog admin endpoints (implemented)

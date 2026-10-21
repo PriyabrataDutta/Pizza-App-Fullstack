@@ -3,6 +3,7 @@ import { adminClient } from "@/shared/supabase/server";
 import type {
   AttachmentRow, CategoryRow, Diet, GroupRow, OptionPriceRow, OptionRow, PortionRow, ProductRow, TagRow,
 } from "./types";
+import type { CatalogData, SnapshotSource } from "./snapshot";
 
 /** Everything the catalog service needs from storage. The service depends on this interface, so tests can pass an in-memory one. */
 export interface CatalogRepository {
@@ -143,5 +144,46 @@ export const supabaseCatalogRepository: CatalogRepository = {
       map.set(row.product_id, [...(map.get(row.product_id) ?? []), tag.key]);
     }
     return map;
+  },
+};
+
+// ---- The whole catalog in one parallel round trip (see snapshot.ts) -----------------------------------------------------------
+const PAGE = 1000; // the most rows PostgREST returns per request
+
+async function fetchAll<T>(table: string, select: string, onlyActive = false): Promise<T[]> {
+  const rows: T[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const base = adminClient().from(table).select(select);
+    const query = onlyActive ? base.eq("is_active", true) : base;
+    const page = check(await query.range(from, from + PAGE - 1), table) as unknown as T[];
+    rows.push(...page);
+    if (page.length < PAGE) return rows;
+  }
+}
+
+export const supabaseCatalogSource: SnapshotSource = {
+  version: () => supabaseCatalogRepository.version(),
+
+  async load(): Promise<CatalogData> {
+    const [categories, tags, products, portions, attachments, groups, options, prices, links] = await Promise.all([
+      fetchAll<CategoryRow>("categories", "*"),
+      fetchAll<TagRow>("tags", "key,label,sort_order"),
+      fetchAll<ProductRow>("products", "*", true),
+      fetchAll<PortionRow>("product_portions", "*"),
+      fetchAll<AttachmentRow>("group_attachments", "*"),
+      fetchAll<GroupRow>("option_groups", "*"),
+      fetchAll<OptionRow>("options", "*"),
+      fetchAll<OptionPriceRow>("option_prices", "*"),
+      fetchAll<{ product_id: string; tags: { key: string } | { key: string }[] | null }>("product_tags", "product_id, tags(key)"),
+    ]);
+    const productTags = links.flatMap((row) => {
+      const tag = Array.isArray(row.tags) ? row.tags[0] : row.tags;
+      return tag ? [{ product_id: row.product_id, tag_key: tag.key }] : [];
+    });
+    return {
+      categories: categories.sort((a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name, "en")),
+      tags: tags.sort((a, b) => a.sort_order - b.sort_order || a.label.localeCompare(b.label, "en")),
+      products, portions, attachments, groups, options, prices, productTags,
+    };
   },
 };
