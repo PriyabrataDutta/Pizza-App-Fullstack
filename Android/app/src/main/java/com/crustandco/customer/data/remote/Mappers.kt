@@ -12,7 +12,7 @@ import com.crustandco.customer.domain.Variant
 
 // DTO -> domain mappers. Pure functions, easy to test. Anything the server omits gets a safe default.
 
-fun CategoryDto.toDomain() = Category(id = id, name = name, imageUrl = imageUrl)
+fun CategoryDto.toDomain() = Category(id = id, name = name, imageUrl = imageUrl, thumbUrl = thumbUrl)
 
 fun OptionDto.toDomain(currency: String) = CustomizationOption(
     id = id,
@@ -41,6 +41,7 @@ fun ProductDto.toDomain(): Product {
         name = name,
         description = description.orEmpty(),
         imageUrl = imageUrl,
+        thumbUrl = thumbUrl,
         dietaryType = if (diet.equals("non_veg", ignoreCase = true)) DietaryType.NonVeg else DietaryType.Veg,
         isSpicy = isSpicy,
         isBestseller = isBestseller,

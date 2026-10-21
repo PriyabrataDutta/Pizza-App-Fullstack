@@ -8,6 +8,8 @@ data class Category(
     val id: String,
     val name: String,
     val imageUrl: String?,
+    /** Small copy for lists and chips; null when the server has none. */
+    val thumbUrl: String? = null,
 )
 
 enum class DietaryType { Veg, NonVeg }
@@ -58,6 +60,8 @@ data class Product(
      * this directly; without it the "+" on a card would add a pasta dish with no pasta chosen.
      */
     val needsChoices: Boolean = false,
+    /** Small copy for cards and lists (about 35 KB); [imageUrl] is the full picture for the product screen. */
+    val thumbUrl: String? = null,
 ) {
     private val availableVariants get() = variants.filter { it.isAvailable }
 

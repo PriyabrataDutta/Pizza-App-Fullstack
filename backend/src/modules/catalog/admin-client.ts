@@ -43,6 +43,7 @@ export interface CategoryAdmin {
   description: string;
   image_path: string | null;
   image_url: string | null;
+  thumb_url: string | null;
   icon_key: string | null;
   sort_order: number;
   is_active: boolean;
@@ -96,6 +97,7 @@ export interface ProductSummary {
   name: string;
   description: string;
   image_url: string | null;
+  thumb_url: string | null;
   diet: "veg" | "non_veg";
   is_spicy: boolean;
   is_bestseller: boolean;
@@ -131,7 +133,7 @@ export interface AttachmentWithPrices extends AttachmentAdmin {
 }
 
 export interface ProductDetail {
-  product: ProductFields & { id: string; slug: string; image_url: string | null };
+  product: ProductFields & { id: string; slug: string; image_url: string | null; thumb_url: string | null };
   portions: PortionAdmin[];
   tag_keys: string[];
   attachments: AttachmentWithPrices[];

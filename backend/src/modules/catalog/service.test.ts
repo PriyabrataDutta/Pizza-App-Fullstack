@@ -116,7 +116,7 @@ describe("catalog service", () => {
   it("rejects a bad limit, diet or cursor with a validation error", async () => {
     const svc = createCatalogService(fakeRepo(base), noImage);
     await expect(svc.products({ limit: 0 })).rejects.toBeInstanceOf(ValidationError);
-    await expect(svc.products({ limit: 101 })).rejects.toBeInstanceOf(ValidationError);
+    await expect(svc.products({ limit: 201 })).rejects.toBeInstanceOf(ValidationError);
     await expect(svc.products({ diet: "vegan" })).rejects.toBeInstanceOf(ValidationError);
     await expect(svc.products({ cursor: "garbage" })).rejects.toBeInstanceOf(ValidationError);
     expect(decodeCursor(encodeCursor(40))).toBe(40);

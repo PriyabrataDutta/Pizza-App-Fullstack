@@ -132,7 +132,7 @@ export function MenuView() {
     <div className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-control border border-line bg-subtle text-ink-2">
       {p.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element -- a public storage URL
-        <img src={p.image_url} alt="" className="size-full object-cover" />
+        <img src={p.thumb_url ?? p.image_url} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
       ) : <ImageIcon className="size-5" aria-hidden />}
     </div>
   );

@@ -32,7 +32,7 @@ Public, no login. Code: `backend/src/modules/catalog`. Plan: `docs/catalog-imple
 |---|---|
 | `GET /api/menu/version` | `{ "version": n }`. Never cached. The app refetches the menu only when it changed. |
 | `GET /api/categories` | `{ "items": [{ id, parent_id, slug, name, description, image_url, icon_key, sort_order }] }`. Active categories only; a hidden parent hides its sub-categories. |
-| `GET /api/products?category=&search=&tag=&diet=&spicy=&bestseller=&cursor=&limit=` | `{ "items": [...], "next_cursor": string or null }`. `category` is an id or slug and includes sub-categories; `search` matches name, description and category name; `diet` is `veg` or `non_veg`; `limit` 1 to 100 (default 30); `cursor` is opaque. Each item has `portions`, `available` and `needs_choices` (true when a required choice must be made before adding). |
+| `GET /api/products?category=&search=&tag=&diet=&spicy=&bestseller=&cursor=&limit=` | `{ "items": [...], "next_cursor": string or null }`. `category` is an id or slug and includes sub-categories; `search` matches name, description and category name; `diet` is `veg` or `non_veg`; `limit` 1 to 200 (default 30); `cursor` is opaque. Categories and products carry `image_url` (full picture) and `thumb_url` (480 px copy, about 35 KB, for lists and cards). Each item has `portions`, `available` and `needs_choices` (true when a required choice must be made before adding). |
 | `GET /api/products/{id}` | One product, fully resolved: `portions`, and `groups` of extras and choices with `prices` per portion key already resolved (product price, then category price, then the option's default). |
 | `GET /api/filters` | `{ diet, flags, tags }`: the filter chips the app shows. |
 

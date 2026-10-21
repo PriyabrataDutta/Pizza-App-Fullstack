@@ -1,6 +1,7 @@
 import type { CatalogRepository } from "./repository";
 import { resolveProduct } from "./resolver";
 import type { CategoryRow, Diet, Fulfillment, ProductBundle, ProductRow, ResolvedPortion, ResolvedProduct } from "./types";
+import { thumbPath } from "./image-paths";
 
 // Customer-facing catalog use cases. Only active products in active categories are ever returned.
 
@@ -18,6 +19,7 @@ export interface CategoryDto {
   name: string;
   description: string;
   image_url: string | null;
+  thumb_url: string | null;
   icon_key: string | null;
   sort_order: number;
 }
@@ -28,6 +30,7 @@ export interface ProductListItem {
   name: string;
   description: string;
   image_url: string | null;
+  thumb_url: string | null;
   diet: Diet;
   is_spicy: boolean;
   is_bestseller: boolean;
@@ -60,7 +63,7 @@ export interface FiltersDto {
 }
 
 export const DEFAULT_LIMIT = 30;
-export const MAX_LIMIT = 100;
+export const MAX_LIMIT = 200;
 
 export function encodeCursor(offset: number): string {
   return Buffer.from(JSON.stringify({ o: offset })).toString("base64url");
@@ -91,7 +94,7 @@ export function createCatalogService(repo: CatalogRepository, imageUrl: (path: s
     async categories(): Promise<CategoryDto[]> {
       return (await visibleCategories()).map((c) => ({
         id: c.id, parent_id: c.parent_id, slug: c.slug, name: c.name, description: c.description,
-        image_url: imageUrl(c.image_path), icon_key: c.icon_key, sort_order: c.sort_order,
+        image_url: imageUrl(c.image_path), thumb_url: imageUrl(thumbPath(c.image_path)), icon_key: c.icon_key, sort_order: c.sort_order,
       }));
     },
 
@@ -146,7 +149,7 @@ export function createCatalogService(repo: CatalogRepository, imageUrl: (path: s
           (a) => (a.scope === "category" && a.category_id === p.category_id) || (a.scope === "product" && a.product_id === p.id),
         );
         return {
-          id: p.id, category_id: p.category_id, name: p.name, description: p.description, image_url: imageUrl(p.image_path),
+          id: p.id, category_id: p.category_id, name: p.name, description: p.description, image_url: imageUrl(p.image_path), thumb_url: imageUrl(thumbPath(p.image_path)),
           diet: p.diet, is_spicy: p.is_spicy, is_bestseller: p.is_bestseller, is_new: p.is_new, fulfillment: p.fulfillment,
           tags: tagMap.get(p.id) ?? [], currency: own[0]?.currency ?? "EUR",
           portions: own.map((x) => ({ key: x.key, label: x.label, price_minor: x.price_minor, available: x.is_available })),

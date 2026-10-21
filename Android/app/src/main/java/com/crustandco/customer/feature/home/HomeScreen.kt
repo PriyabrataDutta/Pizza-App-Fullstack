@@ -141,7 +141,7 @@ fun HomeScreen(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     item { CategoryCircle("All", ArtKind.Pizza, selected = true, onClick = { onOpenMenu(null) }) }
                     items(state.categories, key = { it.id }) { category ->
-                        CategoryCircle(category.name, category.artKind(), selected = false, onClick = { onOpenMenu(category.id) })
+                        CategoryCircle(category.name, category.artKind(), selected = false, onClick = { onOpenMenu(category.id) }, imageUrl = category.thumbUrl ?: category.imageUrl)
                     }
                 }
             }

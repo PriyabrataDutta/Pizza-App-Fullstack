@@ -8,6 +8,7 @@ import { AdminError } from "./errors";
 import { attachments, categories, groups, portionSets, products, storage } from "./repository";
 import type { AttachmentSet, CategoryCreate, CategoryUpdate, GroupCreate, GroupUpdate, ProductCreate, ProductUpdate } from "./schemas";
 import { slugify, uniqueSlug } from "./slug";
+import { thumbPath } from "../image-paths";
 
 // Use cases for the dashboard's menu management. Every change is checked here first, stored through ./repository, and written
 // to the audit log. Nothing is ever hard-deleted that an order could refer to: products are hidden, not deleted.
@@ -31,7 +32,7 @@ export const listPortionSets = () => portionSets.all();
 
 // ---- Categories -------------------------------------------------------------------------------------------------------
 export async function listCategories() {
-  return (await categories.all()).map((c) => ({ ...c, image_url: publicImageUrl(c.image_path) }));
+  return (await categories.all()).map((c) => ({ ...c, image_url: publicImageUrl(c.image_path), thumb_url: publicImageUrl(thumbPath(c.image_path)) }));
 }
 
 export async function createCategory(actor: Actor, input: CategoryCreate) {
@@ -44,7 +45,7 @@ export async function createCategory(actor: Actor, input: CategoryCreate) {
     default_portion_set_id: input.default_portion_set_id, is_active: input.is_active, sort_order: await categories.nextSort(input.parent_id),
   });
   await audit(actor, "category_created", row.id, { name: row.name });
-  return { ...row, image_url: publicImageUrl(row.image_path) };
+  return { ...row, image_url: publicImageUrl(row.image_path), thumb_url: publicImageUrl(thumbPath(row.image_path)) };
 }
 
 export async function updateCategory(actor: Actor, id: string, patch: CategoryUpdate) {
@@ -52,7 +53,7 @@ export async function updateCategory(actor: Actor, id: string, patch: CategoryUp
   if (patch.parent_id && patch.parent_id === id) throw new AdminError("CATEGORY_DEPTH", "A category cannot be its own parent.");
   const row = await categories.update(id, compact({ ...patch }));
   await audit(actor, "category_updated", id, { fields: Object.keys(patch) });
-  return { ...row, image_url: publicImageUrl(row.image_path) };
+  return { ...row, image_url: publicImageUrl(row.image_path), thumb_url: publicImageUrl(thumbPath(row.image_path)) };
 }
 
 export async function deleteCategory(actor: Actor, id: string) {
@@ -83,6 +84,7 @@ export async function listProducts(filter: { categoryId?: string; search?: strin
     items: page.rows.map((p) => ({
       ...p,
       image_url: publicImageUrl(p.image_path),
+      thumb_url: publicImageUrl(thumbPath(p.image_path)),
       portions: portions.filter((x) => x.product_id === p.id).map((x) => ({ key: x.key, label: x.label, price_minor: x.price_minor, is_available: x.is_available })),
     })),
     has_more: page.hasMore,
@@ -96,7 +98,7 @@ export async function getProductForEditing(id: string) {
   const [portions, tagKeys, own, inherited] = await Promise.all([
     products.portions(id), products.tagKeys(id), attachments.forTarget("product", id), attachments.forTarget("category", product.category_id),
   ]);
-  return { product: { ...product, image_url: publicImageUrl(product.image_path) }, portions, tag_keys: tagKeys, attachments: own, inherited_attachments: inherited };
+  return { product: { ...product, image_url: publicImageUrl(product.image_path), thumb_url: publicImageUrl(thumbPath(product.image_path)) }, portions, tag_keys: tagKeys, attachments: own, inherited_attachments: inherited };
 }
 
 /** The product as a customer would see it, including hidden products, so an editor can preview before publishing. */

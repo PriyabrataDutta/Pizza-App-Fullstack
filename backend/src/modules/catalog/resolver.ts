@@ -1,3 +1,4 @@
+import { thumbPath } from "./image-paths";
 import type {
   AttachmentRow,
   OptionPriceRow,
@@ -96,6 +97,7 @@ export function resolveProduct(bundle: ProductBundle, imageUrl: (path: string | 
     name: product.name,
     description: product.description,
     image_url: imageUrl(product.image_path),
+    thumb_url: imageUrl(thumbPath(product.image_path)),
     diet: product.diet,
     is_spicy: product.is_spicy,
     is_bestseller: product.is_bestseller,

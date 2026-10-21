@@ -100,7 +100,7 @@ fun AddButton(onClick: () -> Unit, contentDescription: String, modifier: Modifie
 
 /** Filter pill: solid brand red when selected, outlined cream otherwise. Color eases between the two. */
 @Composable
-fun PillTab(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun PillTab(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, imageUrl: String? = null) {
     val colors = MaterialTheme.colorScheme
     val container by animateColorAsState(if (selected) colors.primary else colors.surface, tween(Motion.Medium), label = "pillBg")
     val content by animateColorAsState(if (selected) colors.onPrimary else colors.onSurface, tween(Motion.Medium), label = "pillFg")
@@ -115,7 +115,18 @@ fun PillTab(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modi
         color = container,
         border = BorderStroke(1.dp, border),
     ) {
-        Box(Modifier.padding(horizontal = 18.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
+        Row(
+            Modifier.padding(start = if (imageUrl != null) 8.dp else 18.dp, end = 18.dp, top = 6.dp, bottom = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            if (imageUrl != null) {
+                coil3.compose.AsyncImage(
+                    model = imageUrl, contentDescription = null,
+                    modifier = Modifier.size(28.dp).clip(androidx.compose.foundation.shape.CircleShape),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                )
+            }
             Text(text, style = MaterialTheme.typography.labelLarge, color = content)
         }
     }

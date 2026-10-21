@@ -4,6 +4,7 @@ import com.crustandco.customer.core.designsystem.components.rememberPhotoId
 import com.crustandco.customer.core.designsystem.components.productPhotoName
 import com.crustandco.customer.core.designsystem.components.AnimatedMoney
 import com.crustandco.customer.core.designsystem.sharedProductArt
+import coil3.compose.AsyncImage
 import com.crustandco.customer.core.designsystem.PriceDetail
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
@@ -111,7 +112,13 @@ fun ProductDetailScreen(
             val loaded = (state.product as? UiState.Success)?.data
             if (loaded != null) {
                 val photoId = rememberPhotoId(productPhotoName(loaded))
-                if (photoId != 0) {
+                if (loaded.imageUrl != null) {
+                    // The small copy is already in memory from the list, so it shows at once while the full picture loads over it.
+                    Box(Modifier.fillMaxSize().sharedProductArt(loaded.id)) {
+                        AsyncImage(model = loaded.thumbUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                        AsyncImage(model = loaded.imageUrl, contentDescription = loaded.name, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                    }
+                } else if (photoId != 0) {
                     Image(painterResource(photoId), contentDescription = null, modifier = Modifier.fillMaxSize().sharedProductArt(loaded.id), contentScale = ContentScale.Crop)
                 } else {
                     KindArt(

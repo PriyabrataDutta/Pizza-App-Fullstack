@@ -9,7 +9,7 @@ const uuid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0
 
 const SALAMI = uuid(1), BEER = uuid(2), CHAMP = uuid(11), HAM = uuid(12);
 const salami: ResolvedProduct = {
-  id: SALAMI, category_id: uuid(100), name: "Salami", description: "", image_url: null, diet: "non_veg", is_spicy: false, is_bestseller: false, is_new: false,
+  id: SALAMI, category_id: uuid(100), name: "Salami", description: "", image_url: null, thumb_url: null, diet: "non_veg", is_spicy: false, is_bestseller: false, is_new: false,
   allergens: [], fulfillment: "delivery_and_pickup", tags: [], currency: "EUR",
   portions: [{ key: "klein", label: "Klein 28 cm", price_minor: 700, available: true }, { key: "gross", label: "Groß 32 cm", price_minor: 900, available: true }],
   groups: [{ id: uuid(50), name: "Extra Zutaten", kind: "extra", min: 0, max: 5, required: false, options: [

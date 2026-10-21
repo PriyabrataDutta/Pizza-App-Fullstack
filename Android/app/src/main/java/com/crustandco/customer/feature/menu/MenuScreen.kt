@@ -110,7 +110,7 @@ fun MenuScreen(
         ) {
             item { PillTab("All", selected = !state.dealsSelected && state.selectedCategoryId == null, onClick = { viewModel.selectCategory(null) }) }
             items(state.categories, key = { it.id }) { category ->
-                PillTab(category.name, selected = !state.dealsSelected && state.selectedCategoryId == category.id, onClick = { viewModel.selectCategory(category.id) })
+                PillTab(category.name, selected = !state.dealsSelected && state.selectedCategoryId == category.id, onClick = { viewModel.selectCategory(category.id) }, imageUrl = category.thumbUrl ?: category.imageUrl)
             }
             if (state.promotions.isNotEmpty()) {
                 item { PillTab("Deals", selected = state.dealsSelected, onClick = viewModel::selectDeals) }

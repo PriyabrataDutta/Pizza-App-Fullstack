@@ -63,7 +63,7 @@ class AppContainer(val config: AppConfig, context: Context) {
     private val mockBackend: MockBackend? = if (config.useMockData) MockBackend() else null
 
     val catalogRepository: CatalogRepository =
-        if (config.useMockData && !config.liveCatalog) MockCatalogRepository() else RemoteCatalogRepository(apiClient.api)
+        if (config.useMockData && !config.liveCatalog) MockCatalogRepository() else RemoteCatalogRepository(api = { apiClient.api })
 
     val orderRepository: OrderRepository =
         if (mockBackend != null) com.crustandco.customer.data.mock.MockOrderRepository(mockBackend) else RemoteOrderRepository(apiClient.api)

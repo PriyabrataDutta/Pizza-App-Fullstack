@@ -20,6 +20,11 @@ export function errorResponse(status: number, code: string, message: string, det
   return NextResponse.json({ error: { code, message, details } }, { status });
 }
 
+// Built responses are kept per URL for as long as the catalog version is unchanged, so a repeat request costs one small version
+// query instead of six. The version is read before the body is built, so a body is never stored under a version newer than it.
+const MEMO_MAX = 300;
+const memo = new Map<string, { version: number; body: unknown }>();
+
 /** Wraps a GET handler: 304 when the client's copy is current, ETag and Cache-Control otherwise, and the standard error envelope. */
 export async function cachedCatalogGet(req: NextRequest, build: () => Promise<unknown | null>, notFound?: { code: string; message: string }) {
   try {
@@ -32,7 +37,18 @@ export async function cachedCatalogGet(req: NextRequest, build: () => Promise<un
     };
     if (req.headers.get("if-none-match") === etag) return new NextResponse(null, { status: 304, headers });
 
-    const body = await build();
+    const key = req.nextUrl.pathname + req.nextUrl.search;
+    const hit = memo.get(key);
+    let body: unknown | null;
+    if (hit && hit.version === version) {
+      body = hit.body;
+    } else {
+      body = await build();
+      if (body !== null) {
+        if (memo.size >= MEMO_MAX) memo.clear();
+        memo.set(key, { version, body });
+      }
+    }
     if (body === null) {
       return errorResponse(404, notFound?.code ?? "NOT_FOUND", notFound?.message ?? "Not found.");
     }

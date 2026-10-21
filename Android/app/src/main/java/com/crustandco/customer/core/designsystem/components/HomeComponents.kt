@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -173,7 +174,7 @@ fun PromoCarousel(promotions: List<Promotion>, onOrderNow: () -> Unit, modifier:
 
 /** Round category shortcut with a drawn icon and label. The selected one is red-tinted. */
 @Composable
-fun CategoryCircle(label: String, kind: ArtKind, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun CategoryCircle(label: String, kind: ArtKind, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, imageUrl: String? = null) {
     Column(
         modifier = modifier
             .width(72.dp)
@@ -186,10 +187,13 @@ fun CategoryCircle(label: String, kind: ArtKind, selected: Boolean, onClick: () 
         Box(
             Modifier
                 .size(58.dp)
-                .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface, CircleShape),
+                .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface, CircleShape)
+                .clip(CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            if (kind == ArtKind.Other) {
+            if (imageUrl != null) {
+                coil3.compose.AsyncImage(model = imageUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = androidx.compose.ui.layout.ContentScale.Crop)
+            } else if (kind == ArtKind.Other) {
                 Text(label.take(1), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
             } else {
                 CategoryGlyph(kind, size = 32.dp)

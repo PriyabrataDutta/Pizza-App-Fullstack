@@ -157,8 +157,8 @@ fun ProductArtTile(product: Product, kind: ArtKind, modifier: Modifier = Modifie
         contentAlignment = Alignment.Center,
     ) {
         when {
-            product.imageUrl != null ->
-                AsyncImage(model = product.imageUrl, contentDescription = null, modifier = Modifier.fillMaxSize().sharedProductArt(product.id), contentScale = ContentScale.Crop)
+            (product.thumbUrl ?: product.imageUrl) != null ->
+                AsyncImage(model = product.thumbUrl ?: product.imageUrl, contentDescription = null, modifier = Modifier.fillMaxSize().sharedProductArt(product.id), contentScale = ContentScale.Crop)
             photoId != 0 ->
                 Image(painterResource(photoId), contentDescription = null, modifier = Modifier.fillMaxSize().sharedProductArt(product.id), contentScale = ContentScale.Crop)
             else ->

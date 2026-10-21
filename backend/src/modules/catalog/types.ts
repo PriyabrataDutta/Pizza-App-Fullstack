@@ -137,6 +137,8 @@ export interface ResolvedProduct {
   name: string;
   description: string;
   image_url: string | null;
+  /** Small copy for lists and cards. */
+  thumb_url: string | null;
   diet: Diet;
   is_spicy: boolean;
   is_bestseller: boolean;

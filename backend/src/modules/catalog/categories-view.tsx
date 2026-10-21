@@ -149,7 +149,7 @@ export function CategoriesView() {
                 <div className="order-1 grid size-12 shrink-0 place-items-center overflow-hidden rounded-control border border-line bg-subtle text-ink-2 sm:order-none">
                   {c.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element -- a public storage URL
-                    <img src={c.image_url} alt="" className="size-full object-cover" />
+                    <img src={c.thumb_url ?? c.image_url} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                   ) : <ImageIcon className="size-5" aria-hidden />}
                 </div>
                 <div className="order-2 min-w-0 flex-1 sm:order-none">

@@ -24,6 +24,7 @@ data class CategoryDto(
     @SerialName("parent_id") val parentId: String? = null,
     val name: String,
     @SerialName("image_url") val imageUrl: String? = null,
+    @SerialName("thumb_url") val thumbUrl: String? = null,
     @SerialName("icon_key") val iconKey: String? = null,
 )
 
@@ -64,6 +65,7 @@ data class ProductDto(
     val name: String,
     val description: String? = null,
     @SerialName("image_url") val imageUrl: String? = null,
+    @SerialName("thumb_url") val thumbUrl: String? = null,
     val diet: String = "veg",
     @SerialName("is_spicy") val isSpicy: Boolean = false,
     @SerialName("is_bestseller") val isBestseller: Boolean = false,
