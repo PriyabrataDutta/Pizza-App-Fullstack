@@ -35,7 +35,14 @@ crust.apiBaseUrl=http://localhost:3000/api/
 
 The app uses each portion's `key` as the variant id, prices extras per portion (a pizza topping costs 0,50 / 1,00 / 2,50 € by size), preselects the server's `is_default` option, and opens the product screen instead of adding directly when the server says `needs_choices`.
 
-The full live API (checkout, orders) does not exist yet (Phase 3). Read `docs/api-assumptions.md` before switching. The dashboard and Supabase still hold the old rupee demo menu.
+### Live orders (real checkout as a guest)
+Add `crust.liveOrders=true` (it implies the live menu) and addresses, the price quote, coupons, checkout and order tracking all go to the real API:
+
+```
+crust.liveOrders=true
+crust.apiBaseUrl=http://localhost:3000/api/
+```
+The app has no sign-in yet, so it registers as a **guest** the first time it needs to: the server returns a private device token, which the app stores encrypted with an Android Keystore key (`data/local/DeviceTokenStore.kt`). Orders and addresses belong to that token, and it is sent only to the customer endpoints. If the server does not recognise the token (for example the database was reset) the app registers a new guest and retries once, without showing an error. Prices, coupons, the minimum order by area and the delivery estimate all come from the server; the app sends only ids and quantities. Online payment is a labelled demo; no card data is ever collected. Details: `docs/api-contract.md` ("Customer endpoints") and `docs/checkout-implementation-plan.md`.
 
 ## Structure
 ```

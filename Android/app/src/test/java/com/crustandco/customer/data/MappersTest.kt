@@ -6,6 +6,7 @@ import com.crustandco.customer.data.remote.CategoryDto
 import com.crustandco.customer.data.remote.ListResponseDto
 import com.crustandco.customer.data.remote.OrderDto
 import com.crustandco.customer.data.remote.ProductDto
+import com.crustandco.customer.data.remote.toBody
 import com.crustandco.customer.data.remote.toDomain
 import com.crustandco.customer.domain.DietaryType
 import com.crustandco.customer.domain.SelectionRules
@@ -160,7 +161,7 @@ class MappersTest {
     @Test
     fun `maps an order and its money`() {
         val dto = ApiJson.decodeFromString<OrderDto>(
-            """{"id":"o1","order_number":"CC-1048","status":"preparing","total_minor":64890,"currency":"EUR","created_at":"2026-10-16T19:42:00+05:30"}""",
+            """{"id":"o1","number":"CC-1048","status":"preparing","total_minor":64890,"currency":"EUR","created_at":"2026-10-16T19:42:00+05:30"}""",
         )
         val order = dto.toDomain()
         assertEquals("CC-1048", order.number)
@@ -174,5 +175,65 @@ class MappersTest {
         assertEquals(1, page.items.size)
         assertEquals("abc", page.nextCursor)
         assertNull(ApiJson.decodeFromString<ListResponseDto<ProductDto>>("""{"items":[]}""").nextCursor)
+    }
+
+    @Test
+    fun `maps a full order with lines, address and payment`() {
+        val dto = ApiJson.decodeFromString<OrderDto>(
+            """{"id":"o2","number":"CC-1051","status":"placed","total_minor":1500,"currency":"EUR","created_at":"2026-10-21T12:00:00Z",
+                "subtotal_minor":2000,"discount_minor":500,"tax_minor":0,"delivery_fee_minor":0,"payment_method":"online_demo","estimated_minutes":45,
+                "delivery_address":"Hohe Straße 12, Wesel-Mitte, 46483 Wesel","payment_status":"demo_paid",
+                "lines":[{"name":"Salami","portion":"Groß 32 cm","options":["Champignons"],"quantity":2,"unit_price_minor":1000,"line_total_minor":2000}]}""",
+        )
+        val order = dto.toDomain()
+        assertEquals(Money(1500), order.total)
+        assertEquals(Money(500), order.discount)
+        assertEquals(Money(2000), order.subtotal)
+        assertEquals(45, order.estimatedMinutes)
+        assertEquals(com.crustandco.customer.domain.PaymentMethod.OnlineDemo, order.paymentMethod)
+        assertEquals("Hohe Straße 12, Wesel-Mitte, 46483 Wesel", order.deliveryAddress)
+        assertEquals(1, order.lines.size)
+        assertEquals("Salami", order.lines[0].name)
+        assertEquals("Groß 32 cm", order.lines[0].variantName)
+        assertEquals(listOf("Champignons"), order.lines[0].optionNames)
+        assertEquals(Money(2000), order.lines[0].lineTotal)
+    }
+
+    @Test
+    fun `an order from the list has no lines and no breakdown`() {
+        val order = ApiJson.decodeFromString<OrderDto>(
+            """{"id":"o3","number":"CC-1052","status":"delivered","total_minor":900,"currency":"EUR","created_at":"2026-10-20T10:00:00Z"}""",
+        ).toDomain()
+        assertTrue(order.lines.isEmpty())
+        assertNull(order.subtotal)
+        assertNull(order.paymentMethod)
+    }
+
+    @Test
+    fun `maps an address and a quote`() {
+        val address = ApiJson.decodeFromString<com.crustandco.customer.data.remote.AddressDto>(
+            """{"id":"a1","label":"Home","line1":"Hohe Straße 12","locality":"Wesel-Mitte","city":"Wesel","postal_code":"46483","instructions":null,"is_default":true,"one_line":"x"}""",
+        ).toDomain()
+        assertEquals("Hohe Straße 12, Wesel-Mitte, Wesel 46483", address.oneLine)
+
+        val quote = ApiJson.decodeFromString<com.crustandco.customer.data.remote.QuoteDto>(
+            """{"currency":"EUR","lines":[],"subtotal_minor":2000,"discount_minor":500,"tax_minor":0,"delivery_fee_minor":0,"total_minor":1500,"coupon_code":"WELCOME5","delivery":{"minimum_order_minor":1000}}""",
+        ).toDomain()
+        assertEquals(Money(1500), quote.total)
+        assertEquals(Money(500), quote.discount)
+        assertEquals("WELCOME5", quote.couponCode)
+    }
+
+    @Test
+    fun `a request carries ids and quantities only, never a price`() {
+        val body = com.crustandco.customer.data.remote.CheckoutBody(
+            idempotencyKey = "key-12345678", addressId = "a1", paymentMethod = "cod",
+            items = listOf(com.crustandco.customer.domain.CheckoutItem("p1", "gross", listOf("o1"), 2).toBody()),
+        )
+        val json = ApiJson.encodeToString(com.crustandco.customer.data.remote.CheckoutBody.serializer(), body)
+        assertTrue(json.contains("\"portion_key\":\"gross\""))
+        assertTrue(json.contains("\"quantity\":2"))
+        assertFalse(json.contains("price"))
+        assertFalse(json.contains("coupon_code")) // omitted when null
     }
 }

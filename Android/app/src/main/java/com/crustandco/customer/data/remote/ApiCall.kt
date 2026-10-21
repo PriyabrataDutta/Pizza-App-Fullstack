@@ -30,7 +30,7 @@ fun HttpException.toAppError(json: Json = ApiJson): AppError {
     }.getOrNull()
 
     return when (code()) {
-        400 -> AppError.Validation(body?.code, body?.message)
+        400, 422 -> AppError.Validation(body?.code, body?.message)
         401 -> AppError.Unauthorized
         403 -> AppError.Forbidden
         404 -> AppError.NotFound

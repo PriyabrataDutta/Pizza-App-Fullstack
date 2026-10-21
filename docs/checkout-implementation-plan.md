@@ -44,7 +44,8 @@ Admin (dashboard session, module `orders`): `GET /api/admin/orders`, `GET /api/a
 ## Progress (2026-10-20)
 - **M8a done:** migration `backend/supabase/migrations/20261020100000_orders.sql` tested in an in-memory Postgres (42 checks) and **applied** to the Supabase project on 2026-10-20 (schema lint clean).
 - **M8b done:** `backend/src/modules/checkout` and the customer and admin routes. 123 backend unit tests pass, and a 60-check live run against the real project passed: guest sign-up, addresses, quotes (size-dependent extras, coupons, minimums, pickup-only), checkout with idempotent retry and conflict, owner-only access, the full admin lifecycle with invalid-transition refusal, CSRF refusal and audit entries. All test data was removed afterwards.
-- **Next:** M8c (Android) and M8d (dashboard Orders on real orders).
+- **M8c done (2026-10-21):** the Android app places real orders as a guest (`-Pcrust.liveOrders=true`). The device token is kept encrypted with an Android Keystore key and registered on first use; a 401 silently registers a new guest and retries once. Real address, quote, checkout and orders repositories; menu requests stay anonymous. Verified on the emulator against the live project: server-priced cart, wrong and valid coupon (WELCOME5 refused under 20 €, then applied), new address, cash on delivery, order CC-1056 in the database with the right items, discount and coupon redemption, status changes made by the restaurant shown on the tracking screen, the order still visible after an app restart, and a deleted guest recovered without an error. Test guest and order were deleted afterwards.
+- **Next:** M8d (dashboard Orders on real orders).
 
 ## Not in M8
 Real payments, customer cancellation, realtime push, the free-drink offer, delivery fees, and linking guests to real accounts.

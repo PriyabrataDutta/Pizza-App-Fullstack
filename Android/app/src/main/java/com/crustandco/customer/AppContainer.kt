@@ -3,9 +3,13 @@ package com.crustandco.customer
 import android.content.Context
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.crustandco.customer.data.remote.ApiClient
+import com.crustandco.customer.core.map
 import com.crustandco.customer.data.remote.AuthTokenProvider
+import com.crustandco.customer.data.remote.GuestSession
+import com.crustandco.customer.data.remote.apiCall
 import com.crustandco.customer.data.local.DemoAuthRepository
 import com.crustandco.customer.data.local.InMemoryCartStore
+import com.crustandco.customer.data.local.KeystoreTokenStore
 import com.crustandco.customer.data.local.SharedPreferencesStore
 import com.crustandco.customer.data.mock.MockAddressRepository
 import com.crustandco.customer.data.mock.MockBackend
@@ -15,9 +19,9 @@ import com.crustandco.customer.data.mock.MockPricingRepository
 import com.crustandco.customer.data.mock.MockOrderRepository
 import com.crustandco.customer.data.mock.MockPromotionRepository
 import com.crustandco.customer.data.repository.RemoteCatalogRepository
-import com.crustandco.customer.data.repository.UnavailableAddressRepository
-import com.crustandco.customer.data.repository.UnavailableCheckoutRepository
-import com.crustandco.customer.data.repository.UnavailablePricingRepository
+import com.crustandco.customer.data.repository.RemoteAddressRepository
+import com.crustandco.customer.data.repository.RemoteCheckoutRepository
+import com.crustandco.customer.data.repository.RemotePricingRepository
 import com.crustandco.customer.data.repository.RemoteOrderRepository
 import com.crustandco.customer.data.repository.RemotePromotionRepository
 import com.crustandco.customer.domain.AddressRepository
@@ -34,6 +38,8 @@ data class AppConfig(
     val useMockData: Boolean,
     /** Menu from the live API while orders, addresses and offers stay demo data (until checkout is built on the server). */
     val liveCatalog: Boolean,
+    /** Addresses, pricing, checkout and orders from the live API as a guest. Implies the live menu. */
+    val liveOrders: Boolean,
     val isDebug: Boolean,
 ) {
     companion object {
@@ -41,6 +47,7 @@ data class AppConfig(
             apiBaseUrl = BuildConfig.API_BASE_URL,
             useMockData = BuildConfig.USE_MOCK_DATA,
             liveCatalog = BuildConfig.LIVE_CATALOG,
+            liveOrders = BuildConfig.LIVE_ORDERS,
             isDebug = BuildConfig.DEBUG,
         )
     }
@@ -55,27 +62,34 @@ class AppContainer(val config: AppConfig, context: Context) {
     private val appContext = context.applicationContext
 
     // Only built when real data is used, so mock mode never touches the network stack.
-    private val apiClient by lazy {
-        ApiClient(config.apiBaseUrl, AuthTokenProvider.NoToken, enableLogging = config.isDebug, cacheDir = appContext.cacheDir)
+    private val apiClient: ApiClient by lazy {
+        ApiClient(config.apiBaseUrl, AuthTokenProvider { guestSession.token() }, enableLogging = config.isDebug, cacheDir = appContext.cacheDir)
     }
 
+    /** This phone's guest identity: the device token is kept encrypted and registered on first use. */
+    private val guestSession: GuestSession by lazy {
+        GuestSession(KeystoreTokenStore(appContext)) { apiCall { apiClient.api.registerGuest() }.map { it.token } }
+    }
+
+    private val liveOrders = config.liveOrders || !config.useMockData
+
     // Demo mode shares one in-memory "backend" so an order placed at checkout shows up in My Orders.
-    private val mockBackend: MockBackend? = if (config.useMockData) MockBackend() else null
+    private val mockBackend: MockBackend? = if (config.useMockData && !liveOrders) MockBackend() else null
 
     val catalogRepository: CatalogRepository =
-        if (config.useMockData && !config.liveCatalog) MockCatalogRepository() else RemoteCatalogRepository(api = { apiClient.api })
+        if (config.useMockData && !config.liveCatalog && !liveOrders) MockCatalogRepository() else RemoteCatalogRepository(api = { apiClient.api })
 
     val orderRepository: OrderRepository =
-        if (mockBackend != null) com.crustandco.customer.data.mock.MockOrderRepository(mockBackend) else RemoteOrderRepository(apiClient.api)
+        if (mockBackend != null) MockOrderRepository(mockBackend) else RemoteOrderRepository(guestSession) { apiClient.api }
 
     val addressRepository: AddressRepository =
-        if (mockBackend != null) MockAddressRepository(mockBackend) else UnavailableAddressRepository()
+        if (mockBackend != null) MockAddressRepository(mockBackend) else RemoteAddressRepository(guestSession) { apiClient.api }
 
     val pricingRepository: PricingRepository =
-        if (mockBackend != null) MockPricingRepository(catalog = catalogRepository) else UnavailablePricingRepository()
+        if (mockBackend != null) MockPricingRepository(catalog = catalogRepository) else RemotePricingRepository(guestSession) { apiClient.api }
 
     val checkoutRepository: CheckoutRepository =
-        if (mockBackend != null) MockCheckoutRepository(mockBackend, catalog = catalogRepository) else UnavailableCheckoutRepository()
+        if (mockBackend != null) MockCheckoutRepository(mockBackend, catalog = catalogRepository) else RemoteCheckoutRepository(guestSession) { apiClient.api }
 
     val promotionRepository: PromotionRepository =
         if (config.useMockData) MockPromotionRepository() else RemotePromotionRepository()

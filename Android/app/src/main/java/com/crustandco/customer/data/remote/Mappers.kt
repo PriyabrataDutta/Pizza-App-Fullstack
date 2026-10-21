@@ -1,6 +1,12 @@
 package com.crustandco.customer.data.remote
 
 import com.crustandco.customer.core.Money
+import com.crustandco.customer.domain.Address
+import com.crustandco.customer.domain.CheckoutItem
+import com.crustandco.customer.domain.NewAddress
+import com.crustandco.customer.domain.OrderLine
+import com.crustandco.customer.domain.PaymentMethod
+import com.crustandco.customer.domain.Quote
 import com.crustandco.customer.domain.Category
 import com.crustandco.customer.domain.CustomizationGroup
 import com.crustandco.customer.domain.CustomizationOption
@@ -53,8 +59,31 @@ fun ProductDto.toDomain(): Product {
 
 fun OrderDto.toDomain() = Order(
     id = id,
-    number = orderNumber,
+    number = number,
     status = OrderStatus.fromWire(status),
     total = Money(totalMinor, currency),
     createdAt = createdAt,
+    lines = lines.map { OrderLine(name = it.name, variantName = it.portion, optionNames = it.options, quantity = it.quantity, lineTotal = Money(it.lineTotalMinor, currency)) },
+    subtotal = subtotalMinor?.let { Money(it, currency) },
+    discount = discountMinor?.let { Money(it, currency) },
+    tax = taxMinor?.let { Money(it, currency) },
+    deliveryFee = deliveryFeeMinor?.let { Money(it, currency) },
+    deliveryAddress = deliveryAddress,
+    paymentMethod = PaymentMethod.entries.firstOrNull { it.wire == paymentMethod },
+    estimatedMinutes = estimatedMinutes,
 )
+
+fun AddressDto.toDomain() = Address(id = id, label = label, line1 = line1, locality = locality, city = city, postalCode = postalCode)
+
+fun NewAddress.toBody() = NewAddressBody(label = label.trim(), line1 = line1.trim(), locality = locality.trim(), city = city.trim(), postalCode = postalCode.trim())
+
+fun QuoteDto.toDomain() = Quote(
+    subtotal = Money(subtotalMinor, currency),
+    discount = Money(discountMinor, currency),
+    tax = Money(taxMinor, currency),
+    deliveryFee = Money(deliveryFeeMinor, currency),
+    total = Money(totalMinor, currency),
+    couponCode = couponCode,
+)
+
+fun CheckoutItem.toBody() = CartLineBody(productId = productId, portionKey = variantId, optionIds = optionIds, quantity = quantity)

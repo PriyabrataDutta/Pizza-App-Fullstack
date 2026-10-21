@@ -32,6 +32,11 @@ android {
         // Run the dashboard's dev server first (npm run dev in backend/). Flip with -Pcrust.liveCatalog=true.
         val liveCatalog = providers.gradleProperty("crust.liveCatalog").orElse("false").get()
         buildConfigField("boolean", "LIVE_CATALOG", liveCatalog)
+
+        // true = addresses, pricing, checkout and orders also go to the live API, as a guest identified by a private device token.
+        // Implies the live menu (cart items must be real products). Flip with -Pcrust.liveOrders=true.
+        val liveOrders = providers.gradleProperty("crust.liveOrders").orElse("false").get()
+        buildConfigField("boolean", "LIVE_ORDERS", liveOrders)
     }
 
     buildTypes {

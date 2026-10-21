@@ -1,6 +1,8 @@
 package com.crustandco.customer.data.remote
 
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -26,6 +28,22 @@ interface CrustApi {
 
     @GET("products/{id}")
     suspend fun product(@Path("id") id: String): ProductDto
+
+    /** First call of a new install: returns the private device token (shown once) that every customer call sends afterwards. */
+    @POST("customers/guest")
+    suspend fun registerGuest(): GuestDto
+
+    @GET("addresses")
+    suspend fun addresses(): ListResponseDto<AddressDto>
+
+    @POST("addresses")
+    suspend fun addAddress(@Body body: NewAddressBody): AddressDto
+
+    @POST("pricing/quote")
+    suspend fun quote(@Body body: QuoteBody): QuoteDto
+
+    @POST("checkout")
+    suspend fun checkout(@Body body: CheckoutBody): OrderDto
 
     @GET("orders")
     suspend fun orders(): ListResponseDto<OrderDto>

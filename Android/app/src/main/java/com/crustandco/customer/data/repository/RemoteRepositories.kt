@@ -3,9 +3,12 @@ package com.crustandco.customer.data.repository
 import com.crustandco.customer.core.AppResult
 import com.crustandco.customer.core.map
 import com.crustandco.customer.data.remote.CrustApi
+import com.crustandco.customer.data.remote.CheckoutBody
+import com.crustandco.customer.data.remote.GuestSession
+import com.crustandco.customer.data.remote.QuoteBody
+import com.crustandco.customer.data.remote.toBody
 import com.crustandco.customer.data.remote.apiCall
 import com.crustandco.customer.data.remote.toDomain
-import com.crustandco.customer.core.AppError
 import com.crustandco.customer.domain.Address
 import com.crustandco.customer.domain.AddressRepository
 import com.crustandco.customer.domain.CatalogRepository
@@ -91,30 +94,47 @@ class RemoteCatalogRepository(private val api: () -> CrustApi, private val now: 
     }
 }
 
-class RemoteOrderRepository(private val api: CrustApi) : OrderRepository {
+/** The customer's orders. The token identifies this phone; the server returns only its own orders. */
+class RemoteOrderRepository(private val session: GuestSession, private val api: () -> CrustApi) : OrderRepository {
     override suspend fun orders(): AppResult<List<Order>> =
-        apiCall { api.orders() }.map { page -> page.items.map { it.toDomain() } }
+        session.call { apiCall { api().orders() }.map { page -> page.items.map { it.toDomain() } } }
 
     override suspend fun order(id: String): AppResult<Order> =
-        apiCall { api.order(id) }.map { it.toDomain() }
+        session.call { apiCall { api().order(id) }.map { it.toDomain() } }
+}
+
+class RemoteAddressRepository(private val session: GuestSession, private val api: () -> CrustApi) : AddressRepository {
+    override suspend fun addresses(): AppResult<List<Address>> =
+        session.call { apiCall { api().addresses() }.map { page -> page.items.map { it.toDomain() } } }
+
+    override suspend fun add(address: NewAddress): AppResult<Address> =
+        session.call { apiCall { api().addAddress(address.toBody()) }.map { it.toDomain() } }
+}
+
+class RemotePricingRepository(private val session: GuestSession, private val api: () -> CrustApi) : PricingRepository {
+    override suspend fun quote(items: List<CheckoutItem>, couponCode: String?): AppResult<Quote> =
+        session.call { apiCall { api().quote(QuoteBody(items.map { it.toBody() }, couponCode?.takeIf { it.isNotBlank() })) }.map { it.toDomain() } }
+}
+
+class RemoteCheckoutRepository(private val session: GuestSession, private val api: () -> CrustApi) : CheckoutRepository {
+    override suspend fun placeOrder(request: CheckoutRequest): AppResult<Order> =
+        session.call {
+            apiCall {
+                api().checkout(
+                    CheckoutBody(
+                        idempotencyKey = request.idempotencyKey,
+                        addressId = request.addressId,
+                        paymentMethod = request.paymentMethod.wire,
+                        couponCode = request.couponCode?.takeIf { it.isNotBlank() },
+                        instructions = request.instructions?.takeIf { it.isNotBlank() },
+                        items = request.items.map { it.toBody() },
+                    ),
+                )
+            }.map { it.toDomain() }
+        }
 }
 
 /** docs/api-contract.md has no promotions endpoint, so none is invented: the live app shows no banner until one exists. */
 class RemotePromotionRepository : PromotionRepository {
     override suspend fun promotions(): AppResult<List<Promotion>> = AppResult.Success(emptyList())
-}
-
-// docs/api-contract.md lists these endpoints but no request/response schemas yet (see Android/docs/api-assumptions.md),
-// and the app must not invent them. Until Antigravity publishes final schemas the live mode reports them as unavailable.
-class UnavailableAddressRepository : AddressRepository {
-    override suspend fun addresses(): AppResult<List<Address>> = AppResult.Failure(AppError.NotAvailable)
-    override suspend fun add(address: NewAddress): AppResult<Address> = AppResult.Failure(AppError.NotAvailable)
-}
-
-class UnavailablePricingRepository : PricingRepository {
-    override suspend fun quote(items: List<CheckoutItem>, couponCode: String?): AppResult<Quote> = AppResult.Failure(AppError.NotAvailable)
-}
-
-class UnavailableCheckoutRepository : CheckoutRepository {
-    override suspend fun placeOrder(request: CheckoutRequest): AppResult<com.crustandco.customer.domain.Order> = AppResult.Failure(AppError.NotAvailable)
 }

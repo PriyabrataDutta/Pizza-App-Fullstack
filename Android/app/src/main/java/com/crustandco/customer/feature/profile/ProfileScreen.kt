@@ -128,7 +128,11 @@ fun ProfileScreen(
 
             if (config.isDebug) {
                 DeveloperCard(
-                    dataSource = if (config.useMockData) "Demo data (no server)" else "Live API",
+                    dataSource = when {
+                        config.liveOrders || !config.useMockData -> "Live API (menu and orders)"
+                        config.liveCatalog -> "Live menu, demo orders"
+                        else -> "Demo data (no server)"
+                    },
                     baseUrl = config.apiBaseUrl,
                     onAdvanceOrder = container.advanceDemoOrder?.let { advance ->
                         {

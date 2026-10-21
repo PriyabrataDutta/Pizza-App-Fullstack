@@ -33,6 +33,10 @@ val ApiJson: Json = Json {
     coerceInputValues = true
 }
 
+private val CUSTOMER_PATHS = listOf("/addresses", "/pricing/", "/checkout", "/orders")
+
+private fun String.isCustomerPath() = CUSTOMER_PATHS.any { contains(it) }
+
 class ApiClient(
     baseUrl: String,
     tokenProvider: AuthTokenProvider,
@@ -45,7 +49,8 @@ class ApiClient(
     }
 
     private val authInterceptor = Interceptor { chain ->
-        val token = tokenProvider.token()
+        // The token goes only to the customer endpoints. Menu requests stay anonymous, so a shared cache can keep serving them to everyone.
+        val token = if (chain.request().url.encodedPath.isCustomerPath()) tokenProvider.token() else null
         val request = if (token == null) {
             chain.request()
         } else {

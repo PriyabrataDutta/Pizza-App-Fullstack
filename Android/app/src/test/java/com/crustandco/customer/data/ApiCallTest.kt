@@ -91,4 +91,12 @@ class ApiCallTest {
         }
         assertNotNull("cancellation must propagate, not become a Failure", rethrown)
     }
+
+    @Test
+    fun `422 outside the delivery area keeps the server's message`() {
+        val body = """{"error":{"code":"NOT_DELIVERED","message":"We do not deliver to 50667 yet.","details":[]}}"""
+        val error = http(422, body).toAppError()
+        assertEquals(AppError.Validation("NOT_DELIVERED", "We do not deliver to 50667 yet."), error)
+        assertEquals("We do not deliver to 50667 yet.", error.userMessage)
+    }
 }
