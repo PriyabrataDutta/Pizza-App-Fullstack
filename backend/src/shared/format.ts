@@ -10,16 +10,16 @@ export function formatMoney(minor: number): string {
 }
 
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" });
+  return new Date(iso).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" });
 }
 
 export function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString("en-IN", {
+  return new Date(iso).toLocaleString("de-DE", {
     day: "numeric",
     month: "short",
     hour: "numeric",
     minute: "2-digit",
-    timeZone: "Asia/Kolkata",
+    timeZone: "Europe/Berlin",
   });
 }
 

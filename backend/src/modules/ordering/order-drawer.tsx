@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Button, Drawer, Field, StatusBadge, inputCls } from "@/shared/ui";
-import { formatDateTime, formatMoney } from "@/shared/format";
+import { formatDateTime } from "@/shared/format";
+import { formatEuro } from "@/modules/catalog/money";
 import { nextTransitions, STATUS_META, type Order, type Transition } from "./domain";
 import { useAccess } from "@/modules/access/access-context";
 import { PaymentPill } from "./order-ticket";
@@ -18,7 +19,8 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
 }
 
 export function OrderDrawer({ order, onClose }: { order: Order | null; onClose: () => void }) {
-  const { transition } = useOrders();
+  const { transition, busy, error } = useOrders();
+  const working = !!order && busy.has(order.id);
   const manage = useAccess().canManage("orders");
   const [pending, setPending] = useState<Transition | null>(null);
   const [reason, setReason] = useState("");
@@ -50,10 +52,10 @@ export function OrderDrawer({ order, onClose }: { order: Order | null; onClose: 
           order && actions.length > 0 ? (
             <>
               {actions.filter((a) => a.destructive).map((a) => (
-                <Button key={a.to} variant="danger" onClick={() => apply(a)}>{a.label}</Button>
+                <Button key={a.to} variant="danger" disabled={working} onClick={() => apply(a)}>{a.label}</Button>
               ))}
               {actions.filter((a) => !a.destructive).map((a) => (
-                <Button key={a.to} onClick={() => apply(a)}>{a.label}</Button>
+                <Button key={a.to} loading={working} disabled={working} onClick={() => apply(a)}>{a.label}</Button>
               ))}
             </>
           ) : undefined
@@ -65,11 +67,12 @@ export function OrderDrawer({ order, onClose }: { order: Order | null; onClose: 
               <StatusBadge status={order.status} />
               <PaymentPill order={order} />
             </div>
+            {error && <p role="alert" className="rounded-control border border-error/30 bg-error-soft px-3 py-2 text-[13px] text-error">{error}</p>}
 
             <section>
               <h3 className="mb-1 text-base font-semibold">Customer</h3>
               <p className="font-medium">{order.customerName}</p>
-              <p className="num text-ink-2">{order.customerPhone}</p>
+              {order.customerPhone && <p className="num text-ink-2">{order.customerPhone}</p>}
               <p className="mt-1">{order.address}</p>
               {order.instructions && <p className="mt-1 text-warning">Note: {order.instructions}</p>}
             </section>
@@ -83,7 +86,7 @@ export function OrderDrawer({ order, onClose }: { order: Order | null; onClose: 
                       <p><span className="num font-semibold">{l.quantity}×</span> {l.name} <span className="text-ink-2">({l.variant})</span></p>
                       {l.options.length > 0 && <p className="text-xs text-ink-2">{l.options.join(", ")}</p>}
                     </div>
-                    <span className="num">{formatMoney(l.lineTotalMinor)}</span>
+                    <span className="num">{formatEuro(l.lineTotalMinor)}</span>
                   </li>
                 ))}
               </ul>
@@ -92,11 +95,11 @@ export function OrderDrawer({ order, onClose }: { order: Order | null; onClose: 
             <section>
               <h3 className="mb-2 text-base font-semibold">Price</h3>
               <dl className="space-y-1.5">
-                <Row label="Subtotal" value={formatMoney(order.subtotalMinor)} />
-                {order.discountMinor > 0 && <Row label={`Discount${order.couponCode ? ` (${order.couponCode})` : ""}`} value={`− ${formatMoney(order.discountMinor)}`} />}
-                <Row label="Tax" value={formatMoney(order.taxMinor)} />
-                <Row label="Delivery fee" value={order.deliveryFeeMinor === 0 ? "Free" : formatMoney(order.deliveryFeeMinor)} />
-                <Row label="Total" value={formatMoney(order.totalMinor)} strong />
+                <Row label="Subtotal" value={formatEuro(order.subtotalMinor)} />
+                {order.discountMinor > 0 && <Row label={`Discount${order.couponCode ? ` (${order.couponCode})` : ""}`} value={`− ${formatEuro(order.discountMinor)}`} />}
+                <Row label="Tax" value={formatEuro(order.taxMinor)} />
+                <Row label="Delivery fee" value={order.deliveryFeeMinor === 0 ? "Free" : formatEuro(order.deliveryFeeMinor)} />
+                <Row label="Total" value={formatEuro(order.totalMinor)} strong />
               </dl>
             </section>
 

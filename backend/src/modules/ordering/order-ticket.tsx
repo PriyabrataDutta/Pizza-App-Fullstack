@@ -2,7 +2,8 @@
 
 import { Banknote, FlaskConical } from "lucide-react";
 import { Button, Pill } from "@/shared/ui";
-import { formatMoney, formatTime } from "@/shared/format";
+import { formatTime } from "@/shared/format";
+import { formatEuro } from "@/modules/catalog/money";
 import { primaryTransition, type Order, type OrderStatus } from "./domain";
 
 export function PaymentPill({ order }: { order: Order }) {
@@ -23,8 +24,9 @@ export function PaymentPill({ order }: { order: Order }) {
 }
 
 /** A kitchen slip: what to make, who it's for, what to do next. */
-export function OrderTicket({ order, onOpen, onAdvance }: {
+export function OrderTicket({ order, onOpen, onAdvance, busy }: {
   order: Order;
+  busy?: boolean;
   onOpen: (id: string) => void;
   onAdvance?: (id: string, to: OrderStatus) => void;
 }) {
@@ -62,14 +64,14 @@ export function OrderTicket({ order, onOpen, onAdvance }: {
 
           <div className="mt-3 flex items-center justify-between gap-2 pb-3">
             <span className="text-xs text-ink-2">{itemCount} {itemCount === 1 ? "item" : "items"}</span>
-            <span className="num text-base font-bold">{formatMoney(order.totalMinor)}</span>
+            <span className="num text-base font-bold">{formatEuro(order.totalMinor)}</span>
           </div>
         </button>
 
         <div className="flex flex-col gap-2 px-4">
           <PaymentPill order={order} />
           {next && onAdvance && (
-            <Button size="sm" className="w-full" onClick={() => onAdvance(order.id, next.to)}>
+            <Button size="sm" className="w-full" loading={busy} disabled={busy} onClick={() => onAdvance(order.id, next.to)}>
               {next.label}
             </Button>
           )}

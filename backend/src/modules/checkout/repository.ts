@@ -25,7 +25,7 @@ export async function loadBundle(orderRows: OrderRow[]): Promise<OrderBundle[]> 
   const items = must(await db().from("order_items").select("*").in("order_id", ids).order("created_at"), "order items") as OrderItemRow[];
   const itemIds = items.map((i) => i.id);
   const options = itemIds.length === 0 ? [] : (must(await db().from("order_item_options").select("*").in("order_item_id", itemIds), "order options") as OrderOptionRow[]);
-  const history = must(await db().from("order_status_history").select("order_id, new_status, reason, created_at").in("order_id", ids).order("created_at"), "history") as (HistoryRow & { order_id: string })[];
+  const history = must(await db().from("order_status_history").select("order_id, new_status, reason, created_at, actor_label").in("order_id", ids).order("created_at"), "history") as (HistoryRow & { order_id: string })[];
   return orderRows.map((order) => {
     const mine = items.filter((i) => i.order_id === order.id);
     return {

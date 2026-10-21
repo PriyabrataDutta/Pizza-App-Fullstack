@@ -3,17 +3,22 @@
 import { useMemo, useState } from "react";
 import { LayoutGrid, List, Search } from "lucide-react";
 import { useAccess } from "@/modules/access/access-context";
-import { Button, Card, DemoNotice, ReadOnlyNotice, EmptyState, PageHeader, StatusBadge, Table, td, th, inputCls } from "@/shared/ui";
-import { formatMoney, formatTime } from "@/shared/format";
+import { Button, Card, ReadOnlyNotice, EmptyState, PageHeader, StatusBadge, Table, td, th, inputCls } from "@/shared/ui";
+import { formatTime } from "@/shared/format";
+import { formatEuro } from "@/modules/catalog/money";
 import { BOARD_STAGES, STATUS_META, type OrderStatus } from "./domain";
 import { OrderDrawer } from "./order-drawer";
 import { OrderTicket } from "./order-ticket";
+import { OrdersStatus } from "./orders-status";
 import { useOrders } from "./orders-store";
 
 const PAGE = 8;
 
+const berlinDay = (d: Date) => d.toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" });
+const isToday = (iso: string) => berlinDay(new Date(iso)) === berlinDay(new Date());
+
 export function OrdersView() {
-  const { orders, transition } = useOrders();
+  const { orders, transition, busy, loading } = useOrders();
   const manage = useAccess().canManage("orders");
   const [view, setView] = useState<"board" | "list">("board");
   const [q, setQ] = useState("");
@@ -55,13 +60,13 @@ export function OrdersView() {
         }
       />
       {!manage && <ReadOnlyNotice />}
-      <DemoNotice>Seeded demo orders. Status changes work here but are not saved to the database yet.</DemoNotice>
+      <OrdersStatus />
 
       <div className="mb-4 flex flex-wrap gap-3">
         <div className="relative min-w-[220px] flex-1 sm:max-w-sm">
           <label htmlFor="order-search" className="sr-only">Search orders</label>
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-2" aria-hidden />
-          <input id="order-search" value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} placeholder="Search by order number, name or phone" className={`${inputCls} pl-9`} />
+          <input id="order-search" value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} placeholder="Search by order number or street" className={`${inputCls} pl-9`} />
         </div>
         {view === "list" && (
           <div>
@@ -74,11 +79,14 @@ export function OrdersView() {
         )}
       </div>
 
-      {view === "board" ? (
+      {loading ? (
+        <p role="status" className="rounded-control border border-dashed border-line px-3 py-10 text-center text-sm text-ink-2">Loading orders…</p>
+      ) : view === "board" ? (
         <div className="-mx-4 overflow-x-auto px-4 pb-4 lg:mx-0 lg:px-0">
           <div className="flex min-w-max gap-4">
             {BOARD_STAGES.map((stage) => {
-              const inLane = matches.filter((o) => o.status === stage);
+              // Delivered orders stay on the board for the rest of the day; older ones are in the list view.
+              const inLane = matches.filter((o) => o.status === stage && (stage !== "delivered" || isToday(o.createdAt)));
               return (
                 <section key={stage} aria-labelledby={`lane-${stage}`} className="w-[272px] shrink-0 rounded-feature bg-subtle p-3">
                   <h2 id={`lane-${stage}`} className="mb-3 flex items-center justify-between px-1">
@@ -89,14 +97,14 @@ export function OrdersView() {
                     <p className="rounded-control border border-dashed border-line px-3 py-6 text-center text-xs text-ink-2">Nothing here right now.</p>
                   ) : (
                     <ul className="space-y-3">
-                      {inLane.map((o) => <OrderTicket key={o.id} order={o} onOpen={setOpenId} onAdvance={manage ? transition : undefined} />)}
+                      {inLane.map((o) => <OrderTicket key={o.id} order={o} onOpen={setOpenId} onAdvance={manage ? transition : undefined} busy={busy.has(o.id)} />)}
                     </ul>
                   )}
                 </section>
               );
             })}
           </div>
-          <p className="mt-2 text-xs text-ink-2">Rejected and cancelled orders appear in the list view.</p>
+          <p className="mt-2 text-xs text-ink-2">Rejected and cancelled orders, and delivered orders from earlier days, are in the list view.</p>
         </div>
       ) : (
         <Card>
@@ -118,7 +126,7 @@ export function OrdersView() {
                       <td className={td}>{o.customerName}<span className="num block text-xs text-ink-2">{o.customerPhone}</span></td>
                       <td className={`${td} num`}>{formatTime(o.createdAt)}</td>
                       <td className={td}><StatusBadge status={o.status} /></td>
-                      <td className={`${td} num text-right font-semibold`}>{formatMoney(o.totalMinor)}</td>
+                      <td className={`${td} num text-right font-semibold`}>{formatEuro(o.totalMinor)}</td>
                       <td className={`${td} text-right`}><Button variant="secondary" size="sm" onClick={() => setOpenId(o.id)}>View<span className="sr-only"> {o.number}</span></Button></td>
                     </tr>
                   ))}

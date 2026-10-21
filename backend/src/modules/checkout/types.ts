@@ -66,6 +66,8 @@ export interface HistoryRow {
   new_status: string;
   reason: string | null;
   created_at: string;
+  /** Who made the change: a staff member's email, or "system" for the order being placed. */
+  actor_label: string;
 }
 
 export interface OrderBundle {

@@ -84,7 +84,7 @@ Error codes: `COUPON_INVALID`, `COUPON_MINIMUM` (message says how much more to a
 Delivery rules: no delivery fee; minimum order by area (46483: 10,00 €; 46485 and 46487: 20,00 €; other postcodes are not delivered). Menu prices include VAT.
 
 ### Order admin endpoints (implemented)
-Dashboard session, module `orders`. `GET /api/admin/orders?status=a,b&offset=&limit=` (newest first), `GET /api/admin/orders/{id}`, `PATCH /api/admin/orders/{id}/status` with `{ status, reason? }`. Lifecycle: placed → accepted or rejected; accepted → preparing or cancelled; preparing → ready_for_dispatch or cancelled; ready_for_dispatch → out_for_delivery → delivered. Any other move is `409 INVALID_TRANSITION`. Cash orders become `paid` on delivery. Each change writes history and an audit entry.
+Dashboard session, module `orders`. `GET /api/admin/orders?status=a,b&offset=&limit=` (newest first), `GET /api/admin/orders/{id}`, `PATCH /api/admin/orders/{id}/status` with `{ status, reason? }`. Lifecycle: placed → accepted or rejected; accepted → preparing or cancelled; preparing → ready_for_dispatch or cancelled; ready_for_dispatch → out_for_delivery → delivered. Any other move is `409 INVALID_TRANSITION`. Cash orders become `paid` on delivery. Each change writes history and an audit entry. Every order carries `history: [{ status, at, reason, actor }]`, where `actor` is the staff member's email, or `customer` for the order being placed.
 
 ## Admin endpoints (proposed, not yet built)
 - `POST /api/admin/products`

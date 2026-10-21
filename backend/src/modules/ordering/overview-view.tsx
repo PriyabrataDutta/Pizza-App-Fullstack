@@ -4,29 +4,36 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useAccess } from "@/modules/access/access-context";
-import { Button, Card, DemoNotice, EmptyState, PageHeader, StatusBadge } from "@/shared/ui";
-import { formatMoney, formatTime } from "@/shared/format";
+import { Button, Card, EmptyState, PageHeader, StatusBadge } from "@/shared/ui";
+import { formatTime } from "@/shared/format";
+import { formatEuro } from "@/modules/catalog/money";
 import { CLOSED_STATUSES, primaryTransition } from "./domain";
 import { OrderDrawer } from "./order-drawer";
+import { OrdersStatus } from "./orders-status";
 import { useOrders } from "./orders-store";
 
+const berlinDay = (d: Date) => d.toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" });
+const isToday = (iso: string) => berlinDay(new Date(iso)) === berlinDay(new Date());
+
 export function OverviewView() {
-  const { orders, transition } = useOrders();
+  const { orders, transition, busy } = useOrders();
   const manage = useAccess().canManage("orders");
   const [openId, setOpenId] = useState<string | null>(null);
 
   const s = useMemo(() => {
-    const live = orders.filter((o) => o.status !== "rejected" && o.status !== "cancelled");
+    // The figures are for today; the queue below is every order that still needs someone, whatever day it came in.
+    const todays = orders.filter((o) => isToday(o.createdAt));
+    const live = todays.filter((o) => o.status !== "rejected" && o.status !== "cancelled");
     const revenue = live.reduce((a, o) => a + o.totalMinor, 0);
     const byProduct = new Map<string, number>();
     live.forEach((o) => o.lines.forEach((l) => byProduct.set(l.name, (byProduct.get(l.name) ?? 0) + l.lineTotalMinor)));
     const top = [...byProduct.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
     return {
-      total: orders.length,
+      total: todays.length,
       revenue,
       pending: orders.filter((o) => o.status === "placed").length,
       inKitchen: orders.filter((o) => ["accepted", "preparing", "ready_for_dispatch", "out_for_delivery"].includes(o.status)).length,
-      done: orders.filter((o) => o.status === "delivered").length,
+      done: todays.filter((o) => o.status === "delivered").length,
       queue: orders.filter((o) => !CLOSED_STATUSES.includes(o.status) && o.status !== "out_for_delivery").slice(0, 6),
       recent: orders.slice(0, 6),
       top,
@@ -39,7 +46,7 @@ export function OverviewView() {
   return (
     <>
       <PageHeader title="Overview" description="What needs doing right now, and how today is going." actions={<Link href="/orders"><Button variant="secondary">Open order board</Button></Link>} />
-      <DemoNotice>These figures come from seeded demo orders, not live sales.</DemoNotice>
+      <OrdersStatus />
 
       <Card className="mb-6">
         <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
@@ -63,8 +70,8 @@ export function OverviewView() {
                   </button>
                   <span className="num text-xs text-ink-2">{formatTime(o.createdAt)}</span>
                   <StatusBadge status={o.status} />
-                  <span className="num w-24 text-right font-semibold">{formatMoney(o.totalMinor)}</span>
-                  {next && manage && <Button size="sm" onClick={() => transition(o.id, next.to)}>{next.label}</Button>}
+                  <span className="num w-24 text-right font-semibold">{formatEuro(o.totalMinor)}</span>
+                  {next && manage && <Button size="sm" loading={busy.has(o.id)} onClick={() => transition(o.id, next.to)}>{next.label}</Button>}
                 </li>
               );
             })}
@@ -75,7 +82,7 @@ export function OverviewView() {
       <dl className="mb-6 grid grid-cols-2 gap-x-6 gap-y-4 rounded-card border border-line bg-surface px-5 py-4 md:grid-cols-4">
         {[
           ["Orders today", String(s.total)],
-          ["Revenue today", formatMoney(s.revenue)],
+          ["Revenue today", formatEuro(s.revenue)],
           ["In progress", String(s.inKitchen)],
           ["Delivered", String(s.done)],
         ].map(([k, v]) => (
@@ -92,7 +99,7 @@ export function OverviewView() {
           <ul className="space-y-3">
             {s.top.map(([name, v]) => (
               <li key={name}>
-                <div className="mb-1 flex justify-between gap-3"><span>{name}</span><span className="num font-medium">{formatMoney(v)}</span></div>
+                <div className="mb-1 flex justify-between gap-3"><span>{name}</span><span className="num font-medium">{formatEuro(v)}</span></div>
                 <div className="h-2 rounded-full bg-subtle" role="presentation"><div className="h-2 rounded-full bg-brand" style={{ width: `${(v / s.topMax) * 100}%` }} /></div>
               </li>
             ))}

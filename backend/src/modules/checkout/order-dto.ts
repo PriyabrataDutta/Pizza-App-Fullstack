@@ -33,7 +33,7 @@ export interface OrderDto extends OrderSummaryDto {
   delivery_address: string;
   delivery: { label: string; line1: string; locality: string; city: string; postal_code: string; instructions: string | null };
   lines: OrderLineDto[];
-  history: { status: string; at: string; reason: string | null }[];
+  history: { status: string; at: string; reason: string | null; actor: string }[];
 }
 
 export const oneLineAddress = (a: { line1: string; locality: string; city: string; postal_code: string }) =>
@@ -70,6 +70,6 @@ export function toOrderDto({ order: o, items, options, history }: OrderBundle): 
       unit_price_minor: i.unit_price_minor,
       line_total_minor: i.line_total_minor,
     })),
-    history: [...history].sort((a, b) => a.created_at.localeCompare(b.created_at)).map((h) => ({ status: h.new_status, at: h.created_at, reason: h.reason })),
+    history: [...history].sort((a, b) => a.created_at.localeCompare(b.created_at)).map((h) => ({ status: h.new_status, at: h.created_at, reason: h.reason, actor: h.actor_label })),
   };
 }

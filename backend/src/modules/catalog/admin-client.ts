@@ -188,7 +188,35 @@ export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 // ---- Calls ------------------------------------------------------------------------------------------------------------
+// ---- Orders (the restaurant side of checkout) ---------------------------------------------------------------------------------
+export interface OrderAdmin {
+  id: string;
+  number: string;
+  status: string;
+  total_minor: number;
+  currency: string;
+  created_at: string;
+  subtotal_minor: number;
+  discount_minor: number;
+  tax_minor: number;
+  delivery_fee_minor: number;
+  coupon_code: string | null;
+  payment_method: string;
+  payment_status: string;
+  estimated_minutes: number | null;
+  delivery_address: string;
+  delivery: { label: string; line1: string; locality: string; city: string; postal_code: string; instructions: string | null };
+  lines: { name: string; portion: string; options: string[]; quantity: number; unit_price_minor: number; line_total_minor: number }[];
+  history: { status: string; at: string; reason: string | null; actor: string }[];
+}
+
 export const adminApi = {
+  orders: {
+    /** Newest first. The server allows up to 200 per request. */
+    list: (limit = 200) => request<{ items: OrderAdmin[]; has_more: boolean }>("GET", `/orders?limit=${limit}`),
+    /** Moves an order along its lifecycle. The server refuses a move the lifecycle does not allow (409 INVALID_TRANSITION). */
+    setStatus: (id: string, status: string, reason?: string) => request<OrderAdmin>("PATCH", `/orders/${id}/status`, { status, reason }),
+  },
   categories: {
     list: () => request<{ items: CategoryAdmin[] }>("GET", "/categories").then((r) => r.items),
     create: (input: CategoryInput) => request<CategoryAdmin>("POST", "/categories", input),

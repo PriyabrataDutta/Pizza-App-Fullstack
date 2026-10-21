@@ -55,7 +55,7 @@ function fakeRepo() {
           coupon_code: p.coupon_code, estimated_minutes: p.estimated_minutes, delivery_label: p.address.label, delivery_line1: p.address.line1, delivery_locality: p.address.locality,
           delivery_city: p.address.city, delivery_postal_code: p.address.postal_code, delivery_instructions: p.address.instructions, created_at: "2026-10-20T12:00:00Z",
         },
-        items, options, history: [{ new_status: "placed", reason: null, created_at: "2026-10-20T12:00:00Z" }],
+        items, options, history: [{ new_status: "placed", reason: null, created_at: "2026-10-20T12:00:00Z", actor_label: "system" }],
       });
       keys.set(`${p.customer_id}|${p.idempotency_key}`, id);
       return { orderId: id, created: true };
@@ -292,7 +292,7 @@ describe("checkout", () => {
     const a = await svc.createAddress(c, home);
     await svc.checkout(c, { idempotency_key: key(12), address_id: a.id, payment_method: "cod", items: [item()] });
     const dto = toOrderDto(repo._orders[0]);
-    expect(dto.history).toEqual([{ status: "placed", at: "2026-10-20T12:00:00Z", reason: null }]);
+    expect(dto.history).toEqual([{ status: "placed", at: "2026-10-20T12:00:00Z", reason: null, actor: "system" }]);
     expect(dto.tax_minor).toBe(0);
   });
 });
