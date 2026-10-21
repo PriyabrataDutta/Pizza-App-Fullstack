@@ -51,13 +51,13 @@ def main():
     client = genai.Client(api_key=key)
     cats = get("/categories")["items"]
     cname = {c["id"]: c["name"] for c in cats}
-    products, offset = [], 0
+    products, cursor = [], None
     while True:
-        page = get(f"/products?limit=100&offset={offset}")
+        page = get("/products?limit=100" + (f"&cursor={cursor}" if cursor else ""))
         products += page["items"]
-        if len(page["items"]) < 100:
+        cursor = page.get("next_cursor")
+        if not cursor:
             break
-        offset += 100
     jobs = [("category", c["slug"], c["name"], c["description"], "", c["id"]) for c in cats]
     jobs += [("product", p["id"], p["name"], p["description"], cname.get(p["category_id"], ""), p["id"]) for p in products]
     if mode == "sample":
