@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Only for the window background, splash and launcher icon. All in-app colors live in core/designsystem/Color.kt. -->
+    <color name="canvas">#FFF9F2</color>
+    <color name="ic_launcher_background">#D9362B</color>
+    <!-- Same dark brown as the Welcome screen, so the splash hands off to it without a flash. -->
+    <color name="splash_background">#1B1310</color>
+</resources>

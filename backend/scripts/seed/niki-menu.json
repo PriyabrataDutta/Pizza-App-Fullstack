@@ -1,0 +1,5528 @@
+{
+ "meta": {
+  "source": "Printed menu of Steinofen Pizzeria Niki, Wesel (photographed). Currency EUR. Allergen codes not transcribed.",
+  "toConfirmWithRestaurant": [
+   "Which ingredients may be added as an extra topping (the list here is every ingredient that appears on the menu).",
+   "Prices read with doubt: 14 Hawaii and 15 Mediterrane (larger sizes), 151 Quattro Formaggi (price partly hidden, read as 8,50).",
+   "107 Insalata Pollo: the printed description is cut off.",
+   "140 Napoli: the number is partly hidden.",
+   "The six items flagged as popular are an invention for the demo.",
+   "Pizza Niki is a surprise and is marked non-vegetarian to be safe."
+  ],
+  "notModelled": [
+   "Angebot 1 and 2 (bundles) and company prices: offers, not menu items.",
+   "Removing included ingredients."
+  ]
+ },
+ "portionSets": [
+  {
+   "name": "Pizza sizes",
+   "items": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm"
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm"
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm"
+    }
+   ]
+  },
+  {
+   "name": "Salad sizes",
+   "items": [
+    {
+     "key": "klein",
+     "label": "Klein"
+    },
+    {
+     "key": "gross",
+     "label": "Groß"
+    }
+   ]
+  },
+  {
+   "name": "Drink sizes",
+   "items": [
+    {
+     "key": "0_33l",
+     "label": "0,33 l"
+    },
+    {
+     "key": "1_0l",
+     "label": "1,0 l"
+    }
+   ]
+  },
+  {
+   "name": "Single portion",
+   "items": [
+    {
+     "key": "standard",
+     "label": "Standard"
+    }
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "name": "Extra Zutaten",
+   "kind": "extra",
+   "min": 0,
+   "max": 10,
+   "required": false,
+   "options": [
+    {
+     "name": "Salami",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Schinken",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Parmaschinken",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Thunfisch",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Champignons",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Zwiebeln",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Rote Zwiebeln",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Paprika",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Peperoni",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Oliven",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Ananas",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Mais",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Spinat",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Broccoli",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Knoblauch",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Hähnchenbrustfilet",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Krabben",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Meeresfrüchte",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Lachs",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Sardellen",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Kapern",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Gyros",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Drehspießfleisch",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Knoblauchwurst",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Hirtenkäse",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Mozzarella",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Gorgonzola",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Gouda",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Parmesan",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Rucola",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Artischocken",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Kirschtomaten",
+     "defaultPriceMinor": 100
+    }
+   ]
+  },
+  {
+   "name": "Zutaten (2 nach Wahl)",
+   "kind": "choice",
+   "min": 2,
+   "max": 2,
+   "required": true,
+   "options": [
+    {
+     "name": "Salami",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Schinken",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Champignons",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Thunfisch",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Zwiebeln",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Paprika",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Peperoni",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Oliven",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Ananas",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Mais",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Spinat",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Broccoli",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Knoblauch",
+     "defaultPriceMinor": 0
+    }
+   ]
+  },
+  {
+   "name": "Nudelsorte",
+   "kind": "choice",
+   "min": 1,
+   "max": 1,
+   "required": true,
+   "options": [
+    {
+     "name": "Spaghetti",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Rigatoni",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Tortellini",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Tagliatelle",
+     "defaultPriceMinor": 0
+    }
+   ]
+  },
+  {
+   "name": "Überbacken",
+   "kind": "extra",
+   "min": 0,
+   "max": 1,
+   "required": false,
+   "options": [
+    {
+     "name": "Mit Käse überbacken",
+     "defaultPriceMinor": 100
+    }
+   ]
+  },
+  {
+   "name": "Dressing",
+   "kind": "choice",
+   "min": 1,
+   "max": 1,
+   "required": true,
+   "options": [
+    {
+     "name": "Cocktail",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Joghurt",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Essig / Olivenöl",
+     "defaultPriceMinor": 0
+    }
+   ]
+  },
+  {
+   "name": "Fleisch",
+   "kind": "choice",
+   "min": 1,
+   "max": 1,
+   "required": true,
+   "options": [
+    {
+     "name": "Schweinefleisch",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Putenfleisch",
+     "defaultPriceMinor": 0
+    }
+   ]
+  },
+  {
+   "name": "Beilage",
+   "kind": "choice",
+   "min": 1,
+   "max": 1,
+   "required": true,
+   "options": [
+    {
+     "name": "Basmati-Reis",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Pommes",
+     "defaultPriceMinor": 0
+    }
+   ]
+  },
+  {
+   "name": "Extra Basmati-Reis",
+   "kind": "extra",
+   "min": 0,
+   "max": 1,
+   "required": false,
+   "options": [
+    {
+     "name": "Extra Basmati-Reis",
+     "defaultPriceMinor": 200
+    }
+   ]
+  },
+  {
+   "name": "Dip",
+   "kind": "extra",
+   "min": 0,
+   "max": 2,
+   "required": false,
+   "options": [
+    {
+     "name": "Kräuterbutter",
+     "defaultPriceMinor": 100
+    },
+    {
+     "name": "Aioli",
+     "defaultPriceMinor": 100
+    }
+   ]
+  },
+  {
+   "name": "Sorte",
+   "kind": "choice",
+   "min": 1,
+   "max": 1,
+   "required": true,
+   "options": [
+    {
+     "name": "Coca-Cola",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Cola Light",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Cola Zero",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Fanta",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Mezzo Mix",
+     "defaultPriceMinor": 0
+    },
+    {
+     "name": "Sprite",
+     "defaultPriceMinor": 0
+    }
+   ]
+  }
+ ],
+ "categories": [
+  {
+   "slug": "pizza",
+   "name": "Pizza",
+   "sortOrder": 1,
+   "portionSet": "Pizza sizes",
+   "groupAttachments": [
+    {
+     "group": "Extra Zutaten",
+     "prices": {
+      "klein": 50,
+      "gross": 100,
+      "maxi": 250
+     }
+    }
+   ]
+  },
+  {
+   "slug": "pizza-specials",
+   "name": "Pizza Specials",
+   "sortOrder": 2,
+   "portionSet": "Pizza sizes",
+   "groupAttachments": [
+    {
+     "group": "Extra Zutaten",
+     "prices": {
+      "klein": 50,
+      "gross": 100,
+      "maxi": 250
+     }
+    }
+   ]
+  },
+  {
+   "slug": "pizzableche",
+   "name": "Pizzableche",
+   "sortOrder": 3,
+   "portionSet": "Single portion",
+   "groupAttachments": [
+    {
+     "group": "Extra Zutaten",
+     "prices": {
+      "*": 250
+     }
+    }
+   ]
+  },
+  {
+   "slug": "calzone",
+   "name": "Calzone",
+   "sortOrder": 4,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "pizzabroetchen",
+   "name": "Pizzabrötchen",
+   "sortOrder": 5,
+   "portionSet": "Single portion",
+   "groupAttachments": [
+    {
+     "group": "Dip"
+    }
+   ]
+  },
+  {
+   "slug": "salate",
+   "name": "Salate",
+   "sortOrder": 6,
+   "portionSet": "Salad sizes",
+   "groupAttachments": [
+    {
+     "group": "Dressing"
+    }
+   ]
+  },
+  {
+   "slug": "indische-gerichte",
+   "name": "Indische Gerichte",
+   "sortOrder": 7,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "nudeln",
+   "name": "Nudeln",
+   "sortOrder": 8,
+   "portionSet": "Single portion",
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte"
+    },
+    {
+     "group": "Überbacken"
+    }
+   ]
+  },
+  {
+   "slug": "auflauf",
+   "name": "Auflauf",
+   "sortOrder": 9,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "kartoffelauflauf",
+   "name": "Kartoffelauflauf",
+   "sortOrder": 10,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "gyros",
+   "name": "Gyros",
+   "sortOrder": 11,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "schnitzel",
+   "name": "Schnitzel",
+   "sortOrder": 12,
+   "portionSet": "Single portion",
+   "groupAttachments": [
+    {
+     "group": "Fleisch"
+    }
+   ]
+  },
+  {
+   "slug": "imbiss",
+   "name": "Imbiss",
+   "sortOrder": 13,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "indische-suessigkeiten",
+   "name": "Indische Süßigkeiten",
+   "sortOrder": 14,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  },
+  {
+   "slug": "getraenke",
+   "name": "Getränke",
+   "sortOrder": 15,
+   "portionSet": "Single portion",
+   "groupAttachments": []
+  }
+ ],
+ "products": [
+  {
+   "slug": "1-margherita",
+   "number": "1",
+   "category": "pizza",
+   "name": "Margherita",
+   "description": "mit Käse",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 1,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 550
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1700
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "2-cipolla",
+   "number": "2",
+   "category": "pizza",
+   "name": "Cipolla",
+   "description": "mit roten Zwiebeln",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 2,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "3-salami",
+   "number": "3",
+   "category": "pizza",
+   "name": "Salami",
+   "description": "mit Salami",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 3,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 900
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "4-prosciutto",
+   "number": "4",
+   "category": "pizza",
+   "name": "Prosciutto",
+   "description": "mit Schinken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 4,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 900
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "5-italia",
+   "number": "5",
+   "category": "pizza",
+   "name": "Italia",
+   "description": "mit fr. Tomaten & Mozzarella",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 5,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "5a-bella-italia",
+   "number": "5a",
+   "category": "pizza",
+   "name": "Bella Italia",
+   "description": "mit Salami, Thunfisch, Zwiebel",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 6,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "6-diavolo-i",
+   "number": "6",
+   "category": "pizza",
+   "name": "Diavolo I",
+   "description": "mit Salami, Paprika, Zwiebel, scharfe Peperoni",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 7,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "7-diavolo-ii",
+   "number": "7",
+   "category": "pizza",
+   "name": "Diavolo II",
+   "description": "mit Schinken, Paprika, Zwiebel, scharfe Peperoni",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 8,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "8-vulkana",
+   "number": "8",
+   "category": "pizza",
+   "name": "Vulkana",
+   "description": "mit Hähnchenbrustfilet, Zwiebel, Paprika, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 9,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "9-spaghetti-bolog",
+   "number": "9",
+   "category": "pizza",
+   "name": "Spaghetti Bolog.",
+   "description": "mit Bolognese",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 10,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "10-tonno",
+   "number": "10",
+   "category": "pizza",
+   "name": "Tonno",
+   "description": "mit Thunfisch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 11,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "11-fungi",
+   "number": "11",
+   "category": "pizza",
+   "name": "Fungi",
+   "description": "mit fr. Champignons",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 12,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "12-leon",
+   "number": "12",
+   "category": "pizza",
+   "name": "Leon",
+   "description": "mit Salami, fr. Champignons",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 13,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "13-toscana",
+   "number": "13",
+   "category": "pizza",
+   "name": "Toscana",
+   "description": "mit Schinken, fr. Champs.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 14,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "14-hawaii",
+   "number": "14",
+   "category": "pizza",
+   "name": "Hawaii",
+   "description": "mit Schinken, Ananas",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 15,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "15-mediterrane",
+   "number": "15",
+   "category": "pizza",
+   "name": "Mediterrane",
+   "description": "mit Salami, Schinken, Thunfisch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 16,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "16-halbe-halbe",
+   "number": "16",
+   "category": "pizza",
+   "name": "Halbe Halbe",
+   "description": "mit 1/2 Hähnchenbrust, Champignons, Zwiebel, Hirtenkäse, Knoblauch (scharf), 1/2 Salami, Schinken, Champignons",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 17,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "17-romantica",
+   "number": "17",
+   "category": "pizza",
+   "name": "Romantica",
+   "description": "mit Hirtenkäse, fr. Tomaten, Oliven",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 18,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "18-knoblauchwurst",
+   "number": "18",
+   "category": "pizza",
+   "name": "Knoblauchwurst",
+   "description": "mit Knoblauchwurst",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 19,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "19-valentina",
+   "number": "19",
+   "category": "pizza",
+   "name": "Valentina",
+   "description": "mit Schinken, Spinat, fr. Champignons, Artischocken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 20,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "20-tonno-cipolla",
+   "number": "20",
+   "category": "pizza",
+   "name": "Tonno Cipolla",
+   "description": "mit Thunfisch, Zwiebeln",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 21,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "21-quattro-formag",
+   "number": "21",
+   "category": "pizza",
+   "name": "Quattro Formag.",
+   "description": "mit Gouda, Mozzarella, Gorgonzola, Hirtenkäse",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 22,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "22-daniel",
+   "number": "22",
+   "category": "pizza",
+   "name": "Daniel",
+   "description": "mit Salami, Spinat, fr. Champignons, scharfe Peperoni, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 23,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "23-don-pappino",
+   "number": "23",
+   "category": "pizza",
+   "name": "Don Pappino",
+   "description": "mit Krabben, Thunfisch, Zwiebel, Hirtenkäse, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 24,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "24-pizza-kosa",
+   "number": "24",
+   "category": "pizza",
+   "name": "Pizza Kosa",
+   "description": "mit Hähnchenbrustfilet, Zwiebel, fr. Champignons, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 25,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "25-quattro-stagioni",
+   "number": "25",
+   "category": "pizza",
+   "name": "Quattro Stagioni",
+   "description": "mit Schinken, Salami, fr. Champignons, Thunfisch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 26,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "26-spinaci",
+   "number": "26",
+   "category": "pizza",
+   "name": "Spinaci",
+   "description": "mit Spinat, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 27,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "27-broccoli",
+   "number": "27",
+   "category": "pizza",
+   "name": "Broccoli",
+   "description": "mit Broccoli, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 28,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "28-frutti-di-mare",
+   "number": "28",
+   "category": "pizza",
+   "name": "Frutti di Mare",
+   "description": "mit Meeresfrüchte, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 29,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "29-fantastico",
+   "number": "29",
+   "category": "pizza",
+   "name": "Fantastico",
+   "description": "mit Salami, Schinken, Thunfisch, fr. Champignons, Paprika",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 30,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "30-capricciosa-i",
+   "number": "30",
+   "category": "pizza",
+   "name": "Capricciosa I",
+   "description": "mit Krabben, Spinat, Mozzarella, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 31,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "31-capricciosa-ii",
+   "number": "31",
+   "category": "pizza",
+   "name": "Capricciosa II",
+   "description": "mit Schinken, Krabben, Thunfisch, fr. Champignons",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 32,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "32-gamberetti",
+   "number": "32",
+   "category": "pizza",
+   "name": "Gamberetti",
+   "description": "mit Krabben, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 33,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "33-vegetaria",
+   "number": "33",
+   "category": "pizza",
+   "name": "Vegetaria",
+   "description": "mit Spinat, Broccoli, Paprika, Champignons, Oliven",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 34,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "34-lachs",
+   "number": "34",
+   "category": "pizza",
+   "name": "Lachs",
+   "description": "mit Lachs, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 35,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "35-feinschmecker",
+   "number": "35",
+   "category": "pizza",
+   "name": "Feinschmecker",
+   "description": "mit Krabben, Spinat, Gorgonzola, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 36,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "36-germany",
+   "number": "36",
+   "category": "pizza",
+   "name": "Germany",
+   "description": "mit Salami, Schinken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 37,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 900
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "37-luna",
+   "number": "37",
+   "category": "pizza",
+   "name": "Luna",
+   "description": "mit Schinken, Salami, Champignons",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 38,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "38-parma",
+   "number": "38",
+   "category": "pizza",
+   "name": "Parma",
+   "description": "mit Parmaschinken, Rucola, Parmesan, Kirschtomaten",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 39,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "39-simone",
+   "number": "39",
+   "category": "pizza",
+   "name": "Simone",
+   "description": "mit Schinken, Sauce Hollandaise",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 40,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "40-paprika",
+   "number": "40",
+   "category": "pizza",
+   "name": "Paprika",
+   "description": "mit Paprika",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 41,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "41-pizza-wesel",
+   "number": "41",
+   "category": "pizza",
+   "name": "Pizza Wesel",
+   "description": "mit Spinat, Champignons, Oliven, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 42,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "42-indisch",
+   "number": "42",
+   "category": "pizza",
+   "name": "Indisch",
+   "description": "mit Hähnchenbrustfilet, Zwiebel, Spinat, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 43,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "43-pizza-chef",
+   "number": "43",
+   "category": "pizza",
+   "name": "Pizza Chef",
+   "description": "mit Knoblauchwurst, Oliven, Hirtenkäse, scharfe Peperoni",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 44,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "44-pizza-milano",
+   "number": "44",
+   "category": "pizza",
+   "name": "Pizza Milano",
+   "description": "mit Hähnchenbrustfilet, Krabben, Champignons, Hirtenkäse, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 45,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "45-rucola",
+   "number": "45",
+   "category": "pizza",
+   "name": "Rucola",
+   "description": "mit Rucola",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 46,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "46-napoli",
+   "number": "46",
+   "category": "pizza",
+   "name": "Napoli",
+   "description": "mit Sardellen, Kapern, Oliven, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 47,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "47-pizza-niki",
+   "number": "47",
+   "category": "pizza",
+   "name": "Pizza Niki",
+   "description": "Lassen Sie sich überraschen!",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": true,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 48,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "48-pizza-mc-fit",
+   "number": "48",
+   "category": "pizza",
+   "name": "Pizza Mc Fit",
+   "description": "mit Thunfisch, fr. Tomaten, fr. Champignons, fr. Zwiebeln, Mozzarella, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 49,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "49-hollandaise",
+   "number": "49",
+   "category": "pizza",
+   "name": "Hollandaise",
+   "description": "Nach „Art“ Sauce Hollandaise",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 50,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 650
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 850
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 1800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "50-gundi",
+   "number": "50",
+   "category": "pizza",
+   "name": "Gundi",
+   "description": "mit Hirtenkäse, Spinat, Zwiebel, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 51,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "51-bbq",
+   "number": "51",
+   "category": "pizza",
+   "name": "BBQ",
+   "description": "mit Hähnchenbrustfilet, Hirtenkäse, Mais, BBQ-Sauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 52,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "52-pollo",
+   "number": "52",
+   "category": "pizza",
+   "name": "Pollo",
+   "description": "mit Hähnchenbrustfilet, Broccoli, Spinat, Zwiebel, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 53,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "53-doener",
+   "number": "53",
+   "category": "pizza",
+   "name": "Döner",
+   "description": "Drehspießfleisch, Zwiebel",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 54,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "54-doener-spezial",
+   "number": "54",
+   "category": "pizza",
+   "name": "Döner Spezial",
+   "description": "mit Drehspießfleisch, Sauce Hollandaise",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 55,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "55-pizza-spezial",
+   "number": "55",
+   "category": "pizza",
+   "name": "Pizza Spezial",
+   "description": "mit Krabben, Thunfisch, Spinat, Hirtenkäse, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 56,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "56-pizza-euro",
+   "number": "56",
+   "category": "pizza",
+   "name": "Pizza Euro",
+   "description": "mit Thunfisch, Zwiebel, Spinat, Mais, Oliven, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 57,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "57-pizza-rialto",
+   "number": "57",
+   "category": "pizza",
+   "name": "Pizza Rialto",
+   "description": "mit Thunfisch, Zwiebel, Broccoli, Champignons, Paprika, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 58,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "58-hirtenkaese",
+   "number": "58",
+   "category": "pizza",
+   "name": "Hirtenkäse",
+   "description": "mit Hirtenkäse, Thunfisch, Spinat, Peperoni, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 59,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "59-pizza-roma",
+   "number": "59",
+   "category": "pizza",
+   "name": "Pizza Roma",
+   "description": "mit Hähnchen, Sauce Hollandaise und Zwiebel",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 60,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "60-pizza-riviera",
+   "number": "60",
+   "category": "pizza",
+   "name": "Pizza Riviera",
+   "description": "mit Thunfisch, Zwiebeln, Hirtenkäse, Knoblauch, Peperoni",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 61,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "61-chick-chick",
+   "number": "61",
+   "category": "pizza",
+   "name": "Chick Chick",
+   "description": "mit Hähnchenbrustfilet, Ananas, Krabben, Sauce Hollandaise",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 62,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "62-sea-food",
+   "number": "62",
+   "category": "pizza",
+   "name": "Sea Food",
+   "description": "Meeresfrüchte, fr. Tomaten, Spinat, Hirtenkäse, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 63,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "63-kapern",
+   "number": "63",
+   "category": "pizza",
+   "name": "Kapern",
+   "description": "mit Krabben, Kapern, Sardellen, Thunfisch, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 64,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "64-non-veg",
+   "number": "64",
+   "category": "pizza",
+   "name": "Non Veg",
+   "description": "mit Hähnchenbrustfilet, Krabben, Thunfisch, Zwiebel, Hirtenkäse",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 65,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "65-pizza-leo",
+   "number": "65",
+   "category": "pizza",
+   "name": "Pizza Leo",
+   "description": "mit Gyros, Paprika, Zwiebel, fr. Tomaten, Mozzarella",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 66,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "66-pizza-happy",
+   "number": "66",
+   "category": "pizza",
+   "name": "Pizza Happy",
+   "description": "mit Hähnchenbrustfilet, Broccoli, Sauce Hollandaise",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 67,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 800
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 1000
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "70-flammenkuchen-art",
+   "number": "70",
+   "category": "pizza-specials",
+   "name": "Flammenkuchen Art",
+   "description": "mit Schinken, roten Zwiebeln (mit Sahne und extra dünnem Teig)",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 68,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "71-o-marco",
+   "number": "71",
+   "category": "pizza-specials",
+   "name": "O'Marco",
+   "description": "mit Spinat, roten Zwiebeln, Hirtenkäse - Knoblauchöl (mit Sahne und extra dünnem Teig)",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 69,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "72-olaf",
+   "number": "72",
+   "category": "pizza-specials",
+   "name": "Olaf",
+   "description": "mit allen Käsesorten, Kirschtomaten (mit Sahne und extra dünnem Teig)",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 70,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein 28 cm",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß 32 cm",
+     "priceMinor": 950
+    },
+    {
+     "key": "maxi",
+     "label": "Maxi 45 cm",
+     "priceMinor": 2100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "b1-margherita-pizzablech",
+   "number": "b1",
+   "category": "pizzableche",
+   "name": "Margherita Pizzablech",
+   "description": "Pizzablech 60 x 40 cm mit Käse",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 71,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 2400
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "b2-pizzablech-mit-2-zutaten",
+   "number": "b2",
+   "category": "pizzableche",
+   "name": "Pizzablech mit 2 Zutaten",
+   "description": "Pizzablech 60 x 40 cm mit 2 Zutaten nach Wahl",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 72,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 2800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Zutaten (2 nach Wahl)"
+    }
+   ]
+  },
+  {
+   "slug": "73-salami-schinken",
+   "number": "73",
+   "category": "calzone",
+   "name": "Salami-Schinken",
+   "description": "Gefüllte Teigtasche mit Schinken, Salami",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 73,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "74-prosciutto-fungi",
+   "number": "74",
+   "category": "calzone",
+   "name": "Prosciutto Fungi",
+   "description": "Gefüllte Teigtasche mit Schinken, Pilze",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 74,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "75-calzone",
+   "number": "75",
+   "category": "calzone",
+   "name": "Calzone",
+   "description": "Gefüllte Teigtasche mit Schinken, Salami, Thunfisch, fr. Champignons",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 75,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 1000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "76-bella-italia",
+   "number": "76",
+   "category": "calzone",
+   "name": "Bella Italia",
+   "description": "Gefüllte Teigtasche mit Schinken, Thunfisch, Spinat, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 76,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 1000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "77-calzone-spezial",
+   "number": "77",
+   "category": "calzone",
+   "name": "Calzone Spezial",
+   "description": "Gefüllte Teigtasche mit Salami, Champignons, Thunfisch, Krabben, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 77,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 1000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "78-gyros-hirtenkaese",
+   "number": "78",
+   "category": "calzone",
+   "name": "Gyros Hirtenkäse",
+   "description": "Gefüllte Teigtasche mit Gyros, Hirtenkäse, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": true,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 78,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "32 cm",
+     "priceMinor": 1000
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "81-pizzabroetchen",
+   "number": "81",
+   "category": "pizzabroetchen",
+   "name": "Pizzabrötchen",
+   "description": "mit Kräuterbutter",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 79,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "6 Stück",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "82-gefuellt-mit-salami-champignons-oder-schinken",
+   "number": "82",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Salami, Champignons oder Schinken",
+   "description": "Gefüllte Pizzabrötchen",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 80,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 700
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "83-gefuellt-mit-schinken-ananas",
+   "number": "83",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Schinken & Ananas",
+   "description": "Gefüllte Pizzabrötchen mit Schinken, Ananas",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 81,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "84-gefuellt-mit-thunfisch",
+   "number": "84",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Thunfisch",
+   "description": "Gefüllte Pizzabrötchen mit Thunfisch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 82,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "85-gefuellt-mit-spinat",
+   "number": "85",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Spinat",
+   "description": "Gefüllte Pizzabrötchen mit Spinat, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 83,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 700
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "86-gefuellt-mit-sucuk",
+   "number": "86",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Sucuk",
+   "description": "Gefüllte Pizzabrötchen mit Sucuk, Hirtenkäse",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 84,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "87-gefuellt-spinat-hirtenkaese",
+   "number": "87",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt Spinat & Hirtenkäse",
+   "description": "Gefüllte Pizzabrötchen mit Spinat, Hirtenkäse, Peperoni, Knoblauch",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 85,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "88-gefuellt-mit-drehspiess",
+   "number": "88",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Drehspieß",
+   "description": "Gefüllte Pizzabrötchen mit Drehspieß, Hirtenkäse",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 86,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "89-gefuellt-mit-krabben",
+   "number": "89",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Krabben",
+   "description": "Gefüllte Pizzabrötchen mit Spinat, Krabben, Knoblauch",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 87,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "90-gefuellt-mit-haehnchen",
+   "number": "90",
+   "category": "pizzabroetchen",
+   "name": "Gefüllt mit Hähnchen",
+   "description": "Gefüllte Pizzabrötchen mit Hähnchen, Spinat, Mais",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 88,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "95-gemischter-salat",
+   "number": "95",
+   "category": "salate",
+   "name": "Gemischter Salat",
+   "description": "Grüne Salat, Gurken, Tomaten, Zwiebeln, Paprika, Oliven, Möhren, Mais, milde Peperoni. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 89,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 550
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "96-thunfisch-salat",
+   "number": "96",
+   "category": "salate",
+   "name": "Thunfisch Salat",
+   "description": "Gemischter Salat mit Thunfisch, Hirtenkäse, Ei, Oliven. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 90,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "97-italienischer-salat",
+   "number": "97",
+   "category": "salate",
+   "name": "Italienischer Salat",
+   "description": "Gemischter Salat mit Schinken, Käse, Ei, Oliven. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 91,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "98-bauernsalat",
+   "number": "98",
+   "category": "salate",
+   "name": "Bauernsalat",
+   "description": "Grüne Salat mit Hirtenkäse, Gurken, Tomaten, Zwiebeln, Paprika, Oliven, Möhren, Mais, milde Peperoni. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 92,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "99-salat-capricciosa",
+   "number": "99",
+   "category": "salate",
+   "name": "Salat Capricciosa",
+   "description": "Gemischter Salat mit Schinken, Thunfisch, Ei, Oliven und Käse. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 93,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "100-salat-pepone",
+   "number": "100",
+   "category": "salate",
+   "name": "Salat Pepone",
+   "description": "Gemischter Salat mit Schinken, Thunfisch, Krabben, Käse, Ei, Oliven. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 94,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "101-hawaii-salat",
+   "number": "101",
+   "category": "salate",
+   "name": "Hawaii Salat",
+   "description": "Gemischter Salat mit Schinken, Ananas, Käse, Ei. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 95,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "102-salat-caprese",
+   "number": "102",
+   "category": "salate",
+   "name": "Salat Caprese",
+   "description": "Gemischter Salat mit fr. Tomaten, Mozzarella. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 96,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "103-kaese-salat",
+   "number": "103",
+   "category": "salate",
+   "name": "Käse Salat",
+   "description": "Gemischter Salat mit Hirtenkäse, Goudakäse, Mozzarella. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 97,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 700
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "104-insalata-niki",
+   "number": "104",
+   "category": "salate",
+   "name": "Insalata Niki",
+   "description": "Gemischter Salat mit Hähnchenbrustfilet, fr. Champignons. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 98,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "105-insalata-indisch",
+   "number": "105",
+   "category": "salate",
+   "name": "Insalata Indisch",
+   "description": "Gemischter Salat mit Hähnchenbrustfilet, gebr. Champignons, Gyros, Hirtenkäse, Mozzarella. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 99,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "106-insalata-gyros",
+   "number": "106",
+   "category": "salate",
+   "name": "Insalata Gyros",
+   "description": "Gemischter Salat mit Gyros, fr. gebr. Champignons, Hirtenkäse. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 100,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "107-insalata-pollo",
+   "number": "107",
+   "category": "salate",
+   "name": "Insalata Pollo",
+   "description": "Gemischter Salat mit Hähnchenbrust und Ei. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 101,
+   "portions": [
+    {
+     "key": "klein",
+     "label": "Klein",
+     "priceMinor": 750
+    },
+    {
+     "key": "gross",
+     "label": "Groß",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "110-chicken-curry",
+   "number": "110",
+   "category": "indische-gerichte",
+   "name": "Chicken Curry",
+   "description": "Hähnchenbrustfilet mit Tomaten-Currysauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 102,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "111-chicken-chili",
+   "number": "111",
+   "category": "indische-gerichte",
+   "name": "Chicken Chili",
+   "description": "Hähnchenbrustfilet mit fr. Paprika, fr. Tomaten, fr. Champignons, Zwiebeln in pikanter Tomaten-Currysauce, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 103,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "112-cream-chicken",
+   "number": "112",
+   "category": "indische-gerichte",
+   "name": "Cream Chicken",
+   "description": "Hähnchenbrustfilet mit fr. Champignons, Rahmsauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 104,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "113-chicken-kemma",
+   "number": "113",
+   "category": "indische-gerichte",
+   "name": "Chicken Kemma",
+   "description": "Hähnchenbrustfilet mit Rinderhackfleischsauce, Knoblauch (scharf)",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 105,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "114-chicken-hawaii",
+   "number": "114",
+   "category": "indische-gerichte",
+   "name": "Chicken Hawaii",
+   "description": "Hähnchenbrustfilet mit Ananas, Sahnesauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 106,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "115-chicken-saag",
+   "number": "115",
+   "category": "indische-gerichte",
+   "name": "Chicken Saag",
+   "description": "Hähnchenbrustfilet mit Spinat n. nordischer Art",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 107,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "116-butter-chicken",
+   "number": "116",
+   "category": "indische-gerichte",
+   "name": "Butter Chicken",
+   "description": "Hähnchenbrustfilet vom Tandoori mit Butter-Tomaten-Sahnesauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 108,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "117-chicken-vindalo",
+   "number": "117",
+   "category": "indische-gerichte",
+   "name": "Chicken Vindalo",
+   "description": "mit Hähnchenbrustfilet mit Kartoffel in scharfer Vindaloosauce",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 109,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "118-chicken-tikka-masala",
+   "number": "118",
+   "category": "indische-gerichte",
+   "name": "Chicken Tikka Masala",
+   "description": "mit Hähnchenbrustfilet vom Tandoori mit Paprika, Zwiebeln, Tomaten in würziger Sauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 110,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "119-chicken-mango",
+   "number": "119",
+   "category": "indische-gerichte",
+   "name": "Chicken Mango",
+   "description": "mit Hähnchenbrustfilet in Mango-Sahnesauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 111,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "125-chicken-biryani",
+   "number": "125",
+   "category": "indische-gerichte",
+   "name": "Chicken Biryani",
+   "description": "Hähnchenbrustfilet, Zwiebel, Paprika, Erbsen, Tomaten-Currysauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 112,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1200
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "126-mix-veg-biryani",
+   "number": "126",
+   "category": "indische-gerichte",
+   "name": "Mix Veg Biryani",
+   "description": "Versch. Gemüse mit gebr. Basmati-Reis, Tomaten-Currysauce",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 113,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "130-mix-vegetable",
+   "number": "130",
+   "category": "indische-gerichte",
+   "name": "Mix Vegetable",
+   "description": "Gem. Gemüse mit Tomaten-Currysauce",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 114,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "131-chana-masala",
+   "number": "131",
+   "category": "indische-gerichte",
+   "name": "Chana Masala",
+   "description": "Kichererbsen mit Curry-Tomatensauce",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 115,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Beilage"
+    },
+    {
+     "group": "Extra Basmati-Reis"
+    }
+   ]
+  },
+  {
+   "slug": "132-naan-indisches-brot",
+   "number": "132",
+   "category": "indische-gerichte",
+   "name": "Naan - Indisches Brot",
+   "description": "Indisches Brot",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 116,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "140-napoli",
+   "number": "140",
+   "category": "nudeln",
+   "name": "Napoli",
+   "description": "mit Tomatensauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 117,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 650
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "141-bolognese",
+   "number": "141",
+   "category": "nudeln",
+   "name": "Bolognese",
+   "description": "mit Rinderhackfleischsauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 118,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "142-carbonara",
+   "number": "142",
+   "category": "nudeln",
+   "name": "Carbonara",
+   "description": "mit Schinken, Ei, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 119,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "143-alla-panna",
+   "number": "143",
+   "category": "nudeln",
+   "name": "Alla Panna",
+   "description": "mit Schinken, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 120,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Tortellini"
+    }
+   ]
+  },
+  {
+   "slug": "144-aurora",
+   "number": "144",
+   "category": "nudeln",
+   "name": "Aurora",
+   "description": "mit Hähnchenbrustfilet, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 121,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "145-spinaci",
+   "number": "145",
+   "category": "nudeln",
+   "name": "Spinaci",
+   "description": "mit Spinat, Knoblauch-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 122,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "146-broccoli",
+   "number": "146",
+   "category": "nudeln",
+   "name": "Broccoli",
+   "description": "Broccoli, Knoblauch-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 123,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "147-champignons",
+   "number": "147",
+   "category": "nudeln",
+   "name": "Champignons",
+   "description": "mit Champignons, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 124,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 700
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "148-lachs",
+   "number": "148",
+   "category": "nudeln",
+   "name": "Lachs",
+   "description": "mit Lachs und Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 125,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Tagliatelle"
+    }
+   ]
+  },
+  {
+   "slug": "149-indisch",
+   "number": "149",
+   "category": "nudeln",
+   "name": "Indisch",
+   "description": "mit Hähnchenbrustfilet, Champignons, Brokkoli, Paprika, Zwiebeln, Knoblauch (scharf), Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 126,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "150-frutti-di-mare",
+   "number": "150",
+   "category": "nudeln",
+   "name": "Frutti di Mare",
+   "description": "mit Tomatensauce und Knoblauch. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 127,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "151-quattro-formaggi",
+   "number": "151",
+   "category": "nudeln",
+   "name": "Quattro Formaggi",
+   "description": "mit 4 Käsesorten, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 128,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "152-aglio-olio",
+   "number": "152",
+   "category": "nudeln",
+   "name": "Aglio Olio",
+   "description": "mit Peperoni, Oliven und Parmesan. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 129,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "153-curry",
+   "number": "153",
+   "category": "nudeln",
+   "name": "Curry",
+   "description": "mit Schinken, Champignons, Spinat, Curry-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 130,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "154-italia",
+   "number": "154",
+   "category": "nudeln",
+   "name": "Italia",
+   "description": "mit Hähnchenbrustfilet, Krabben, fr. Champignons, Knoblauch (scharf), Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 131,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "155-bella-italia",
+   "number": "155",
+   "category": "nudeln",
+   "name": "Bella Italia",
+   "description": "mit Schinken, Thunfisch, Champignons, Zwiebel, Knoblauch (scharf), Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 132,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "156-spezial",
+   "number": "156",
+   "category": "nudeln",
+   "name": "Spezial",
+   "description": "mit Schinken, Krabben, fr. Champignons, fr. Paprika, Zwiebel, Knoblauch (scharf), Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 133,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "157-sole-mio",
+   "number": "157",
+   "category": "nudeln",
+   "name": "Sole Mio",
+   "description": "mit Krabben, Hähnchenbrustfilet, Ananas, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 134,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "158-gorgonzola",
+   "number": "158",
+   "category": "nudeln",
+   "name": "Gorgonzola",
+   "description": "mit Gorgonzola, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 135,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "159-hackfleischbroccoli",
+   "number": "159",
+   "category": "nudeln",
+   "name": "Hackfleischbroccoli",
+   "description": "Broccoli mit Rinderhackfleischsauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 136,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "160-gamberetti",
+   "number": "160",
+   "category": "nudeln",
+   "name": "Gamberetti",
+   "description": "mit Krabben, Sahnesauce, Knoblauch. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 137,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "161-pollo",
+   "number": "161",
+   "category": "nudeln",
+   "name": "Pollo",
+   "description": "Hähnchenfilet, Broccoli, Paprika, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 138,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "162-gemuese",
+   "number": "162",
+   "category": "nudeln",
+   "name": "Gemüse",
+   "description": "mit fr. Champignons, Spinat, Broccoli, Tomaten-Sahnesauce, Knoblauch. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 139,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Spaghetti"
+    }
+   ]
+  },
+  {
+   "slug": "163-chick-chick",
+   "number": "163",
+   "category": "nudeln",
+   "name": "Chick Chick",
+   "description": "mit Hähnchenbrustfilet, Broccoli, Krabben, Mozzarella, Tomaten-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 140,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "170-combinazione",
+   "number": "170",
+   "category": "auflauf",
+   "name": "Combinazione",
+   "description": "3 versch. Nudeln mit Bolognese, Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 141,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "171-gemuese-al-forno",
+   "number": "171",
+   "category": "auflauf",
+   "name": "Gemüse al Forno",
+   "description": "3 versch. Gemüsesorten in Tomaten-Knoblauch-Sahnesauce. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 142,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "172-al-forno",
+   "number": "172",
+   "category": "auflauf",
+   "name": "Al Forno",
+   "description": "mit Schinken, Sahne, Champignons, Broccoli, Tomatensauce, Käse überbacken. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 143,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Nudelsorte",
+     "defaultOption": "Rigatoni"
+    }
+   ]
+  },
+  {
+   "slug": "173-lasagne-al-forno",
+   "number": "173",
+   "category": "auflauf",
+   "name": "Lasagne al Forno",
+   "description": "mit Schinken & Fleischsauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 144,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "174-lasagne-vegetarisch",
+   "number": "174",
+   "category": "auflauf",
+   "name": "Lasagne Vegetarisch",
+   "description": "mit fr. Gemüse und Mozzarella. Mit 3 Pizzabrötchen.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 145,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "175-lasagne-gamberetti-spinaci",
+   "number": "175",
+   "category": "auflauf",
+   "name": "Lasagne Gamberetti Spinaci",
+   "description": "mit Krabben, Spinat, Knoblauch, Tomatensauce. Mit 3 Pizzabrötchen.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 146,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "179-spinat",
+   "number": "179",
+   "category": "kartoffelauflauf",
+   "name": "Spinat",
+   "description": "mit Kartoffelscheiben, Blattspinat, Sahne, Käse überbacken",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 147,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "180-broccoli",
+   "number": "180",
+   "category": "kartoffelauflauf",
+   "name": "Broccoli",
+   "description": "mit Kartoffelscheiben, Broccoli, Sahne, Käse überbacken",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 148,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "181-gemuese",
+   "number": "181",
+   "category": "kartoffelauflauf",
+   "name": "Gemüse",
+   "description": "mit Kartoffelscheiben, Broccoli, Zwiebeln, Champignons, Sahne, Käse überbacken",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 149,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "182-bolognese",
+   "number": "182",
+   "category": "kartoffelauflauf",
+   "name": "Bolognese",
+   "description": "mit Kartoffelscheiben, Bolognese, Käse überbacken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 150,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 850
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "183-chicken-potato",
+   "number": "183",
+   "category": "kartoffelauflauf",
+   "name": "Chicken Potato",
+   "description": "mit Kartoffelscheiben, Hähnchenbrustfilet, Tomaten-Sahnesauce, Käse überbacken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 151,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "184-gyros",
+   "number": "184",
+   "category": "kartoffelauflauf",
+   "name": "Gyros",
+   "description": "mit Kartoffelscheiben, Gyros, Champignons, Tomaten-Sahnesauce, Käse überbacken",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 152,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "185-niki-spezial",
+   "number": "185",
+   "category": "kartoffelauflauf",
+   "name": "Niki Spezial",
+   "description": "mit Kartoffelscheiben, Drehspießfleisch, Zwiebeln, Sahnesauce, Sauce Hollandaise",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 153,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 900
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "190-gyros",
+   "number": "190",
+   "category": "gyros",
+   "name": "Gyros",
+   "description": "mit Gyrosfleisch, Zwiebeln, Pommes, Zaziki. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 154,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "191-gyros-uberbacken",
+   "number": "191",
+   "category": "gyros",
+   "name": "Gyros Überbacken",
+   "description": "mit Gyrosfleisch, Zwiebel, Knoblauch (scharf), Tomaten-Sahnesauce, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 155,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "192-gyros-niki",
+   "number": "192",
+   "category": "gyros",
+   "name": "Gyros Niki",
+   "description": "Gyrosfleisch, fr. Champignons, Zwiebel, Zaziki. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 156,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "193-gyros-hawaii",
+   "number": "193",
+   "category": "gyros",
+   "name": "Gyros Hawaii",
+   "description": "Gyrosfleisch, Schinken, Ananas, Fr. Champignons, Käse überbacken in Sahnesauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 157,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "194-gyros-champignons",
+   "number": "194",
+   "category": "gyros",
+   "name": "Gyros Champignons",
+   "description": "mit Gyrosfleisch, Zwiebel, fr. gebr. Champignons, Tomaten, Knoblauch (scharf), Tomatensauce, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 158,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "195-gyros-gemuese",
+   "number": "195",
+   "category": "gyros",
+   "name": "Gyros Gemüse",
+   "description": "mit Gyrosfleisch, Zwiebel, fr. gebr. Champignons, Paprika, Tomaten, Knoblauch (Scharf), Tomatensauce, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": true,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 159,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "196-gyros-hollandaise",
+   "number": "196",
+   "category": "gyros",
+   "name": "Gyros Hollandaise",
+   "description": "mit Gyrosfleisch, Zwiebel, Sahnesauce, Sauce Hollandaise, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 160,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "200-wiener-schnitzel",
+   "number": "200",
+   "category": "schnitzel",
+   "name": "Wiener Schnitzel",
+   "description": "Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 161,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 950
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "201-zigeunerschnitzel",
+   "number": "201",
+   "category": "schnitzel",
+   "name": "Zigeunerschnitzel",
+   "description": "mit Zigeunersauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 162,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "202-jaegerschnitzel",
+   "number": "202",
+   "category": "schnitzel",
+   "name": "Jägerschnitzel",
+   "description": "mit Jägersauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 163,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "203-hollandaise-schnitzel",
+   "number": "203",
+   "category": "schnitzel",
+   "name": "Hollandaise Schnitzel",
+   "description": "mit „Art“ Sauce Hollandaise. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 164,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "204-hawaii-schnitzel",
+   "number": "204",
+   "category": "schnitzel",
+   "name": "Hawaii Schnitzel",
+   "description": "Schinken, Ananas, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 165,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "205-zocco-schnitzel",
+   "number": "205",
+   "category": "schnitzel",
+   "name": "Zocco Schnitzel",
+   "description": "mit Champignons, Broccoli, fr. Paprika in Sahnesauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 166,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "206-villis",
+   "number": "206",
+   "category": "schnitzel",
+   "name": "Villis",
+   "description": "mit Zwiebel, grünen Pfefferkörnen in Sahnesauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 167,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "207-bolognese-schnitzel",
+   "number": "207",
+   "category": "schnitzel",
+   "name": "Bolognese Schnitzel",
+   "description": "mit Rinderhackfleischsauce, Käse überbacken. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 168,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "208-rahmschnitzel",
+   "number": "208",
+   "category": "schnitzel",
+   "name": "Rahmschnitzel",
+   "description": "mit Champignons, Rahmsauce. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 169,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "209-spargel-schnitzel",
+   "number": "209",
+   "category": "schnitzel",
+   "name": "Spargel Schnitzel",
+   "description": "mit Spargel, Broccoli, Sauce Hollandaise. Mit Pommes und Salat.",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 170,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 1100
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "215-chicken-nuggets",
+   "number": "215",
+   "category": "imbiss",
+   "name": "Chicken Nuggets",
+   "description": "8 Stück mit Pommes & Süß-sauer-Sauce",
+   "diet": "non_veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 171,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 750
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "216-pommes",
+   "number": "216",
+   "category": "imbiss",
+   "name": "Pommes",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 172,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "217-ketchup",
+   "number": "217",
+   "category": "imbiss",
+   "name": "Ketchup",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 173,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 50
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "217a-mayo",
+   "number": "217a",
+   "category": "imbiss",
+   "name": "Mayo",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 174,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 50
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "218-jaegersauce",
+   "number": "218",
+   "category": "imbiss",
+   "name": "Jägersauce",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 175,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 250
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "219-zigeunersauce",
+   "number": "219",
+   "category": "imbiss",
+   "name": "Zigeunersauce",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 176,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 250
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "220-rahmsauce",
+   "number": "220",
+   "category": "imbiss",
+   "name": "Rahmsauce",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 177,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 250
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "225-gulabjamun",
+   "number": "225",
+   "category": "indische-suessigkeiten",
+   "name": "Gulabjamun",
+   "description": "2 Stück",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 178,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "226-rasgula",
+   "number": "226",
+   "category": "indische-suessigkeiten",
+   "name": "Rasgula",
+   "description": "2 Stück",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 179,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "227-gajar-ki-barfi",
+   "number": "227",
+   "category": "indische-suessigkeiten",
+   "name": "Gajar ki Barfi",
+   "description": "2 Stück",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 180,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 300
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "228-alle-zusammen",
+   "number": "228",
+   "category": "indische-suessigkeiten",
+   "name": "Alle zusammen",
+   "description": "6 Stück",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 181,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "Standard",
+     "priceMinor": 700
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s1-softdrinks",
+   "number": "s1",
+   "category": "getraenke",
+   "name": "Softdrinks",
+   "description": "Coca-Cola, Cola Light, Cola Zero, Fanta, Mezzo Mix oder Sprite.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 182,
+   "portions": [
+    {
+     "key": "0_33l",
+     "label": "0,33 l",
+     "priceMinor": 200
+    },
+    {
+     "key": "1_0l",
+     "label": "1,0 l",
+     "priceMinor": 250
+    }
+   ],
+   "groupAttachments": [
+    {
+     "group": "Sorte"
+    }
+   ]
+  },
+  {
+   "slug": "s2-apfelschorle",
+   "number": "s2",
+   "category": "getraenke",
+   "name": "Apfelschorle",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 183,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "1,0 l",
+     "priceMinor": 250
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s3-capri-sonne",
+   "number": "s3",
+   "category": "getraenke",
+   "name": "Capri Sonne",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 184,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "0,2 l",
+     "priceMinor": 150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s4-durstloescher",
+   "number": "s4",
+   "category": "getraenke",
+   "name": "Durstlöscher",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 185,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "0,2 l",
+     "priceMinor": 150
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s5-wasser",
+   "number": "s5",
+   "category": "getraenke",
+   "name": "Wasser",
+   "description": "",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "delivery_and_pickup",
+   "sortOrder": 186,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "0,5 l",
+     "priceMinor": 200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s6-pils-alt-oder-malzbier",
+   "number": "s6",
+   "category": "getraenke",
+   "name": "Pils, Alt oder Malzbier",
+   "description": "Alkohol nur zum Mitnehmen, nicht für die Lieferung.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "pickup_only",
+   "sortOrder": 187,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "0,5 l",
+     "priceMinor": 200
+    }
+   ],
+   "groupAttachments": []
+  },
+  {
+   "slug": "s7-rotwein-rosewein",
+   "number": "s7",
+   "category": "getraenke",
+   "name": "Rotwein / Roséwein",
+   "description": "Alkohol nur zum Mitnehmen, nicht für die Lieferung.",
+   "diet": "veg",
+   "isSpicy": false,
+   "isBestseller": false,
+   "isNew": false,
+   "fulfillment": "pickup_only",
+   "sortOrder": 188,
+   "portions": [
+    {
+     "key": "standard",
+     "label": "0,75 l",
+     "priceMinor": 800
+    }
+   ],
+   "groupAttachments": []
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+# Baseline profile: tells Android to compile the app's own code ahead of time, so the first launch does not wait on
+# the interpreter. The library code (Compose, Navigation, Coil) ships its own profiles. Broad on purpose: this app is small.
+HSPLcom/crustandco/customer/**;->**(**)**
+Lcom/crustandco/customer/**;

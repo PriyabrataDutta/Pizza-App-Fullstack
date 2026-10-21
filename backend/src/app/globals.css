@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/*
+  Token layers. Source of truth for values is /design.md; update both together.
+  1. Primitive: raw values, named by what they are. Only this layer holds hex.
+  2. Semantic: names by purpose. Components and Tailwind utilities use these.
+  3. Component: per-component decisions, built from semantic tokens.
+*/
+
+/* 1. Primitive */
+:root {
+  --p-red-600: #d9362b;
+  --p-red-700: #b92b23;
+  --p-red-100: #fce8e5;
+  --p-amber-400: #f4b544;
+  --p-cream-50: #fff9f2;
+  --p-cream-100: #f6f0e8;
+  --p-cream-300: #e8dfd5;
+  --p-white: #ffffff;
+  --p-brown-900: #27231f;
+  --p-brown-500: #746d66;
+  --p-green-700: #237a4b;
+  --p-green-100: #e4f4e9;
+  --p-amber-800: #9a6100;
+  --p-amber-100: #fff1d3;
+  --p-red-800: #b42318;
+  --p-red-50: #fde8e7;
+  --p-blue-700: #245da8;
+  --p-blue-50: #e6eefa;
+  --p-crust-400: #e2a64b;
+  --p-crust-600: #b9772a;
+  --p-cheese-200: #f8d680;
+
+  --p-radius-sm: 0.5rem;
+  --p-radius-md: 0.625rem;
+  --p-radius-lg: 1rem;
+  --p-radius-xl: 1.25rem;
+}
+
+/* 2. Semantic. `inline` makes Tailwind utilities read these vars at use time, so a theme swap only edits this layer. */
+@theme inline {
+  --color-brand: var(--p-red-600);
+  --color-brand-hover: var(--p-red-700);
+  --color-brand-soft: var(--p-red-100);
+  --color-accent: var(--p-amber-400);
+  --color-canvas: var(--p-cream-50);
+  --color-surface: var(--p-white);
+  --color-subtle: var(--p-cream-100);
+  --color-ink: var(--p-brown-900);
+  --color-ink-2: var(--p-brown-500);
+  --color-line: var(--p-cream-300);
+  --color-success: var(--p-green-700);
+  --color-success-soft: var(--p-green-100);
+  --color-warning: var(--p-amber-800);
+  --color-warning-soft: var(--p-amber-100);
+  --color-error: var(--p-red-800);
+  --color-error-soft: var(--p-red-50);
+  --color-info: var(--p-blue-700);
+  --color-info-soft: var(--p-blue-50);
+  --color-crust: var(--p-crust-400);
+  --color-crust-dark: var(--p-crust-600);
+  --color-cheese: var(--p-cheese-200);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+
+  --radius-control: var(--p-radius-md);
+  --radius-card: var(--p-radius-lg);
+  --radius-feature: var(--p-radius-xl);
+}
+
+/* 3. Component */
+:root {
+  --focus-ring: var(--color-info);
+  --ticket-bg: var(--color-surface);
+  --ticket-edge: var(--color-ink-2);
+  --ticket-radius: var(--radius-card);
+  --ticket-tooth: 12px;
+  --ticket-tooth-depth: 8px;
+  --gingham-size: 56px;
+  --gingham-tint: color-mix(in srgb, var(--color-canvas) 22%, transparent);
+}
+
+html {
+  background: var(--color-canvas);
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Money and IDs line up in columns */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Order ticket: a slip with a torn bottom edge. The wrapper's drop-shadow outlines the zigzag. */
+.ticket-wrap {
+  filter: drop-shadow(0 0 0.5px var(--ticket-edge));
+  padding-bottom: var(--ticket-tooth-depth);
+}
+.ticket {
+  position: relative;
+  background: var(--ticket-bg);
+  border-radius: var(--ticket-radius) var(--ticket-radius) 0 0;
+}
+.ticket::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: var(--ticket-tooth-depth);
+  background:
+    linear-gradient(-45deg, transparent 6px, var(--ticket-bg) 0) 0 0 / var(--ticket-tooth) var(--ticket-tooth-depth),
+    linear-gradient(45deg, transparent 6px, var(--ticket-bg) 0) 0 0 / var(--ticket-tooth) var(--ticket-tooth-depth);
+}
+
+/* Login: pizzeria tablecloth */
+.gingham {
+  background-color: var(--color-brand);
+  background-image:
+    linear-gradient(90deg, var(--gingham-tint) 50%, transparent 50%),
+    linear-gradient(var(--gingham-tint) 50%, transparent 50%);
+  background-size: var(--gingham-size) var(--gingham-size);
+}
+
+@keyframes pizza-in {
+  from { opacity: 0; transform: rotate(-40deg) scale(0.85); }
+  to { opacity: 1; transform: none; }
+}
+.pizza-in {
+  animation: pizza-in 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slip-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.slip-in {
+  animation: slip-in 280ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

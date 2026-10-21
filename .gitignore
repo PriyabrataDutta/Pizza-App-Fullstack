@@ -1,0 +1,5 @@
+tools/imagegen/.pylibs/
+tools/imagegen/out/
+__pycache__/
+*.log
+.tmp/
