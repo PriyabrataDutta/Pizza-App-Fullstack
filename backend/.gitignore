@@ -44,3 +44,6 @@ next-env.d.ts
 
 # first super admin bootstrap output
 .first-super-admin.txt
+
+.vercel
+.env*

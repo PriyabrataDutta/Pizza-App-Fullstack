@@ -146,11 +146,17 @@ export function Drawer({ open, onClose, title, children, footer, side = "right",
   wide?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  // The browser reports a close a moment after dialog.close() returns. When our own code closed it, the parent already knows; passing
+  // that late report on would close a panel that was opened in the meantime.
+  const closedByUs = useRef(false);
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
     if (open && !d.open) d.showModal();
-    if (!open && d.open) d.close();
+    if (!open && d.open) {
+      closedByUs.current = true;
+      d.close();
+    }
   }, [open]);
   const width = wide ? "max-w-3xl" : "max-w-md";
   const pos = side === "right"
@@ -159,7 +165,10 @@ export function Drawer({ open, onClose, title, children, footer, side = "right",
   return (
     <dialog
       ref={ref}
-      onClose={onClose}
+      onClose={() => {
+        if (closedByUs.current) closedByUs.current = false;
+        else onClose(); // Escape key or the browser's own close
+      }}
       onClick={(e) => e.target === ref.current && onClose()}
       className={cx("bg-surface p-0 text-ink backdrop:bg-ink/40", pos)}
     >

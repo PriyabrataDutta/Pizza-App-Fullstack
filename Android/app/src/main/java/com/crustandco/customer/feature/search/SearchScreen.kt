@@ -47,7 +47,8 @@ import com.crustandco.customer.core.designsystem.staggeredEntrance
 import com.crustandco.customer.core.rememberNotifier
 
 /** Words that find something in the demo menu. Tapping one runs that search. */
-private val Suggestions = listOf("Pizza", "Paneer", "Garlic", "Cheese", "Chocolate", "Pepperoni")
+// Words that find things on the real menu (checked against the live catalog: 10 to 125 results each).
+private val Suggestions = listOf("Pizza", "Salami", "Thunfisch", "Gyros", "Schnitzel", "Nudeln")
 
 @Composable
 fun SearchScreen(contentPadding: PaddingValues, onOpenProduct: (String) -> Unit) {
@@ -119,7 +120,7 @@ fun SearchScreen(contentPadding: PaddingValues, onOpenProduct: (String) -> Unit)
                     is UiState.Error -> item { ErrorState(results.error, onRetry = viewModel::retry) }
                     is UiState.Success ->
                         if (results.data.isEmpty()) {
-                            item { EmptyState("No matches", "Nothing matched “${state.query.trim()}”. Try another word, like pizza or garlic.") }
+                            item { EmptyState("No matches", "Nothing matched “${state.query.trim()}”. Try another word, like pizza or salami.") }
                         } else {
                             itemsIndexed(results.data, key = { _, product -> product.id }) { index, product ->
                                 ProductRow(
