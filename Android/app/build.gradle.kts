@@ -69,6 +69,12 @@ android {
             isDebuggable = false
         }
         release {
+            // A release build is the production app by default, so "Build APK" in Android Studio needs no flags: real backend, no demo data.
+            // Any of these can still be overridden with -Pcrust.* on the command line.
+            buildConfigField("String", "API_BASE_URL", "\"${providers.gradleProperty("crust.apiBaseUrl").orElse("https://pizza-app-fullstack-backend.vercel.app/api/").get()}\"")
+            buildConfigField("boolean", "USE_MOCK_DATA", providers.gradleProperty("crust.useMockData").orElse("false").get())
+            buildConfigField("boolean", "LIVE_CATALOG", providers.gradleProperty("crust.liveCatalog").orElse("true").get())
+            buildConfigField("boolean", "LIVE_ORDERS", providers.gradleProperty("crust.liveOrders").orElse("true").get())
             if (keystoreProps.isNotEmpty()) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
