@@ -16,3 +16,6 @@ app/build/
 # release signing (never commit)
 /keystore.properties
 /keystore/
+
+# Kotlin compiler session files
+/.kotlin/
