@@ -1,7 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+}
+
+// Release signing comes from keystore.properties (git-ignored), so no secret is ever in the repository. Without the file a release build
+// is still produced but unsigned, and Android will not install it.
+val keystoreProps = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
 }
 
 android {
@@ -39,6 +48,17 @@ android {
         buildConfigField("boolean", "LIVE_ORDERS", liveOrders)
     }
 
+    signingConfigs {
+        if (keystoreProps.isNotEmpty()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         // Release-like build for measuring speed on a device: shrunk and optimised like release, but signed with the
         // debug key so it installs. Never distribute it.
@@ -49,6 +69,7 @@ android {
             isDebuggable = false
         }
         release {
+            if (keystoreProps.isNotEmpty()) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

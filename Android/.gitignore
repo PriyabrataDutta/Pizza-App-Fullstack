@@ -12,3 +12,7 @@ app/build/
 *.aab
 *.jks
 *.keystore
+
+# release signing (never commit)
+/keystore.properties
+/keystore/

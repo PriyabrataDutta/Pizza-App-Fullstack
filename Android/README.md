@@ -44,6 +44,20 @@ crust.apiBaseUrl=http://localhost:3000/api/
 ```
 The app has no sign-in yet, so it registers as a **guest** the first time it needs to: the server returns a private device token, which the app stores encrypted with an Android Keystore key (`data/local/DeviceTokenStore.kt`). Orders and addresses belong to that token, and it is sent only to the customer endpoints. If the server does not recognise the token (for example the database was reset) the app registers a new guest and retries once, without showing an error. Prices, coupons, the minimum order by area and the delivery estimate all come from the server; the app sends only ids and quantities. Online payment is a labelled demo; no card data is ever collected. Details: `docs/api-contract.md` ("Customer endpoints") and `docs/checkout-implementation-plan.md`.
 
+### Building the installable APK (release)
+A release build is minified, signed with your own key, HTTPS only and pointed at the live backend:
+
+```
+cd Android
+gradle :app:assembleRelease -Pcrust.useMockData=false -Pcrust.liveOrders=true -Pcrust.apiBaseUrl=https://pizza-app-fullstack-backend.vercel.app/api/
+```
+The APK is written to `app/build/outputs/apk/release/app-release.apk`; the copy in `dist/` is the one that was tested.
+- **Signing key:** `keystore/crust-release.jks`, with its passwords in `keystore.properties`. Both are git-ignored. **Back them up outside this folder** (a password manager or a private drive): the same key is needed for every update, and if it is lost the app can only be replaced by uninstalling it first. If `keystore.properties` is missing, the build is unsigned and Android will refuse to install it.
+- **Install on a phone:** copy the APK to the phone and open it (allow "install unknown apps" for the app you open it from), or `adb install crust-and-co-0.1.0.apk`.
+- **Flags:** `crust.useMockData=false` turns demo data off (no demo banner, no demo orders); `crust.liveOrders=true` sends addresses, quotes, checkout and orders to the real API; `crust.apiBaseUrl` is the backend address and must end in `/api/` and use HTTPS.
+- **Version:** raise `versionCode` and `versionName` in `app/build.gradle.kts` for every APK you hand out.
+- **Test-only build:** `assembleBenchmark` is minified like release but signed with the debug key and allowed to use plain HTTP to your computer, to test the minified code against a local backend. Never hand it out.
+
 ## Structure
 ```
 app/src/main/java/com/crustandco/customer/
