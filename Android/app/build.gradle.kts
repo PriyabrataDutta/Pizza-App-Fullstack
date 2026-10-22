@@ -23,8 +23,8 @@ android {
         applicationId = "com.crustandco.customer"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Base URL of the Next.js API. Must end with "/". 10.0.2.2 is the host machine as seen from the Android emulator.

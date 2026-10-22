@@ -35,7 +35,9 @@ export async function cachedCatalogGet(req: NextRequest, build: () => Promise<un
     const etag = `W/"${version}-${createHash("sha1").update(req.nextUrl.pathname + req.nextUrl.search).digest("hex").slice(0, 16)}"`;
     const headers = {
       ETag: etag,
-      "Cache-Control": "public, max-age=30, stale-while-revalidate=300",
+      // Phones keep a copy for 30 s. The hosting CDN keeps one for only 10 s and may serve an older copy for at most 20 s more while it refreshes,
+      // so a price or menu change reaches customers within about a minute (it used to be several minutes with a 300 s window).
+      "Cache-Control": "public, max-age=30, s-maxage=10, stale-while-revalidate=20",
       "X-Catalog-Version": String(version),
     };
     if (req.headers.get("if-none-match") === etag) return new NextResponse(null, { status: 304, headers });
