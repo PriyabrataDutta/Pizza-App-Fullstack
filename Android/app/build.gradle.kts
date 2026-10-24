@@ -27,24 +27,24 @@ android {
         versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Base URL of the Next.js API. Must end with "/". 10.0.2.2 is the host machine as seen from the Android emulator.
-        // Override per machine in ~/.gradle/gradle.properties: crust.apiBaseUrl=http://192.168.x.x:3000/api/
-        val apiBaseUrl = providers.gradleProperty("crust.apiBaseUrl").orElse("http://10.0.2.2:3000/api/").get()
+        // Base URL of the Next.js API. Must end with "/". Every build talks to the live production backend by default.
+        // For a local dev server use -Pcrust.apiBaseUrl=http://10.0.2.2:3000/api/ (10.0.2.2 is the host as seen from the emulator),
+        // or set it per machine in ~/.gradle/gradle.properties.
+        val apiBaseUrl = providers.gradleProperty("crust.apiBaseUrl").orElse("https://pizza-app-fullstack-backend.vercel.app/api/").get()
         buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
 
-        // true = in-memory demo data behind the same repository interfaces (no backend needed).
-        // Flip with -Pcrust.useMockData=false once the Phase 3 API is stable.
-        val useMock = providers.gradleProperty("crust.useMockData").orElse("true").get()
+        // true = in-memory demo data behind the same repository interfaces (no backend needed). Off by default: the app uses the live API.
+        // Flip with -Pcrust.useMockData=true for an offline demo.
+        val useMock = providers.gradleProperty("crust.useMockData").orElse("false").get()
         buildConfigField("boolean", "USE_MOCK_DATA", useMock)
 
-        // true = read the menu from the live API (crust.apiBaseUrl) while orders, addresses and offers stay demo data.
-        // Run the dashboard's dev server first (npm run dev in backend/). Flip with -Pcrust.liveCatalog=true.
-        val liveCatalog = providers.gradleProperty("crust.liveCatalog").orElse("false").get()
+        // true = read the menu (categories, products, images) from the live API (crust.apiBaseUrl). On by default.
+        val liveCatalog = providers.gradleProperty("crust.liveCatalog").orElse("true").get()
         buildConfigField("boolean", "LIVE_CATALOG", liveCatalog)
 
         // true = addresses, pricing, checkout and orders also go to the live API, as a guest identified by a private device token.
-        // Implies the live menu (cart items must be real products). Flip with -Pcrust.liveOrders=true.
-        val liveOrders = providers.gradleProperty("crust.liveOrders").orElse("false").get()
+        // Implies the live menu (cart items must be real products). On by default; -Pcrust.liveOrders=false keeps orders demo-only.
+        val liveOrders = providers.gradleProperty("crust.liveOrders").orElse("true").get()
         buildConfigField("boolean", "LIVE_ORDERS", liveOrders)
     }
 
