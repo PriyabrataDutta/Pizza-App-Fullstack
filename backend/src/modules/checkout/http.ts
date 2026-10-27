@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
 import { ZodError, type ZodType } from "zod";
-import { catalog, catalogSnapshot, errorResponse } from "../catalog/http";
+import { catalog, catalogSnapshot, errorResponse, noStore } from "../catalog/http";
 import { allowShared } from "@/shared/auth/shared-limit";
 import { allow } from "./rate-limit";
 import { settings } from "../settings/http";
@@ -76,27 +76,32 @@ export function customerRoute<P = Record<string, never>>(
   handler: (call: CustomerCall<P>) => Promise<unknown>,
   opts: { status?: number; limit?: { max: number; windowMs: number; name: string }; ipLimit?: { max: number; windowMs: number; name: string }; shared?: boolean } = {},
 ) {
-  return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
+  const handle = async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
     try {
       // Before any database work: a flood of requests (valid token or not) from one address is stopped here.
+      const started = performance.now();
       const ip = clientIp(req);
       if (!allow(`ip:${ip}`, 600, 60_000)) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
       const check = opts.shared ? allowShared : async (...a: Parameters<typeof allow>) => allow(...a);
-      if (opts.ipLimit && !(await check(`${opts.ipLimit.name}-ip:${ip}`, opts.ipLimit.max, opts.ipLimit.windowMs))) {
-        return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
-      }
       const token = bearerToken(req.headers.get("authorization"));
       if (!token) return errorResponse(401, "UNAUTHENTICATED", "Open the app again to continue.");
-      const customer = await checkout.authenticate(token);
+      // Both need the database, and neither needs the other: ask at the same time.
+      const addressLimit = opts.ipLimit ? check(`${opts.ipLimit.name}-ip:${ip}`, opts.ipLimit.max, opts.ipLimit.windowMs) : Promise.resolve(true);
+      const signedIn = checkout.authenticate(token);
+      addressLimit.catch(() => undefined); signedIn.catch(() => undefined);
+      if (!(await addressLimit)) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
+      const customer = await signedIn;
       if (!customer) return errorResponse(401, "UNAUTHENTICATED", "Open the app again to continue.");
       const limit = opts.limit ?? { max: 300, windowMs: 60_000, name: "api" };
       if (!(await check(`${limit.name}:${customer.id}`, limit.max, limit.windowMs))) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
 
       const result = await handler({ customer, req, params: await ctx.params });
       if (opts.status === 204) return new NextResponse(null, { status: 204 });
-      return NextResponse.json(result ?? { ok: true }, { status: opts.status ?? 200, headers: { "Cache-Control": "no-store" } });
+      // Server-Timing shows in the browser's network tab and in curl -i: how long this server spent on the request.
+      return NextResponse.json(result ?? { ok: true }, { status: opts.status ?? 200, headers: { "Cache-Control": "no-store", "Server-Timing": `app;dur=${Math.round(performance.now() - started)}` } });
     } catch (error) {
       return toErrorResponse(error);
     }
   };
+  return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => noStore(await handle(req, ctx));
 }

@@ -6,7 +6,7 @@ import { publicPromotions } from "@/modules/promotions/service";
 // a change in the dashboard reaches phones within about a minute.
 export async function GET() {
   try {
-    return NextResponse.json(await publicPromotions(), { headers: { "Cache-Control": "public, max-age=30, s-maxage=10, stale-while-revalidate=20" } });
+    return NextResponse.json(await publicPromotions(), { headers: { "Cache-Control": "public, max-age=30, s-maxage=20, stale-while-revalidate=60" } });
   } catch (error) {
     console.error("promotions failed", error);
     return errorResponse(500, "INTERNAL_ERROR", "Something went wrong. Please try again.");

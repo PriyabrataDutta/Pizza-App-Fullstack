@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ResolvedProduct } from "../catalog/types";
 import { toOrderDto } from "./order-dto";
 import type { CouponRule, ZoneRule } from "./quote";
@@ -370,5 +370,50 @@ describe("launch rules", () => {
     const { restaurant, svc, c } = await ready();
     restaurant.status = { ...OPEN, open: false, reason: "outside_hours", message: "Closed until 11:00" };
     expect((await svc.quote(c, { items: [item()] })).restaurant).toEqual({ open: false, message: "Closed until 11:00", require_contact_details: false });
+  });
+});
+
+describe("speed-ups keep behaviour", () => {
+  const key = (n: number) => `speed-${String(n).padStart(6, "0")}`;
+
+  it("remembers when a customer was last seen at most once every ten minutes", async () => {
+    const repo = fakeRepo();
+    const touch = vi.spyOn(repo, "touchCustomer");
+    let clock = new Date("2026-10-20T12:00:00Z");
+    const svc = createCheckoutService({ repo, now: () => clock, loadProduct: async () => salami });
+    const { token } = await svc.registerGuest();
+    await svc.authenticate(token); await svc.authenticate(token); await svc.authenticate(token);
+    expect(touch).toHaveBeenCalledTimes(1);
+    clock = new Date("2026-10-20T12:09:59Z");
+    await svc.authenticate(token);
+    expect(touch).toHaveBeenCalledTimes(1);
+    clock = new Date("2026-10-20T12:10:01Z");
+    await svc.authenticate(token);
+    expect(touch).toHaveBeenCalledTimes(2);
+  });
+
+  it("an item that is gone is reported before a missing address, as before", async () => {
+    const { svc, menu } = setup();
+    const c = await guest(svc);
+    menu.removed = true;
+    const e = await fail(svc.checkout(c, { idempotency_key: key(1), address_id: uuid(9999), payment_method: "cod", items: [item()] } as never));
+    expect(e.code).toBe("ITEM_UNAVAILABLE");
+  });
+
+  it("a missing address is reported when the cart is fine", async () => {
+    const { svc } = setup();
+    const c = await guest(svc);
+    const e = await fail(svc.checkout(c, { idempotency_key: key(2), address_id: uuid(9999), payment_method: "cod", items: [item()] } as never));
+    expect(e.code).toBe("ADDRESS_NOT_FOUND");
+  });
+
+  it("a quote and an order still agree on the total when the lookups run together", async () => {
+    const { svc } = setup();
+    const c = await guest(svc);
+    const a = await svc.createAddress(c, home);
+    const quote = await svc.quote(c, { items: [item()], coupon_code: "WELCOME5", address_id: a.id } as never);
+    const order = await svc.checkout(c, { idempotency_key: key(3), address_id: a.id, payment_method: "cod", coupon_code: "WELCOME5", items: [item()] } as never);
+    expect(order.total_minor).toBe(quote.total_minor);
+    expect(order.discount_minor).toBe(quote.discount_minor);
   });
 });

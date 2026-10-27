@@ -19,6 +19,8 @@ function imageUrl(path: string | null): string | null {
 export const catalogSnapshot = createSnapshotRepository(supabaseCatalogSource);
 export const catalog = createCatalogService(catalogSnapshot, imageUrl);
 
+export { noStore } from "./no-store";
+
 export function errorResponse(status: number, code: string, message: string, details: unknown[] = []) {
   return NextResponse.json({ error: { code, message, details } }, { status });
 }
@@ -35,9 +37,10 @@ export async function cachedCatalogGet(req: NextRequest, build: () => Promise<un
     const etag = `W/"${version}-${createHash("sha1").update(req.nextUrl.pathname + req.nextUrl.search).digest("hex").slice(0, 16)}"`;
     const headers = {
       ETag: etag,
-      // Phones keep a copy for 30 s. The hosting CDN keeps one for only 10 s and may serve an older copy for at most 20 s more while it refreshes,
-      // so a price or menu change reaches customers within about a minute (it used to be several minutes with a 300 s window).
-      "Cache-Control": "public, max-age=30, s-maxage=10, stale-while-revalidate=20",
+      // Phones keep a copy for 30 s (the app itself refreshes about once a minute). The hosting CDN keeps one for 20 s and may serve an older
+      // copy for at most 60 s more while it refreshes in the background, so the app's refresh is normally answered at the edge, near the
+      // customer, and a price or menu change still reaches customers within about a minute and a half.
+      "Cache-Control": "public, max-age=30, s-maxage=20, stale-while-revalidate=60",
       "X-Catalog-Version": String(version),
     };
     if (req.headers.get("if-none-match") === etag) return new NextResponse(null, { status: 304, headers });

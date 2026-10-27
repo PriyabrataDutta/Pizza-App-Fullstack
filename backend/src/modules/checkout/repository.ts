@@ -34,10 +34,15 @@ const ADDRESS_COLUMNS = "id, customer_id, label, line1, locality, city, postal_c
 export async function loadBundle(orderRows: OrderRow[]): Promise<OrderBundle[]> {
   if (orderRows.length === 0) return [];
   const ids = orderRows.map((o) => o.id);
-  const items = must(await db().from("order_items").select("*").in("order_id", ids).order("created_at"), "order items") as OrderItemRow[];
+  // The items and the history are independent, so they are fetched together; the options need the item ids.
+  const [itemsResult, historyResult] = await Promise.all([
+    db().from("order_items").select("*").in("order_id", ids).order("created_at"),
+    db().from("order_status_history").select("order_id, new_status, reason, created_at, actor_label").in("order_id", ids).order("created_at"),
+  ]);
+  const items = must(itemsResult, "order items") as OrderItemRow[];
+  const history = must(historyResult, "history") as (HistoryRow & { order_id: string })[];
   const itemIds = items.map((i) => i.id);
   const options = itemIds.length === 0 ? [] : (must(await db().from("order_item_options").select("*").in("order_item_id", itemIds), "order options") as OrderOptionRow[]);
-  const history = must(await db().from("order_status_history").select("order_id, new_status, reason, created_at, actor_label").in("order_id", ids).order("created_at"), "history") as (HistoryRow & { order_id: string })[];
   return orderRows.map((order) => {
     const mine = items.filter((i) => i.order_id === order.id);
     return {

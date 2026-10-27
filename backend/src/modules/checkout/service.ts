@@ -51,6 +51,11 @@ const MAX_ADDRESSES = 10;
 const ALWAYS_OPEN: RestaurantStatus = { open: true, reason: null, message: "", extraPrepMinutes: 0, requireContactDetails: false };
 
 export function createCheckoutService({ repo, loadProduct, restaurantStatus = async () => ALWAYS_OPEN, now = () => new Date() }: CheckoutDeps) {
+  // last_seen_at is for housekeeping only. Writing it on every request cost a database round trip each time, so it is written
+  // at most once every ten minutes per customer on each server instance.
+  const lastTouched = new Map<string, number>();
+  const TOUCH_EVERY_MS = 10 * 60_000;
+
   async function priceItems(items: CartItemInput[]) {
     const cache = new Map<string, ResolvedProduct | null>();
     const lines = [];
@@ -71,9 +76,9 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
 
   async function addressContext(customerId: string, addressId: string | undefined) {
     if (!addressId) return { address: null, zone: null, outside: false };
-    const address = await repo.address(customerId, addressId);
+    const [address, zones] = await Promise.all([repo.address(customerId, addressId), repo.zones()]);
     if (!address) throw new CheckoutError(404, "ADDRESS_NOT_FOUND", "Pick a delivery address and try again.");
-    const zone = zoneForPostcode(await repo.zones(), address.postal_code);
+    const zone = zoneForPostcode(zones, address.postal_code);
     return { address, zone, outside: zone === null };
   }
 
@@ -91,7 +96,14 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
 
     async authenticate(token: string): Promise<Customer | null> {
       const customer = await repo.customerByTokenHash(hashToken(token));
-      if (customer) await repo.touchCustomer(customer.id).catch(() => undefined);
+      if (customer) {
+        const at = now().getTime();
+        if (at - (lastTouched.get(customer.id) ?? 0) >= TOUCH_EVERY_MS) {
+          if (lastTouched.size > 5000) lastTouched.clear();
+          lastTouched.set(customer.id, at);
+          await repo.touchCustomer(customer.id).catch(() => undefined);
+        }
+      }
       return customer;
     },
 
@@ -135,8 +147,11 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
     async quote(customer: Customer, req: QuoteRequest) {
       const lines = await priceItems(req.items);
       const status = await restaurantStatus();
-      const { zone, outside } = await addressContext(customer.id, req.address_id);
-      const coupon = req.coupon_code ? await repo.couponByCode(req.coupon_code) : null;
+      const context = addressContext(customer.id, req.address_id);
+      const couponLookup = req.coupon_code ? repo.couponByCode(req.coupon_code) : Promise.resolve(null);
+      context.catch(() => undefined); couponLookup.catch(() => undefined); // reported below, in order, not as an unhandled rejection
+      const { zone, outside } = await context;
+      const coupon = await couponLookup;
       const result = computeQuote({
         lines: lines.map((l) => ({ lineTotalMinor: l.priced.totalMinor })),
         coupon, couponRequested: !!req.coupon_code, zone, addressOutsideArea: outside, now: now(),
@@ -173,10 +188,14 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
         throw new CheckoutError(400, "CONTACT_REQUIRED", "Enter your name and phone number so the driver can reach you.");
       }
 
-      const lines = await priceItems(req.items);
-      const { address, zone, outside } = await addressContext(customer.id, req.address_id);
+      const pricing = priceItems(req.items);
+      const context = addressContext(customer.id, req.address_id);
+      const couponLookup = req.coupon_code ? repo.couponByCode(req.coupon_code) : Promise.resolve(null);
+      pricing.catch(() => undefined); context.catch(() => undefined); couponLookup.catch(() => undefined); // reported below, in order
+      const lines = await pricing;
+      const { address, zone, outside } = await context;
       if (!address) throw new CheckoutError(404, "ADDRESS_NOT_FOUND", "Pick a delivery address and try again.");
-      const coupon = req.coupon_code ? await repo.couponByCode(req.coupon_code) : null;
+      const coupon = await couponLookup;
       const result = computeQuote({
         lines: lines.map((l) => ({ lineTotalMinor: l.priced.totalMinor })),
         coupon, couponRequested: !!req.coupon_code, zone, addressOutsideArea: outside, requireZone: true, now: now(),

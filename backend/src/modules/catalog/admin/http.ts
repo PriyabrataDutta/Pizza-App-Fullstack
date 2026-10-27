@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ZodError, type ZodType } from "zod";
 import { getCurrentUser } from "@/modules/access/current-user";
 import { can, type Access, type Module, type Principal } from "@/modules/access/permissions";
-import { errorResponse } from "../http";
+import { errorResponse, noStore } from "../http";
 import { AdminError } from "./errors";
 import { isSameOrigin } from "./origin";
 import type { Actor } from "./service";
@@ -58,7 +58,7 @@ export function adminRoute<P = Record<string, never>>(
   handler: (call: AdminCall<P>) => Promise<unknown>,
   successStatus = 200,
 ) {
-  return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
+  const handle = async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
     try {
       const me = await getCurrentUser();
       if (!me) return errorResponse(401, "UNAUTHENTICATED", "Sign in to continue.");
@@ -80,4 +80,5 @@ export function adminRoute<P = Record<string, never>>(
       return errorResponse(500, "INTERNAL_ERROR", "Something went wrong. Please try again.");
     }
   };
+  return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => noStore(await handle(req, ctx));
 }
