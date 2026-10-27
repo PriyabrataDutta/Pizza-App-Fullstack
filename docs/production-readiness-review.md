@@ -120,3 +120,6 @@ Still open: B2 order alerts, B3 monitoring, B4 staging project, B6 plan and back
 1. Apply `20261027100000_launch_readiness.sql`, then `20261027110000_launch_readiness_checkout.sql` (on staging first). Both are additive; code that is running now keeps working.
 2. Deploy the backend. It needs both migrations (it reads `customer_devices`, `restaurant_settings` and calls `rate_limit_hit`).
 3. Publish app 1.1.0 (it asks for name and phone). The server accepts older apps until `require_contact_details` is switched on in Settings, so switch it on only after most customers have updated.
+
+### Update 2026-10-27 (evening)
+Database and functions are now both in Frankfurt (see `docs/database-region-move.md`). Measured server time: reads 36 to 66 ms, placing an order about 300 ms. A launch-readiness gap closed on the way: migrations now apply to a brand-new project (tested by actually creating one). Still open from the readiness list: staging project (the Seoul project can serve as one for a while), backups and plan, order alerts, monitoring, MFA, legal pages.

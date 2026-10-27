@@ -64,3 +64,12 @@ Things that went wrong, so they are not repeated:
 6. **A real bug the move exposed:** with the 30-second customer cache, a customer blocked a moment ago reached the database function, which refused correctly, but the server answered 500 instead of 403 `CUSTOMER_BLOCKED`. Fixed in `repository.ts`.
 
 Still to do: the switch itself (step 8), which needs your go-ahead because it changes production settings.
+
+## Switched (2026-10-27)
+Production now uses the Frankfurt project and runs its functions in `fra1`.
+- Vercel Production: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY` replaced (sensitive, no byte-order mark); `vercel.json` region `fra1`.
+- Checked on production: `prod-smoke-check.mjs` 24 of 24 (its database checks read the new project and found the rows the live API wrote, which proves where production writes); pictures load from the new storage; `latency-check.mjs`: server time addresses 45 ms, orders 36 ms, quote 66 ms, order 298 ms.
+- An installed app (emulator) with a token from the old database got `401`, registered a new guest by itself (`201`) and carried on.
+- Locally, `backend/.env.local` now holds the new project's values; the Seoul project's are in `backend/.env.seoul.local` (git-ignored).
+- The old Seoul project (`cmghnefzrmvebojxaugy`) is untouched and still has its data. **Delete or pause it after about a week** of normal use. To roll back before then: put its three values back in Vercel, set `vercel.json` to `icn1`, push, and relink the CLI.
+- The dashboard login now uses the **new** super admin account (same email, new temporary password, change it at first sign-in). The old project's account no longer applies.
