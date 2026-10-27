@@ -94,7 +94,7 @@ class AppContainer(val config: AppConfig, context: Context) {
         if (mockBackend != null) MockCheckoutRepository(mockBackend, catalog = catalogRepository) else RemoteCheckoutRepository(guestSession) { apiClient.api }
 
     val promotionRepository: PromotionRepository =
-        if (config.useMockData) MockPromotionRepository() else RemotePromotionRepository()
+        if (config.useMockData) MockPromotionRepository() else RemotePromotionRepository(api = { apiClient.api })
 
     /** Debug/demo only: moves the newest active demo order to its next status, standing in for the restaurant dashboard. Null in live mode. */
     val advanceDemoOrder: (() -> Unit)? = mockBackend?.let { backend -> { backend.advanceNewestActive() } }

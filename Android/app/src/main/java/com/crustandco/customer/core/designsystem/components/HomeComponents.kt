@@ -97,7 +97,11 @@ fun PromoBanner(promotion: Promotion, onOrderNow: () -> Unit, modifier: Modifier
             .clip(MaterialTheme.shapes.extraLarge)
             .background(Brush.horizontalGradient(listOf(look.from, look.to))),
     ) {
-        if (photoId != 0) {
+        if (promotion.imageUrl != null) {
+            // The picture the restaurant set in the dashboard. The gradient behind it shows while it loads or if it cannot be loaded.
+            coil3.compose.AsyncImage(model = promotion.imageUrl, contentDescription = null, modifier = Modifier.matchParentSize(), contentScale = ContentScale.Crop)
+            Box(Modifier.matchParentSize().background(Brush.horizontalGradient(listOf(Color(0xCC000000), Color(0x22000000)))))
+        } else if (photoId != 0) {
             Image(painterResource(photoId), contentDescription = null, modifier = Modifier.matchParentSize(), contentScale = ContentScale.Crop)
             // Keeps the words readable on any photo.
             Box(Modifier.matchParentSize().background(Brush.horizontalGradient(listOf(Color(0xCC000000), Color(0x22000000)))))

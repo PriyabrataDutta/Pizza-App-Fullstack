@@ -28,6 +28,11 @@ try {
   const status = await call("GET", "/api/restaurant");
   ok("GET /api/restaurant says whether we are open", status.status === 200 && typeof status.json.open === "boolean", JSON.stringify(status.json).slice(0, 200));
   console.log("       restaurant:", JSON.stringify({ open: status.json?.open, reason: status.json?.closed_reason }));
+  const promos = await call("GET", "/api/promotions");
+  ok("GET /api/promotions answers with a list", promos.status === 200 && Array.isArray(promos.json?.items), JSON.stringify(promos.json).slice(0, 200));
+  ok("each banner has only what the app needs", (promos.json?.items ?? []).every((b) => Object.keys(b).sort().join() === "code,detail,id,image_url,title"));
+  console.log(`       banners showing: ${promos.json?.items?.length ?? "?"}`);
+  ok("the banner admin API refuses an anonymous caller", (await call("GET", "/api/admin/promotions")).status === 401);
   ok("the admin API still refuses an anonymous caller", (await call("GET", "/api/admin/settings")).status === 401);
 
   // ---- a guest places an order ----------------------------------------------------------------------------------------------

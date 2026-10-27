@@ -14,11 +14,14 @@ import com.crustandco.customer.domain.DietaryType
 import com.crustandco.customer.domain.Order
 import com.crustandco.customer.domain.OrderStatus
 import com.crustandco.customer.domain.Product
+import com.crustandco.customer.domain.Promotion
 import com.crustandco.customer.domain.Variant
 
 // DTO -> domain mappers. Pure functions, easy to test. Anything the server omits gets a safe default.
 
 fun CategoryDto.toDomain() = Category(id = id, name = name, imageUrl = imageUrl, thumbUrl = thumbUrl)
+
+fun PromotionDto.toDomain() = Promotion(id = id, title = title, detail = detail, code = code?.takeIf { it.isNotBlank() }, imageUrl = imageUrl?.takeIf { it.isNotBlank() })
 
 fun OptionDto.toDomain(currency: String) = CustomizationOption(
     id = id,

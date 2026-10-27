@@ -229,7 +229,38 @@ export interface RestaurantSettingsAdmin {
 
 export type RestaurantSettingsPatch = Partial<Omit<RestaurantSettingsAdmin, "name" | "time_zone" | "open_now" | "closed_reason">>;
 
+export interface PromotionAdmin {
+  id: string;
+  title: string;
+  detail: string;
+  coupon_code: string | null;
+  image_path: string | null;
+  image_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  state: "showing" | "hidden" | "scheduled" | "ended";
+}
+
+export interface PromotionInput {
+  title: string;
+  detail: string;
+  coupon_code: string | null;
+  image_path: string | null;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+}
+
 export const adminApi = {
+  promotions: {
+    list: () => request<{ items: PromotionAdmin[] }>("GET", "/promotions").then((r) => r.items),
+    create: (input: PromotionInput) => request<PromotionAdmin>("POST", "/promotions", input),
+    update: (id: string, patch: Partial<PromotionInput>) => request<PromotionAdmin>("PATCH", `/promotions/${id}`, patch),
+    remove: (id: string) => request<void>("DELETE", `/promotions/${id}`),
+    reorder: (ids: string[]) => request<{ items: PromotionAdmin[] }>("POST", "/promotions/reorder", { ids }).then((r) => r.items),
+  },
   settings: {
     get: () => request<RestaurantSettingsAdmin>("GET", "/settings"),
     update: (patch: RestaurantSettingsPatch) => request<RestaurantSettingsAdmin>("PATCH", "/settings", patch),
@@ -295,7 +326,7 @@ export const adminApi = {
     duplicate: (id: string) => request<ProductDetail>("POST", `/products/${id}/duplicate`),
   },
   uploads: {
-    ticket: (kind: "product" | "category", contentType: string) => request<UploadTicket>("POST", "/uploads", { kind, content_type: contentType }),
+    ticket: (kind: "product" | "category" | "promotion", contentType: string) => request<UploadTicket>("POST", "/uploads", { kind, content_type: contentType }),
   },
 };
 
@@ -308,7 +339,7 @@ export function imageProblem(file: { type: string; size: number }): string | nul
 }
 
 /** Uploads a picked image straight to storage and returns the path to save on the category or product, plus a URL to preview it. */
-export async function uploadImage(kind: "product" | "category", file: File): Promise<{ path: string; url: string | null }> {
+export async function uploadImage(kind: "product" | "category" | "promotion", file: File): Promise<{ path: string; url: string | null }> {
   const problem = imageProblem(file);
   if (problem) throw new ApiError(400, "IMAGE_INVALID", problem);
   const ticket = await adminApi.uploads.ticket(kind, file.type);

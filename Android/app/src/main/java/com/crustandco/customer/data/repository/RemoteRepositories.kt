@@ -136,7 +136,24 @@ class RemoteCheckoutRepository(private val session: GuestSession, private val ap
         }
 }
 
-/** docs/api-contract.md has no promotions endpoint, so none is invented: the live app shows no banner until one exists. */
-class RemotePromotionRepository : PromotionRepository {
-    override suspend fun promotions(): AppResult<List<Promotion>> = AppResult.Success(emptyList())
+/**
+ * The offer banners on Home, as the restaurant set them in the dashboard (GET /api/promotions, anonymous). Kept for [FRESH_MS] so
+ * going back to Home costs no network; if a refresh fails the last copy keeps showing, and with none the Home screen simply has no banner.
+ */
+class RemotePromotionRepository(private val api: () -> CrustApi, private val now: () -> Long = System::currentTimeMillis) : PromotionRepository {
+    private val lock = Mutex()
+    private var cached: List<Promotion>? = null
+    private var cachedAt = 0L
+
+    override suspend fun promotions(): AppResult<List<Promotion>> = lock.withLock {
+        cached?.takeIf { now() - cachedAt < FRESH_MS }?.let { return AppResult.Success(it) }
+        when (val result = apiCall { api().promotions() }.map { page -> page.items.map { it.toDomain() } }) {
+            is AppResult.Success -> { cached = result.data; cachedAt = now(); result }
+            is AppResult.Failure -> cached?.let { AppResult.Success(it) } ?: result
+        }
+    }
+
+    private companion object {
+        const val FRESH_MS = 60_000L
+    }
 }

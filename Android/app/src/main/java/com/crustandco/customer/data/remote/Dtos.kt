@@ -28,6 +28,16 @@ data class CategoryDto(
     @SerialName("icon_key") val iconKey: String? = null,
 )
 
+/** An offer banner for Home (docs/api-contract.md, GET /api/promotions). */
+@Serializable
+data class PromotionDto(
+    val id: String,
+    val title: String,
+    val detail: String = "",
+    val code: String? = null,
+    @SerialName("image_url") val imageUrl: String? = null,
+)
+
 /** A size of a product. [key] is stable ("klein", "gross") and is what the app sends back as the variant id. */
 @Serializable
 data class PortionDto(

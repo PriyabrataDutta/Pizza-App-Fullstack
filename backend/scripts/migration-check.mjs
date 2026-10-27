@@ -91,6 +91,22 @@ await db.exec(`update public.customers set is_blocked = false where id = '${cust
 ok("unblocked, ordering works again", (await db.query(placeSql("abcdefgh-5"))).rows[0].r.created === true);
 ok("settings: contact not required by default", (await q("select require_contact_details r from public.restaurant_settings"))[0].r === false);
 
+
+// promotions: the offer banners on the app's Home screen
+ok("the four printed offers are there as starter content", (await q("select count(*)::int c from public.promotions"))[0].c === 4);
+ok("they come in the printed order", (await q("select title from public.promotions order by sort_order"))[0].title.startsWith("Angebot 1"));
+ok("a banner needs a headline", await bad("insert into public.promotions (title) values ('   ')"));
+ok("a coupon code must look like a code", await bad("insert into public.promotions (title, coupon_code) values ('T', 'no spaces')"));
+ok("a code in the right shape is accepted", !(await bad("insert into public.promotions (title, coupon_code) values ('Welcome', 'WELCOME5')")));
+ok("the end must be after the start", await bad("insert into public.promotions (title, starts_at, ends_at) values ('T', '2026-11-02', '2026-11-01')"));
+ok("a banner may have only a start, or only an end", !(await bad("insert into public.promotions (title, starts_at) values ('A', '2026-11-01'), ('B', null)")));
+ok("detail is limited to 200 characters", await bad(`insert into public.promotions (title, detail) values ('T', '${"x".repeat(201)}')`));
+ok("anon cannot read banners directly", (await q("select has_table_privilege('anon','public.promotions','select') p"))[0].p === false);
+ok("the server can manage banners", (await q("select has_table_privilege('service_role','public.promotions','insert') p"))[0].p === true);
+ok("RLS is on for banners", (await q("select relrowsecurity r from pg_class where relname = 'promotions'"))[0].r === true);
+await db.exec("update public.promotions set title = 'Changed' where title = 'Welcome'");
+ok("updated_at moves when a banner changes", (await q("select count(*)::int c from public.promotions where title = 'Changed' and updated_at >= created_at"))[0].c === 1);
+
 ok("old-style place_order still works", r.created === true);
 console.log(`\n${pass} checks passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

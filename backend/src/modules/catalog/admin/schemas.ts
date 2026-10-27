@@ -8,7 +8,7 @@ const name = z.string().trim().min(1, "Name is required.").max(120);
 const slug = z.string().min(1).max(60).regex(SLUG_PATTERN, "Use lowercase letters, digits and single hyphens.");
 const key = z.string().min(1).max(30).regex(/^[a-z0-9_]+$/, "Use lowercase letters, digits and underscores.");
 const cents = z.number().int("Price must be whole cents.").min(0, "Price cannot be negative.").max(10_000_000);
-const imagePath = z.string().min(1).max(300).regex(/^[A-Za-z0-9/_.-]+$/, "Invalid image path.").refine((p) => !p.includes(".."), "Invalid image path.");
+export const imagePath = z.string().min(1).max(300).regex(/^[A-Za-z0-9/_.-]+$/, "Invalid image path.").refine((p) => !p.includes(".."), "Invalid image path.");
 
 // Create and update share the same fields, but only create fills in defaults. An update must change nothing it was not asked
 // to change: with defaults applied, PATCH {"name":"x"} would also reset the description, image and visibility.
@@ -134,7 +134,7 @@ export const attachmentSet = z.object({
 });
 
 export const uploadRequest = z.object({
-  kind: z.enum(["product", "category"]),
+  kind: z.enum(["product", "category", "promotion"]),
   content_type: z.enum(["image/jpeg", "image/png", "image/webp"]),
 });
 

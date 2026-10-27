@@ -13,7 +13,7 @@ Version 1.0.0 of the Android app is built; every build type talks to the live pr
 | # | Item | State in the code | Size |
 |---|---|---|---|
 | A1 | **Offers / coupons screen** | `/offers` is demo data (`shared/demo/fixtures`). No coupon admin API. WELCOME5, PIZZA2, FEAST10 can only be changed in the database. | M |
-| A2 | **Promotions for the home banner** | `RemotePromotionRepository` has no endpoint to read from, so the banner is empty in live mode. | S |
+| A2 | **Promotions for the home banner** | DONE in code (2026-10-27): `promotions` table, `GET /api/promotions`, dashboard Offers > Home banners (picture upload, schedule, order, show/hide), app 1.2.0 shows them. Needs migration `20261027120000_promotions.sql` applied. | done |
 | A3 | **Customer sign-in** | Demo sign-in only (`DemoAuthRepository`); Google sign-in not configured (`Android/docs/GOOGLE_SIGN_IN.md`). Guests are never linked to an account (`customers.auth_user_id` unused). | L |
 | A4 | **Realtime** | No Supabase Realtime anywhere; both apps poll (dashboard every 8 s). The plan and checklist ask for authorized Realtime with a fallback. | M |
 | A5 | **Reports + CSV export** | `/reports` is demo data. No reporting module, no export. In the dashboard prompt and the release checklist. | M |

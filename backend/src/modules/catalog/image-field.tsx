@@ -15,7 +15,7 @@ export interface PickedImage {
  * `url` is what to show now (the saved image, or the one just uploaded). Used by the category form and, later, the product editor.
  */
 export function ImageField({ kind, label, url, onChange, disabled }: {
-  kind: "product" | "category";
+  kind: "product" | "category" | "promotion";
   label: string;
   url: string | null;
   onChange: (next: PickedImage | null) => void;

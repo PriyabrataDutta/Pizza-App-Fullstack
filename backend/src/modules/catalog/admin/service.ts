@@ -293,9 +293,11 @@ const EXTENSION = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp
  * Prepares a direct upload: the browser sends the file to Supabase Storage with the signed URL, then saves `path`
  * on the product or category. The server never handles the file itself, and the bucket enforces the 5 MB and type limits.
  */
-export async function createUpload(actor: Actor, kind: "product" | "category", contentType: keyof typeof EXTENSION) {
+const UPLOAD_FOLDER = { product: "products", category: "categories", promotion: "promotions" } as const;
+
+export async function createUpload(actor: Actor, kind: keyof typeof UPLOAD_FOLDER, contentType: keyof typeof EXTENSION) {
   const fileId = randomUUID();
-  const path = `${kind === "product" ? "products" : "categories"}/${fileId}.${EXTENSION[contentType]}`;
+  const path = `${UPLOAD_FOLDER[kind]}/${fileId}.${EXTENSION[contentType]}`;
   const { signedUrl, token } = await storage.signedUpload(path);
   await audit(actor, "image_upload_prepared", fileId, { kind, path });
   return { path, upload_url: signedUrl, token, public_url: publicImageUrl(path), max_bytes: 5 * 1024 * 1024 };

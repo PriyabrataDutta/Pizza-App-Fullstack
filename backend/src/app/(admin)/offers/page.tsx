@@ -6,10 +6,28 @@ import { useAccess } from "@/modules/access/access-context";
 import { Button, Card, DemoNotice, ReadOnlyNotice, Drawer, Field, PageHeader, Pill, Table, Toggle, inputCls, td, th } from "@/shared/ui";
 import { formatMoney } from "@/shared/format";
 import { coupons as seed, type Coupon } from "@/shared/demo/fixtures";
+import { BannersView } from "@/modules/promotions/banners-view";
 
 const blank = { code: "", type: "fixed" as Coupon["type"], value: "", min: "", expires: "" };
 
+const tabCls = (on: boolean) => `min-h-10 rounded-[8px] px-4 text-sm font-medium ${on ? "bg-brand-soft text-brand" : "text-ink-2 hover:text-ink"}`;
+
+/** Offers: the banners on the app's Home screen (live), and the coupon codes (still sample data). */
 export default function OffersPage() {
+  const [tab, setTab] = useState<"banners" | "coupons">("banners");
+  return (
+    <>
+      <PageHeader title="Offers" description="What customers see on the app’s Home screen, and the codes they can use at checkout." />
+      <div role="tablist" className="mb-4 flex gap-1">
+        <button role="tab" aria-selected={tab === "banners"} className={tabCls(tab === "banners")} onClick={() => setTab("banners")}>Home banners</button>
+        <button role="tab" aria-selected={tab === "coupons"} className={tabCls(tab === "coupons")} onClick={() => setTab("coupons")}>Coupons</button>
+      </div>
+      {tab === "banners" ? <BannersView /> : <CouponsTab />}
+    </>
+  );
+}
+
+function CouponsTab() {
   const manage = useAccess().canManage("offers");
   const [list, setList] = useState<Coupon[]>(seed);
   const [draft, setDraft] = useState<typeof blank | null>(null);
@@ -33,7 +51,10 @@ export default function OffersPage() {
 
   return (
     <>
-      <PageHeader title="Offers & coupons" description="Codes customers can apply at checkout. The server checks every code again when the order is placed." actions={manage ? <Button onClick={() => { setErr({}); setDraft(blank); }}><Plus className="size-4" aria-hidden /> New coupon</Button> : undefined} />
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <p className="max-w-xl text-sm text-ink-2">Codes customers can apply at checkout. The server checks every code again when the order is placed.</p>
+        {manage && <Button onClick={() => { setErr({}); setDraft(blank); }}><Plus className="size-4" aria-hidden /> New coupon</Button>}
+      </div>
       {!manage && <ReadOnlyNotice />}
       <DemoNotice />
       <Card>

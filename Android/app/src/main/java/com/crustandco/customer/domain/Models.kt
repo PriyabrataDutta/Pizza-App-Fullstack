@@ -150,4 +150,6 @@ data class Promotion(
     val title: String,
     val detail: String,
     val code: String?,
+    /** The banner picture set in the dashboard, or null for the plain coloured card. */
+    val imageUrl: String? = null,
 )

@@ -18,6 +18,10 @@ interface CrustApi {
     @GET("categories")
     suspend fun categories(): ListResponseDto<CategoryDto>
 
+    /** The offer banners on Home, in the restaurant's order. Anonymous. */
+    @GET("promotions")
+    suspend fun promotions(): ListResponseDto<PromotionDto>
+
     @GET("products")
     suspend fun products(
         @Query("category") category: String? = null,
