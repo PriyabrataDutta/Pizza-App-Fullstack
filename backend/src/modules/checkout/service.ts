@@ -55,6 +55,8 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
   // at most once every ten minutes per customer on each server instance.
   const lastTouched = new Map<string, number>();
   const TOUCH_EVERY_MS = 10 * 60_000;
+  const knownTokens = new Map<string, { customer: Customer; until: number }>();
+  const KNOWN_TOKEN_MS = 30_000;
 
   async function priceItems(items: CartItemInput[]) {
     const cache = new Map<string, ResolvedProduct | null>();
@@ -95,14 +97,22 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
     },
 
     async authenticate(token: string): Promise<Customer | null> {
-      const customer = await repo.customerByTokenHash(hashToken(token));
-      if (customer) {
-        const at = now().getTime();
-        if (at - (lastTouched.get(customer.id) ?? 0) >= TOUCH_EVERY_MS) {
-          if (lastTouched.size > 5000) lastTouched.clear();
-          lastTouched.set(customer.id, at);
-          await repo.touchCustomer(customer.id).catch(() => undefined);
-        }
+      const hash = hashToken(token);
+      const at = now().getTime();
+      // The same phone asks many times a minute (order tracking polls). Looking the customer up each time cost a database round trip, so a
+      // known token is remembered for 30 seconds. A block or a changed name takes up to that long to reach this server instance; the
+      // database function that places an order refuses a blocked customer itself, so that cannot be bypassed. An unknown token is never
+      // remembered, so a phone that has just registered is recognised at once.
+      const known = knownTokens.get(hash);
+      if (known && known.until > at) return known.customer;
+      const customer = await repo.customerByTokenHash(hash);
+      if (!customer) { knownTokens.delete(hash); return null; }
+      if (knownTokens.size > 2000) knownTokens.clear();
+      knownTokens.set(hash, { customer, until: at + KNOWN_TOKEN_MS });
+      if (at - (lastTouched.get(customer.id) ?? 0) >= TOUCH_EVERY_MS) {
+        if (lastTouched.size > 5000) lastTouched.clear();
+        lastTouched.set(customer.id, at);
+        await repo.touchCustomer(customer.id).catch(() => undefined);
       }
       return customer;
     },

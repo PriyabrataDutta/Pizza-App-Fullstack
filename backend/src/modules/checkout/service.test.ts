@@ -387,7 +387,7 @@ describe("speed-ups keep behaviour", () => {
     clock = new Date("2026-10-20T12:09:59Z");
     await svc.authenticate(token);
     expect(touch).toHaveBeenCalledTimes(1);
-    clock = new Date("2026-10-20T12:10:01Z");
+    clock = new Date("2026-10-20T12:10:31Z"); // after the remembered lookup (30 s) has run out, so the customer is read again
     await svc.authenticate(token);
     expect(touch).toHaveBeenCalledTimes(2);
   });
@@ -415,5 +415,30 @@ describe("speed-ups keep behaviour", () => {
     const order = await svc.checkout(c, { idempotency_key: key(3), address_id: a.id, payment_method: "cod", coupon_code: "WELCOME5", items: [item()] } as never);
     expect(order.total_minor).toBe(quote.total_minor);
     expect(order.discount_minor).toBe(quote.discount_minor);
+  });
+
+  it("remembers a known token for 30 seconds, so polling does not query the database each time", async () => {
+    const repo = fakeRepo();
+    const lookup = vi.spyOn(repo, "customerByTokenHash");
+    let clock = new Date("2026-10-20T12:00:00Z");
+    const svc = createCheckoutService({ repo, now: () => clock, loadProduct: async () => salami });
+    const { token } = await svc.registerGuest();
+    await svc.authenticate(token); await svc.authenticate(token); await svc.authenticate(token);
+    expect(lookup).toHaveBeenCalledTimes(1);
+    clock = new Date("2026-10-20T12:00:29Z");
+    await svc.authenticate(token);
+    expect(lookup).toHaveBeenCalledTimes(1);
+    clock = new Date("2026-10-20T12:00:31Z");
+    await svc.authenticate(token);
+    expect(lookup).toHaveBeenCalledTimes(2);
+  });
+
+  it("never remembers an unknown token, so a phone that has just registered is recognised at once", async () => {
+    const repo = fakeRepo();
+    const svc = createCheckoutService({ repo, now: () => new Date("2026-10-20T12:00:00Z"), loadProduct: async () => salami });
+    expect(await svc.authenticate("cc1_" + "y".repeat(43))).toBeNull();
+    const { token } = await svc.registerGuest();
+    expect(await svc.authenticate(token)).not.toBeNull();
+    expect(await svc.authenticate("cc1_" + "y".repeat(43))).toBeNull();
   });
 });
