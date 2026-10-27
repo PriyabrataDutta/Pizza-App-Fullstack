@@ -47,6 +47,15 @@ describe("settings service", () => {
     log.mockRestore();
   });
 
+  it("does not ask a broken settings store again on every order", async () => {
+    const repo = fakeRepo(); repo.fail = true;
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const svc = createSettingsService({ repo, ttlMs: 10_000 });
+    await svc.status(); await svc.status(); await svc.status();
+    expect(repo.loads).toBe(1);
+    log.mockRestore();
+  });
+
   it("keeps using the last good settings when a later read fails", async () => {
     const repo = fakeRepo({ acceptingOrders: false });
     let t = 0;

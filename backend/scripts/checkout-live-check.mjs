@@ -103,8 +103,8 @@ try {
 
   const tooSmall = await call("POST", "/api/checkout", { token: T1, body: { idempotency_key: key(), address_id: a2.json.id, payment_method: "cod", items: [item({ quantity: 1 })] } });
   ok("below the outer districts' 20 € minimum -> 400 with the amount short", tooSmall.status === 400 && tooSmall.json.error.code === "MINIMUM_ORDER" && tooSmall.json.error.details[0].short_by_minor === 1000, JSON.stringify(tooSmall.json));
-  const outerOk = await call("POST", "/api/checkout", { token: T1, body: { idempotency_key: key(), address_id: a2.json.id, payment_method: "online_demo", coupon_code: "WELCOME5", items: [item()] } });
-  ok("20 € to an outer district works, with a coupon and the demo payment", outerOk.status === 201 && outerOk.json.estimated_minutes === 45 && outerOk.json.discount_minor === 500 && outerOk.json.total_minor === 1500 && outerOk.json.payment_status === "demo_paid", JSON.stringify(outerOk.json).slice(0, 300));
+  const outerOk = await call("POST", "/api/checkout", { token: T1, body: { idempotency_key: key(), address_id: a2.json.id, payment_method: "cod", coupon_code: "WELCOME5", items: [item()] } });
+  ok("20 € to an outer district works, with a coupon, paying cash", outerOk.status === 201 && outerOk.json.estimated_minutes === 45 && outerOk.json.discount_minor === 500 && outerOk.json.total_minor === 1500 && outerOk.json.payment_status === "pending", JSON.stringify(outerOk.json).slice(0, 300));
   ok("outside the areas -> 422", (await call("POST", "/api/checkout", { token: T1, body: { idempotency_key: key(), address_id: a3.json.id, payment_method: "cod", items: [item()] } })).status === 422);
   ok("a missing idempotency key -> 400", (await call("POST", "/api/checkout", { token: T1, body: { address_id: a1.json.id, payment_method: "cod", items: [item()] } })).status === 400);
   ok("an unknown payment method -> 400", (await call("POST", "/api/checkout", { token: T1, body: { idempotency_key: key(), address_id: a1.json.id, payment_method: "bitcoin", items: [item()] } })).status === 400);

@@ -35,7 +35,10 @@ export function createSettingsService({ repo, now = () => new Date(), ttlMs = 10
       return cached.value;
     } catch (error) {
       console.error("restaurant settings unavailable", error instanceof Error ? error.message : error);
-      return cached?.value ?? { settings: DEFAULT_SETTINGS, hours: [] };
+      // Remember the fallback for one cache period too, so a broken or missing settings table is not asked again on every order.
+      const fallback = cached?.value ?? { settings: DEFAULT_SETTINGS, hours: [] };
+      cached = { at: now().getTime(), value: fallback };
+      return fallback;
     }
   }
 

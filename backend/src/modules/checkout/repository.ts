@@ -17,9 +17,18 @@ function must<T>(result: Result<T>, what: string): T {
 const db = () => adminClient();
 
 const CUSTOMER_COLUMNS = "id, full_name, phone, is_blocked";
-const customerOf = (r: { id: string; full_name: string | null; phone: string | null; is_blocked: boolean }): Customer => ({
-  id: r.id, fullName: r.full_name, phone: r.phone, isBlocked: r.is_blocked,
+const LEGACY_CUSTOMER_COLUMNS = "id, full_name, phone"; // before migration 20261027100000 there is no block flag
+const customerOf = (r: { id: string; full_name: string | null; phone: string | null; is_blocked?: boolean }): Customer => ({
+  id: r.id, fullName: r.full_name, phone: r.phone, isBlocked: r.is_blocked === true,
 });
+
+/**
+ * True when the database has not had the launch-readiness migrations yet (a table or column is missing). The server is deployed
+ * first or second, depending on how a release goes, so for that window it falls back to the old layout instead of failing every
+ * sign-in. Once the migrations are applied the fallbacks are never taken.
+ */
+const schemaMissing = (error: { code?: string; message?: string } | null) =>
+  !!error && (error.code === "42P01" || error.code === "42703" || error.code === "PGRST205" || error.code === "PGRST204" || /does not exist|schema cache/i.test(error.message ?? ""));
 const ADDRESS_COLUMNS = "id, customer_id, label, line1, locality, city, postal_code, instructions, is_default";
 
 export async function loadBundle(orderRows: OrderRow[]): Promise<OrderBundle[]> {
@@ -44,20 +53,25 @@ export const supabaseCheckoutRepository: CheckoutRepository = {
   // A customer owns one or more devices; each device holds one token (only its hash is stored). customers.token_hash is still written
   // for the first device until the column is retired.
   async createCustomer(tokenHash) {
-    const customer = must(await db().from("customers").insert({ token_hash: tokenHash }).select(CUSTOMER_COLUMNS).single(), "create customer") as never;
-    const device = await db().from("customer_devices").insert({ customer_id: (customer as { id: string }).id, token_hash: tokenHash });
-    if (device.error) {
-      await db().from("customers").delete().eq("id", (customer as { id: string }).id); // do not leave a customer nobody can sign in as
+    let created = await db().from("customers").insert({ token_hash: tokenHash }).select(CUSTOMER_COLUMNS).single();
+    if (schemaMissing(created.error)) created = await db().from("customers").insert({ token_hash: tokenHash }).select(LEGACY_CUSTOMER_COLUMNS).single();
+    const customer = must(created as Result<Parameters<typeof customerOf>[0]>, "create customer");
+    const device = await db().from("customer_devices").insert({ customer_id: customer.id, token_hash: tokenHash });
+    if (device.error && !schemaMissing(device.error)) {
+      await db().from("customers").delete().eq("id", customer.id); // do not leave a customer nobody can sign in as
       throw new Error(`checkout: create device: ${device.error.message}`);
     }
     return customerOf(customer);
   },
 
   async customerByTokenHash(hash) {
-    const row = must(
-      await db().from("customer_devices").select(`customers!inner(${CUSTOMER_COLUMNS})`).eq("token_hash", hash).is("revoked_at", null).maybeSingle(),
-      "find customer",
-    ) as unknown as { customers: Parameters<typeof customerOf>[0] } | null;
+    const found = await db().from("customer_devices").select(`customers!inner(${CUSTOMER_COLUMNS})`).eq("token_hash", hash).is("revoked_at", null).maybeSingle();
+    if (schemaMissing(found.error)) {
+      // Not migrated yet: the token is on the customer row itself.
+      const legacy = must(await db().from("customers").select(LEGACY_CUSTOMER_COLUMNS).eq("token_hash", hash).maybeSingle(), "find customer");
+      return legacy ? customerOf(legacy as never) : null;
+    }
+    const row = must(found as never, "find customer") as unknown as { customers: Parameters<typeof customerOf>[0] } | null;
     return row ? customerOf(row.customers) : null;
   },
 
