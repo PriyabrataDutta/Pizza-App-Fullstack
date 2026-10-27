@@ -143,6 +143,8 @@ export const supabaseCheckoutRepository: CheckoutRepository = {
       const text = error.message ?? "";
       if (text.includes("COUPON_LIMIT")) throw new CheckoutError(409, "COUPON_LIMIT", text.replace(/^COUPON_LIMIT:\s*/, ""));
       if (text.includes("COUPON_INVALID")) throw new CheckoutError(400, "COUPON_INVALID", text.replace(/^COUPON_INVALID:\s*/, ""));
+      // The database refuses a blocked customer itself. The server may still hold an older "not blocked" copy for up to 30 s (see authenticate).
+      if (text.includes("CUSTOMER_BLOCKED")) throw new CheckoutError(403, "CUSTOMER_BLOCKED", "We can’t take orders from this device. Please call the restaurant.");
       throw new Error(`checkout: place order: ${text}`);
     }
     const result = data as { order_id: string; created: boolean };

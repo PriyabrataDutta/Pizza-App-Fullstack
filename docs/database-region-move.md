@@ -46,3 +46,21 @@ Dump and restore only the customer tables (`customers`, `customer_devices`, `cus
 ## What I can do and what you do
 - I can prepare and test everything in steps 3 to 7 once there is a new project and its keys on this machine, and run the checks in step 8.3.
 - You create the project (step 1) and decide the moment of the switch (step 8). Changing Vercel settings and the database is outward-facing, so I will not do those without your say-so in chat.
+
+## Progress (2026-10-27)
+Done on the **new project** `crust-and-co-eu` (ref `daplsxofwdrsmegxknar`, Frankfurt, Free plan, no charge). Production still uses the Seoul project; nothing was switched.
+- Project created with the CLI. Its database password is in `backend/.new-db-password.txt` and its keys in `backend/.env.eu.local` (both git-ignored; never paste them anywhere).
+- All 8 migrations applied. The menu is seeded (15 categories, 188 products, 342 portions, 66 options). All 203 pictures and thumbnails are uploaded and recorded.
+- The super admin `admin@crustandco.test` exists on the new project with a temporary password (file in the scratch folder `.../scratchpad/eu-admin/.first-super-admin.txt`; it must be changed at first sign-in).
+- Checked against a local server on the new project: `prod-smoke-check.mjs` 24 of 24; `catalog-audit.mjs` 3475 checks, 0 failed (340 product sizes priced).
+- `supabase link` now points at the **new** project. A later `npx supabase db push` goes there, not to Seoul, until the switch is done or the link is changed back (`npx supabase link --project-ref cmghnefzrmvebojxaugy`).
+
+Things that went wrong, so they are not repeated:
+1. **A new project has no `rls_auto_enable()`.** The second migration revoked access to it and failed. It now runs only when the function exists (the old project is unaffected: that migration was already applied there).
+2. **A dropped `db push` leaves a stuck session** (`cli_login_postgres`, running the half-sent migration) that holds locks, so every retry times out after 2 minutes. List sessions with `supabase db query --linked "select pid, usename, state, query from pg_stat_activity ..."` and end it with `pg_terminate_backend(pid)`.
+3. **Pictures are named by product id and the new project has new ids.** They were mapped through the product slug into a scratch folder (old id, slug, new id) before upload.
+4. **The dashboard API refuses everything until the temporary password is changed**, so `import-images.mjs` uploaded the files but could not record them. The paths were set directly in the database instead.
+5. **`next dev` rejects `node --env-file`.** Export the variables into the shell (`set -a; . ./.env.eu.local; set +a`) and start it on another port.
+6. **A real bug the move exposed:** with the 30-second customer cache, a customer blocked a moment ago reached the database function, which refused correctly, but the server answered 500 instead of 403 `CUSTOMER_BLOCKED`. Fixed in `repository.ts`.
+
+Still to do: the switch itself (step 8), which needs your go-ahead because it changes production settings.

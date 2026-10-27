@@ -47,3 +47,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Database password of the Frankfurt project (never commit)
+.new-db-password.txt
