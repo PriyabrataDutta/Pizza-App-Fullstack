@@ -1,5 +1,6 @@
 package com.crustandco.customer.data.remote
 
+import com.crustandco.customer.BuildConfig
 import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.CacheControl
@@ -51,12 +52,9 @@ class ApiClient(
     private val authInterceptor = Interceptor { chain ->
         // The token goes only to the customer endpoints. Menu requests stay anonymous, so a shared cache can keep serving them to everyone.
         val token = if (chain.request().url.encodedPath.isCustomerPath()) tokenProvider.token() else null
-        val request = if (token == null) {
-            chain.request()
-        } else {
-            chain.request().newBuilder().header("Authorization", "Bearer $token").build()
-        }
-        chain.proceed(request)
+        val builder = chain.request().newBuilder().header("X-App-Version", BuildConfig.VERSION_NAME)
+        if (token != null) builder.header("Authorization", "Bearer $token")
+        chain.proceed(builder.build())
     }
 
     /**

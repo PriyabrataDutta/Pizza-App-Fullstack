@@ -127,6 +127,8 @@ class RemoteCheckoutRepository(private val session: GuestSession, private val ap
                         paymentMethod = request.paymentMethod.wire,
                         couponCode = request.couponCode?.takeIf { it.isNotBlank() },
                         instructions = request.instructions?.takeIf { it.isNotBlank() },
+                        contactName = request.contactName?.takeIf { it.isNotBlank() },
+                        contactPhone = request.contactPhone?.takeIf { it.isNotBlank() },
                         items = request.items.map { it.toBody() },
                     ),
                 )

@@ -30,6 +30,10 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -79,7 +83,7 @@ fun CheckoutScreen(
     val viewModel: CheckoutViewModel = viewModel(
         factory = viewModelFactory {
             initializer {
-                CheckoutViewModel(couponCode, container.cartStore, container.addressRepository, container.pricingRepository, container.checkoutRepository)
+                CheckoutViewModel(couponCode, container.cartStore, container.addressRepository, container.pricingRepository, container.checkoutRepository, contacts = container.contactStore)
             }
         },
     )
@@ -111,6 +115,8 @@ fun CheckoutScreen(
                 onSelect = viewModel::selectAddress,
                 onAddNew = { addressFormOpen = true },
                 onInstructions = viewModel::setInstructions,
+                onName = viewModel::setContactName,
+                onPhone = viewModel::setContactPhone,
                 onRetry = viewModel::retryAddresses,
                 onContinue = viewModel::continueToPayment,
             )
@@ -178,6 +184,8 @@ private fun AddressStep(
     onSelect: (String) -> Unit,
     onAddNew: () -> Unit,
     onInstructions: (String) -> Unit,
+    onName: (String) -> Unit,
+    onPhone: (String) -> Unit,
     onRetry: () -> Unit,
     onContinue: () -> Unit,
 ) {
@@ -187,6 +195,31 @@ private fun AddressStep(
             contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Who should we call?", style = MaterialTheme.typography.titleLarge)
+                    OutlinedTextField(
+                        value = state.contactName,
+                        onValueChange = onName,
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        label = { Text("Name") },
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
+                        shape = MaterialTheme.shapes.medium,
+                    )
+                    OutlinedTextField(
+                        value = state.contactPhone,
+                        onValueChange = onPhone,
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        label = { Text("Phone number") },
+                        supportingText = { Text("The driver calls this number if they can’t find you.") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
+                        shape = MaterialTheme.shapes.medium,
+                    )
+                }
+            }
+
             item { Text("Delivery Address", style = MaterialTheme.typography.titleLarge) }
 
             when (val addresses = state.addresses) {
@@ -218,7 +251,7 @@ private fun AddressStep(
             }
         }
         BottomAction(bottomInset) {
-            PrimaryButton("Continue", onClick = onContinue, enabled = state.selectedAddress != null, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp))
+            PrimaryButton("Continue", onClick = onContinue, enabled = state.selectedAddress != null && state.contactValid, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp))
         }
     }
 }
@@ -287,17 +320,13 @@ private fun PaymentStep(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { Text("Payment Method", style = MaterialTheme.typography.titleLarge) }
-            items(PaymentMethod.entries, key = { it.wire }) { method ->
-                PaymentRow(method, selected = method == state.paymentMethod, onClick = { onSelect(method) })
-            }
-            if (state.paymentMethod == PaymentMethod.OnlineDemo) {
+            if (quote != null && !quote.restaurantOpen) {
                 item {
-                    Text(
-                        "Demo payment: no card is needed and no money is taken.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    Text(quote.closedMessage.ifBlank { "We are not taking orders right now." }, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
                 }
+            }
+            items(PaymentMethod.selectable, key = { it.wire }) { method ->
+                PaymentRow(method, selected = method == state.paymentMethod, onClick = { onSelect(method) })
             }
 
             item { Text("Order Summary", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 8.dp)) }
@@ -323,10 +352,9 @@ private fun PaymentStep(
             }
             val label = when {
                 quote == null -> "Place order"
-                state.paymentMethod == PaymentMethod.OnlineDemo -> "Pay ${quote.total.format()}"
                 else -> "Place order · ${quote.total.format()}"
             }
-            PrimaryButton(label, onClick = onPay, enabled = quote != null, loading = state.placing, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp))
+            PrimaryButton(label, onClick = onPay, enabled = quote != null && quote.restaurantOpen, loading = state.placing, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp))
         }
     }
 }

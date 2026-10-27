@@ -206,11 +206,34 @@ export interface OrderAdmin {
   estimated_minutes: number | null;
   delivery_address: string;
   delivery: { label: string; line1: string; locality: string; city: string; postal_code: string; instructions: string | null };
+  /** Who to call; empty for orders placed before contact details were collected. */
+  contact: { name: string | null; phone: string | null };
   lines: { name: string; portion: string; options: string[]; quantity: number; unit_price_minor: number; line_total_minor: number }[];
   history: { status: string; at: string; reason: string | null; actor: string }[];
 }
 
+export interface OpeningHourInput { weekday: number; opens_at: string; closes_at: string }
+
+export interface RestaurantSettingsAdmin {
+  name: string;
+  time_zone: string;
+  accepting_orders: boolean;
+  closed_message: string;
+  extra_prep_minutes: number;
+  enforce_opening_hours: boolean;
+  require_contact_details: boolean;
+  opening_hours: OpeningHourInput[];
+  open_now: boolean;
+  closed_reason: "switched_off" | "outside_hours" | null;
+}
+
+export type RestaurantSettingsPatch = Partial<Omit<RestaurantSettingsAdmin, "name" | "time_zone" | "open_now" | "closed_reason">>;
+
 export const adminApi = {
+  settings: {
+    get: () => request<RestaurantSettingsAdmin>("GET", "/settings"),
+    update: (patch: RestaurantSettingsPatch) => request<RestaurantSettingsAdmin>("PATCH", "/settings", patch),
+  },
   orders: {
     /** Newest first. The server allows up to 200 per request. */
     list: (limit = 200) => request<{ items: OrderAdmin[]; has_more: boolean }>("GET", `/orders?limit=${limit}`),

@@ -4,6 +4,7 @@ import { addressDto, toOrderDto, toOrderSummary, type OrderDto } from "./order-d
 import { computeQuote, zoneForPostcode, type CouponRule, type ZoneRule } from "./quote";
 import type { AddressCreate, AddressUpdate, CartItemInput, CheckoutRequest, QuoteRequest } from "./schemas";
 import { hashToken, newDeviceToken } from "./token";
+import type { RestaurantStatus } from "../settings/service";
 import type { AddressRow, Customer, OrderBundle, OrderRow, PlaceOrderPayload } from "./types";
 
 export class CheckoutError extends Error {
@@ -18,6 +19,8 @@ export interface CheckoutRepository {
   createCustomer(tokenHash: string): Promise<Customer>;
   customerByTokenHash(hash: string): Promise<Customer | null>;
   touchCustomer(id: string): Promise<void>;
+  /** Remembers the last name and phone given at checkout. Best effort: failing to save must not fail an order. */
+  saveContact(customerId: string, name: string | null, phone: string | null): Promise<void>;
   addresses(customerId: string): Promise<AddressRow[]>;
   address(customerId: string, id: string): Promise<AddressRow | null>;
   insertAddress(customerId: string, fields: Omit<AddressRow, "id" | "customer_id">): Promise<AddressRow>;
@@ -38,12 +41,16 @@ export interface CheckoutDeps {
   repo: CheckoutRepository;
   /** The product as customers see it (resolved, active, in a visible category), or null. */
   loadProduct: (id: string) => Promise<ResolvedProduct | null>;
+  /** Whether the restaurant takes orders now (opening hours, the on/off switch) and its ordering rules. Defaults to always open. */
+  restaurantStatus?: () => Promise<RestaurantStatus>;
   now?: () => Date;
 }
 
 const MAX_ADDRESSES = 10;
 
-export function createCheckoutService({ repo, loadProduct, now = () => new Date() }: CheckoutDeps) {
+const ALWAYS_OPEN: RestaurantStatus = { open: true, reason: null, message: "", extraPrepMinutes: 0, requireContactDetails: false };
+
+export function createCheckoutService({ repo, loadProduct, restaurantStatus = async () => ALWAYS_OPEN, now = () => new Date() }: CheckoutDeps) {
   async function priceItems(items: CartItemInput[]) {
     const cache = new Map<string, ResolvedProduct | null>();
     const lines = [];
@@ -127,6 +134,7 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
     /** Prices a cart. Every figure comes from the catalog and the rules; the request carries ids and quantities only. */
     async quote(customer: Customer, req: QuoteRequest) {
       const lines = await priceItems(req.items);
+      const status = await restaurantStatus();
       const { zone, outside } = await addressContext(customer.id, req.address_id);
       const coupon = req.coupon_code ? await repo.couponByCode(req.coupon_code) : null;
       const result = computeQuote({
@@ -144,7 +152,9 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
         })),
         subtotal_minor: q.subtotalMinor, discount_minor: q.discountMinor, tax_minor: q.taxMinor, delivery_fee_minor: q.deliveryFeeMinor,
         total_minor: q.totalMinor, coupon_code: q.couponCode,
-        delivery: { minimum_order_minor: q.minimumOrderMinor, meets_minimum: q.meetsMinimum, estimated_minutes: q.estimatedMinutes },
+        delivery: { minimum_order_minor: q.minimumOrderMinor, meets_minimum: q.meetsMinimum, estimated_minutes: withPrep(q.estimatedMinutes, status) },
+        // So the cart can say "closed" before the customer fills in anything.
+        restaurant: { open: status.open, message: status.message, require_contact_details: status.requireContactDetails },
       };
     },
 
@@ -153,6 +163,15 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
       // A retry (same key) gets the order that was already placed, without pricing again: the menu or a coupon may have changed since.
       const prior = await repo.orderByKey(customer.id, req.idempotency_key);
       if (prior) return replay(prior, req.items);
+
+      if (customer.isBlocked) throw new CheckoutError(403, "CUSTOMER_BLOCKED", "We can’t take orders from this device. Please call the restaurant.");
+      const status = await restaurantStatus();
+      if (!status.open) throw new CheckoutError(409, "RESTAURANT_CLOSED", status.message);
+      const contactName = req.contact_name?.trim() || customer.fullName || null;
+      const contactPhone = req.contact_phone?.trim() || customer.phone || null;
+      if (status.requireContactDetails && (!contactName || !contactPhone)) {
+        throw new CheckoutError(400, "CONTACT_REQUIRED", "Enter your name and phone number so the driver can reach you.");
+      }
 
       const lines = await priceItems(req.items);
       const { address, zone, outside } = await addressContext(customer.id, req.address_id);
@@ -168,7 +187,8 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
       const payload: PlaceOrderPayload = {
         customer_id: customer.id, idempotency_key: req.idempotency_key, payment_method: req.payment_method, currency: "EUR",
         subtotal_minor: q.subtotalMinor, discount_minor: q.discountMinor, tax_minor: q.taxMinor, delivery_fee_minor: q.deliveryFeeMinor,
-        total_minor: q.totalMinor, coupon_id: q.couponId, coupon_code: q.couponCode, delivery_zone_id: q.zoneId, estimated_minutes: q.estimatedMinutes,
+        total_minor: q.totalMinor, coupon_id: q.couponId, coupon_code: q.couponCode, delivery_zone_id: q.zoneId,
+        estimated_minutes: withPrep(q.estimatedMinutes, status), contact_name: contactName, contact_phone: contactPhone,
         address: { label: address.label, line1: address.line1, locality: address.locality, city: address.city, postal_code: address.postal_code, instructions: req.instructions?.trim() || address.instructions },
         items: lines.map((l) => ({
           product_id: l.item.product_id, portion_key: l.item.portion_key, product_name: l.product.name, portion_label: l.priced.portionLabel,
@@ -177,6 +197,7 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
         })),
       };
       const placed = await repo.placeOrder(payload);
+      if (req.contact_name || req.contact_phone) await repo.saveContact(customer.id, contactName, contactPhone).catch(() => undefined);
       const bundle = await repo.order(customer.id, placed.orderId);
       if (!bundle) throw new Error("checkout: the order was placed but could not be read back");
 
@@ -197,6 +218,9 @@ export function createCheckoutService({ repo, loadProduct, now = () => new Date(
 }
 
 export type CheckoutService = ReturnType<typeof createCheckoutService>;
+
+/** The zone's estimate plus the extra minutes the kitchen asked for while it is busy. */
+const withPrep = (minutes: number | null, status: RestaurantStatus) => (minutes === null ? null : minutes + status.extraPrepMinutes);
 
 /**
  * The same key used for a different cart is a client bug, not a retry: say so instead of returning an unrelated order.

@@ -9,16 +9,17 @@ const asStatus = (s: string): OrderStatus => (STATUSES.includes(s as OrderStatus
 const asPaymentStatus = (s: string): PaymentStatus => (s === "paid" || s === "demo_paid" ? "paid" : s === "failed" ? "failed" : "pending");
 
 /**
- * Turns an order from the admin API into what the dashboard screens use. Guests give no name or phone yet, so the ticket is
- * identified by the street it goes to; the full address and the customer's delivery note are in the drawer.
+ * Turns an order from the admin API into what the dashboard screens use. The ticket carries the name and phone the customer gave at
+ * checkout; older orders have none, so they are identified by the street they go to. The full address and the customer's delivery
+ * note are in the drawer.
  */
 export function fromAdminOrder(o: OrderAdmin): Order {
   return {
     id: o.id,
     number: o.number,
     status: asStatus(o.status),
-    customerName: `Guest · ${o.delivery.line1}`,
-    customerPhone: "",
+    customerName: o.contact?.name || `Guest · ${o.delivery.line1}`,
+    customerPhone: o.contact?.phone ?? "",
     address: o.delivery_address,
     instructions: o.delivery.instructions ?? undefined,
     lines: o.lines.map((l) => ({ name: l.name, variant: l.portion, options: l.options, quantity: l.quantity, lineTotalMinor: l.line_total_minor })),

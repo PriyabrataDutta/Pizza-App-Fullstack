@@ -21,10 +21,16 @@ export const quoteRequest = z.object({
   address_id: uuid.optional(),
 });
 
+const contactName = z.string().trim().min(1, "Enter your name.").max(80);
+const contactPhone = z.string().trim().regex(/^\+?[0-9 ()/-]{6,20}$/, "Enter a phone number the driver can call.");
+
 export const checkoutRequest = z.object({
   idempotency_key: z.string().regex(/^[A-Za-z0-9_-]{8,100}$/, "The idempotency key must be 8 to 100 letters, digits, - or _."),
   address_id: uuid,
-  payment_method: z.enum(["cod", "online_demo"]),
+  // Cash on delivery only. Online payment is not offered until a real payment provider is connected.
+  payment_method: z.literal("cod"),
+  contact_name: contactName.optional(),
+  contact_phone: contactPhone.optional(),
   coupon_code: couponCode.optional(),
   instructions: z.string().trim().max(300).optional(),
   items,

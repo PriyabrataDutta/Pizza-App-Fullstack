@@ -155,6 +155,14 @@ data class QuoteDto(
     @SerialName("total_minor") val totalMinor: Long,
     @SerialName("coupon_code") val couponCode: String? = null,
     val currency: String = "EUR",
+    val restaurant: RestaurantStatusDto? = null,
+)
+
+/** Whether the restaurant takes orders right now (docs/api-contract.md). */
+@Serializable
+data class RestaurantStatusDto(
+    val open: Boolean = true,
+    val message: String = "",
 )
 
 @Serializable
@@ -164,6 +172,8 @@ data class CheckoutBody(
     @SerialName("payment_method") val paymentMethod: String,
     @SerialName("coupon_code") val couponCode: String? = null,
     val instructions: String? = null,
+    @SerialName("contact_name") val contactName: String? = null,
+    @SerialName("contact_phone") val contactPhone: String? = null,
     val items: List<CartLineBody>,
 )
 

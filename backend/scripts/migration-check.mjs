@@ -18,7 +18,7 @@ let pass = 0, fail = 0;
 const ok = (n, c) => { c ? pass++ : (fail++, console.log("  FAIL " + n)); };
 const files = readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
 for (const f of files) {
-  if (f.startsWith("20261027")) {
+  if (f.startsWith("20261027100000")) {
     // Data that exists in production before this migration: a guest with an order, a product, an order line.
     await db.exec(`
       insert into public.customers (token_hash) values (repeat('a', 64)), (repeat('b', 64));
@@ -72,6 +72,25 @@ ok("RLS on for all new tables", (await q("select count(*)::int c from pg_class w
 // the old flow still works: place_order for an existing guest, no new fields
 const cust = (await q("select id from public.customers limit 1"))[0].id;
 const r = (await db.query(`select public.place_order(jsonb_build_object('customer_id','${cust}','idempotency_key','abcdefgh-1','payment_method','cod','subtotal_minor',1000,'total_minor',1000,'address',jsonb_build_object('label','Home','line1','x','locality','y','city','Wesel','postal_code','46483'),'items',jsonb_build_array(jsonb_build_object('quantity',1,'unit_price_minor',1000,'line_total_minor',1000,'portion_key','gross','product_name','Margherita','portion_label','Groß')))) as r`)).rows[0].r;
+
+// part 2: checkout uses the new columns
+const placeSql = (key, extra = {}, subtotal = 1000, lineTotal = 1000) => `select public.place_order(jsonb_build_object('customer_id','${cust}','idempotency_key','${key}','payment_method','cod','subtotal_minor',${subtotal},'total_minor',${subtotal},${Object.entries(extra).map(([k, v]) => `'${k}','${v}'`).concat([""]).join(",")}'address',jsonb_build_object('label','Home','line1','x','locality','y','city','Wesel','postal_code','46483'),'items',jsonb_build_array(jsonb_build_object('quantity',1,'unit_price_minor',${lineTotal},'line_total_minor',${lineTotal},'portion_key','gross','product_name','Margherita','portion_label','Groß','vat_rate','7','vat_minor','65')))) as r`;
+const withContact = (await db.query(placeSql("abcdefgh-2", { contact_name: "  Max Muster ", contact_phone: "+49 281 123456" }))).rows[0].r;
+const stored = (await q(`select contact_name, contact_phone from public.orders where id='${withContact.order_id}'`))[0];
+ok("contact name and phone stored (trimmed)", stored.contact_name === "Max Muster" && stored.contact_phone === "+49 281 123456");
+const vat = (await q(`select vat_rate::text v, vat_minor from public.order_items where order_id='${withContact.order_id}'`))[0];
+ok("VAT stored on the line", vat.v === "7.00" && Number(vat.vat_minor) === 65);
+const again = (await db.query(placeSql("abcdefgh-2", { contact_name: "Someone Else" }))).rows[0].r;
+ok("retry with the same key returns the same order", again.created === false && again.order_id === withContact.order_id);
+ok("an order whose lines do not add up is refused", await bad(placeSql("abcdefgh-3", {}, 1000, 900)));
+ok("...and nothing was left behind", (await q("select count(*)::int c from public.orders where idempotency_key='abcdefgh-3'"))[0].c === 0);
+await db.exec(`update public.customers set is_blocked = true, blocked_reason = 'fake orders' where id = '${cust}'`);
+ok("a blocked customer cannot order", await bad(placeSql("abcdefgh-4")));
+ok("a blocked customer's earlier order is still returned on retry", (await db.query(placeSql("abcdefgh-2"))).rows[0].r.created === false);
+await db.exec(`update public.customers set is_blocked = false where id = '${cust}'`);
+ok("unblocked, ordering works again", (await db.query(placeSql("abcdefgh-5"))).rows[0].r.created === true);
+ok("settings: contact not required by default", (await q("select require_contact_details r from public.restaurant_settings"))[0].r === false);
+
 ok("old-style place_order still works", r.created === true);
 console.log(`\n${pass} checks passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

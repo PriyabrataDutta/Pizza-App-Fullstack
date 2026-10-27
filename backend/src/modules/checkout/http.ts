@@ -2,7 +2,9 @@ import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
 import { ZodError, type ZodType } from "zod";
 import { catalog, catalogSnapshot, errorResponse } from "../catalog/http";
+import { allowShared } from "@/shared/auth/shared-limit";
 import { allow } from "./rate-limit";
+import { settings } from "../settings/http";
 import { supabaseCheckoutRepository } from "./repository";
 import { CheckoutError, createCheckoutService } from "./service";
 import { bearerToken } from "./token";
@@ -11,7 +13,7 @@ import type { Customer } from "./types";
 // Shared plumbing for the customer API: the service wired to Supabase and the product catalog, token sign-in, rate limits, and the
 // standard error envelope. Customers are guests identified by a device token (Authorization: Bearer cc1_...).
 
-export const checkout = createCheckoutService({ repo: supabaseCheckoutRepository, loadProduct: async (id) => {
+export const checkout = createCheckoutService({ repo: supabaseCheckoutRepository, restaurantStatus: () => settings.status(), loadProduct: async (id) => {
     // Orders are priced from the freshest menu: re-check the version (at most every half second) so a price changed a moment ago counts.
     await catalogSnapshot.refresh(500);
     return catalog.product(id);
@@ -72,14 +74,15 @@ export function toErrorResponse(error: unknown): Response {
  */
 export function customerRoute<P = Record<string, never>>(
   handler: (call: CustomerCall<P>) => Promise<unknown>,
-  opts: { status?: number; limit?: { max: number; windowMs: number; name: string }; ipLimit?: { max: number; windowMs: number; name: string } } = {},
+  opts: { status?: number; limit?: { max: number; windowMs: number; name: string }; ipLimit?: { max: number; windowMs: number; name: string }; shared?: boolean } = {},
 ) {
   return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<Response> => {
     try {
       // Before any database work: a flood of requests (valid token or not) from one address is stopped here.
       const ip = clientIp(req);
       if (!allow(`ip:${ip}`, 600, 60_000)) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
-      if (opts.ipLimit && !allow(`${opts.ipLimit.name}-ip:${ip}`, opts.ipLimit.max, opts.ipLimit.windowMs)) {
+      const check = opts.shared ? allowShared : async (...a: Parameters<typeof allow>) => allow(...a);
+      if (opts.ipLimit && !(await check(`${opts.ipLimit.name}-ip:${ip}`, opts.ipLimit.max, opts.ipLimit.windowMs))) {
         return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
       }
       const token = bearerToken(req.headers.get("authorization"));
@@ -87,7 +90,7 @@ export function customerRoute<P = Record<string, never>>(
       const customer = await checkout.authenticate(token);
       if (!customer) return errorResponse(401, "UNAUTHENTICATED", "Open the app again to continue.");
       const limit = opts.limit ?? { max: 300, windowMs: 60_000, name: "api" };
-      if (!allow(`${limit.name}:${customer.id}`, limit.max, limit.windowMs)) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
+      if (!(await check(`${limit.name}:${customer.id}`, limit.max, limit.windowMs))) return errorResponse(429, "RATE_LIMITED", "Too many requests. Wait a moment and try again.");
 
       const result = await handler({ customer, req, params: await ctx.params });
       if (opts.status === 204) return new NextResponse(null, { status: 204 });

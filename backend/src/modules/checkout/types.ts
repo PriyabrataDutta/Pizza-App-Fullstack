@@ -4,6 +4,8 @@ export interface Customer {
   id: string;
   fullName: string | null;
   phone: string | null;
+  /** Set by the restaurant for abuse; a blocked customer can still read past orders but cannot place new ones. */
+  isBlocked: boolean;
 }
 
 export interface AddressRow {
@@ -39,6 +41,9 @@ export interface OrderRow {
   delivery_city: string;
   delivery_postal_code: string;
   delivery_instructions: string | null;
+  /** Who to call. Empty on orders placed before contact details were collected. */
+  contact_name?: string | null;
+  contact_phone?: string | null;
   created_at: string;
 }
 
@@ -81,7 +86,7 @@ export interface OrderBundle {
 export interface PlaceOrderPayload {
   customer_id: string;
   idempotency_key: string;
-  payment_method: "cod" | "online_demo";
+  payment_method: "cod";
   currency: string;
   subtotal_minor: number;
   discount_minor: number;
@@ -92,6 +97,8 @@ export interface PlaceOrderPayload {
   coupon_code: string | null;
   delivery_zone_id: string | null;
   estimated_minutes: number | null;
+  contact_name: string | null;
+  contact_phone: string | null;
   address: { label: string; line1: string; locality: string; city: string; postal_code: string; instructions: string | null };
   items: {
     product_id: string;

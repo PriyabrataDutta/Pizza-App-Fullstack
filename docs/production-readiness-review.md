@@ -102,3 +102,21 @@ anonymise-customer function (orders use `on delete restrict`); a separate gaples
 4. S1 MFA and session version, S4 CSP, S5 robots, S9 Next patch.
 5. B9 legal pages, privacy policy, tax review.
 6. Release candidate: full end-to-end run on staging, restore test, Play Store internal testing.
+
+## 7. Progress (2026-10-27)
+
+Done in code and tests, **not yet applied or deployed** (needs the two new migrations on a database first, see "Deploy order"):
+- B1 shared rate limiting for sign-in, guest sign-up and checkout (database counter, per-instance fallback). Catalog reads keep the in-memory limiter.
+- B5 functions run in `fra1` (`backend/vercel.json`).
+- B7 partly: name and phone on orders, block flag enforced at checkout and in the database. Still open: phone verification, a dashboard action to block a customer, limits per address for welcome coupons.
+- B8 online (demo) payment removed from the API and the app.
+- B10 CI workflow (needs a `main` branch).
+- S5 robots and noindex. S9 Next.js 16.4.3.
+- Schema: contact on orders, `customer_devices` (checkout signs in through it), block flag, VAT columns (not filled yet: the catalog does not read a rate), `restaurant_settings` and `opening_hours` with a working Settings screen and `GET /api/restaurant`, shared rate limiter, foreign-key indexes, order-adds-up check, `place_order` stores contact details.
+
+Still open: B2 order alerts, B3 monitoring, B4 staging project, B6 plan and backups, B9 legal, S1 MFA and session revocation, S4 CSP, VAT rate per product in the editor and catalog, moving the demo coupons into a seed file, pickup, the remaining items in section 3 "Change soon".
+
+### Deploy order
+1. Apply `20261027100000_launch_readiness.sql`, then `20261027110000_launch_readiness_checkout.sql` (on staging first). Both are additive; code that is running now keeps working.
+2. Deploy the backend. It needs both migrations (it reads `customer_devices`, `restaurant_settings` and calls `rate_limit_hit`).
+3. Publish app 1.1.0 (it asks for name and phone). The server accepts older apps until `require_contact_details` is switched on in Settings, so switch it on only after most customers have updated.

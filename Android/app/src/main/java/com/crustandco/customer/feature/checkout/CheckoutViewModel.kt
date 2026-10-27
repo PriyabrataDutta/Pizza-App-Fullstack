@@ -13,6 +13,9 @@ import com.crustandco.customer.domain.CheckoutRepository
 import com.crustandco.customer.domain.CheckoutRequest
 import com.crustandco.customer.domain.NewAddress
 import com.crustandco.customer.domain.Order
+import com.crustandco.customer.data.local.Contact
+import com.crustandco.customer.data.local.ContactStore
+import com.crustandco.customer.data.local.InMemoryContactStore
 import com.crustandco.customer.domain.PaymentMethod
 import com.crustandco.customer.domain.PricingRepository
 import com.crustandco.customer.domain.Quote
@@ -32,6 +35,8 @@ data class CheckoutState(
     val addresses: UiState<List<Address>> = UiState.Loading,
     val selectedAddressId: String? = null,
     val instructions: String = "",
+    val contactName: String = "",
+    val contactPhone: String = "",
     val paymentMethod: PaymentMethod = PaymentMethod.CashOnDelivery,
     /** The server's price breakdown, shown on the payment step. */
     val quote: UiState<Quote> = UiState.Loading,
@@ -44,6 +49,14 @@ data class CheckoutState(
 ) {
     val selectedAddress: Address?
         get() = (addresses as? UiState.Success)?.data?.firstOrNull { it.id == selectedAddressId }
+
+    /** The driver needs a name and a number to call. Same shape the server accepts. */
+    val contactValid: Boolean
+        get() = contactName.trim().length in 1..80 && PHONE.matches(contactPhone.trim())
+
+    companion object {
+        private val PHONE = Regex("^\\+?[0-9 ()/-]{6,20}$")
+    }
 }
 
 class CheckoutViewModel(
@@ -53,8 +66,9 @@ class CheckoutViewModel(
     private val pricing: PricingRepository,
     private val checkout: CheckoutRepository,
     private val newKey: () -> String = { UUID.randomUUID().toString() },
+    private val contacts: ContactStore = InMemoryContactStore(),
 ) : ViewModel() {
-    private val _state = MutableStateFlow(CheckoutState(items = cart.items.value))
+    private val _state = MutableStateFlow(contacts.load().let { CheckoutState(items = cart.items.value, contactName = it.name, contactPhone = it.phone) })
     val state: StateFlow<CheckoutState> = _state.asStateFlow()
 
     // One idempotency key per distinct order. A retry of the SAME order reuses it, so the server can't create two.
@@ -95,6 +109,10 @@ class CheckoutViewModel(
 
     fun setInstructions(text: String) = _state.update { it.copy(instructions = text.take(300)) }
 
+    fun setContactName(text: String) = _state.update { it.copy(contactName = text.take(80)) }
+
+    fun setContactPhone(text: String) = _state.update { it.copy(contactPhone = text.take(20)) }
+
     fun selectPayment(method: PaymentMethod) = _state.update { it.copy(paymentMethod = method) }
 
     fun addAddress(address: NewAddress, onSaved: () -> Unit) {
@@ -115,7 +133,7 @@ class CheckoutViewModel(
     fun clearAddressError() = _state.update { it.copy(addressError = null) }
 
     fun continueToPayment() {
-        if (_state.value.selectedAddress == null) return
+        if (_state.value.selectedAddress == null || !_state.value.contactValid) return
         _state.update { it.copy(step = CheckoutStep.Payment, placeError = null) }
     }
 
@@ -132,6 +150,7 @@ class CheckoutViewModel(
         val state = _state.value
         if (state.placing || state.placedOrder != null) return
         val address = state.selectedAddress ?: return
+        if (!state.contactValid) return
         val items = cart.items.value
         if (items.isEmpty()) return
 
@@ -142,6 +161,8 @@ class CheckoutViewModel(
             couponCode = couponCode,
             items = items.map { it.toCheckoutItem() },
             instructions = state.instructions.trim().ifEmpty { null },
+            contactName = state.contactName.trim(),
+            contactPhone = state.contactPhone.trim(),
         )
         val key = attempt?.takeIf { (previous, _) -> previous == request }?.second ?: newKey()
         attempt = request to key
@@ -150,6 +171,7 @@ class CheckoutViewModel(
         viewModelScope.launch {
             when (val result = checkout.placeOrder(request.copy(idempotencyKey = key))) {
                 is AppResult.Success -> {
+                    contacts.save(Contact(state.contactName.trim(), state.contactPhone.trim()))
                     cart.clear()
                     _state.update { it.copy(placing = false, placedOrder = result.data, step = CheckoutStep.Done) }
                 }

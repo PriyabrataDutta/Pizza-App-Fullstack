@@ -79,7 +79,7 @@ fun ProfileScreen(
 
     val rows = listOf(
         ProfileRow(Ph.MapPin, "My Addresses", onOpenAddresses),
-        ProfileRow(Ph.CreditCard, "Payment Methods") { notify("Cards aren’t saved. Choose Cash on Delivery or the demo payment at checkout.") },
+        ProfileRow(Ph.CreditCard, "Payment Methods") { notify("Payment is cash on delivery. Cards aren’t saved.") },
         ProfileRow(Ph.Receipt, "Order History", onOpenOrders),
         ProfileRow(Ph.Heart, "Favorite Orders") { notify(comingSoon("Favourites")) },
         ProfileRow(Ph.Bell, "Notifications") { notify(comingSoon("Notifications")) },
@@ -179,8 +179,7 @@ fun ProfileScreen(
             title = { Text("Crust & Co. Pizza House") },
             text = {
                 Text(
-                    "Version ${BuildConfig.VERSION_NAME}. This is a demo ordering app: menu, prices, offers and orders are sample data, " +
-                        "and payments are simulated.",
+                    "Version ${BuildConfig.VERSION_NAME}. Menu, prices and orders come from the restaurant. Payment is cash on delivery.",
                 )
             },
             confirmButton = { TextButton(onClick = { aboutOpen = false }) { Text("OK") } },

@@ -8,6 +8,7 @@ const api = (over: Partial<OrderAdmin> = {}): OrderAdmin => ({
   payment_method: "cod", payment_status: "pending", estimated_minutes: 35,
   delivery_address: "Hohe Straße 12, Wesel-Mitte, 46483 Wesel",
   delivery: { label: "Home", line1: "Hohe Straße 12", locality: "Wesel-Mitte", city: "Wesel", postal_code: "46483", instructions: "Ring twice" },
+  contact: { name: null, phone: null },
   lines: [{ name: "Margherita", portion: "Groß 32 cm", options: ["Champignons"], quantity: 3, unit_price_minor: 850, line_total_minor: 2550 }],
   history: [{ status: "placed", at: "2026-10-21T16:24:00Z", reason: null, actor: "system" }],
   ...over,
@@ -27,7 +28,13 @@ describe("fromAdminOrder", () => {
     expect(o.history).toEqual([{ status: "placed", at: "2026-10-21T16:24:00Z", actor: "system", reason: undefined }]);
   });
 
-  it("identifies a guest by the street, with no phone", () => {
+  it("shows the name and phone the customer gave at checkout", () => {
+    const o = fromAdminOrder(api({ contact: { name: "Max Muster", phone: "+49 281 123456" } }));
+    expect(o.customerName).toBe("Max Muster");
+    expect(o.customerPhone).toBe("+49 281 123456");
+  });
+
+  it("identifies an order without contact details by the street, with no phone", () => {
     const o = fromAdminOrder(api());
     expect(o.customerName).toBe("Guest · Hohe Straße 12");
     expect(o.customerPhone).toBe("");

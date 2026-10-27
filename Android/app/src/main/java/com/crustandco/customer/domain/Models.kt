@@ -101,8 +101,14 @@ data class OrderLine(
 enum class PaymentMethod(val wire: String, val label: String) {
     CashOnDelivery("cod", "Cash on delivery"),
 
-    /** Simulated. No card details are ever collected and no money moves (docs/security-and-rls.md). */
+    /** Simulated. No card details are ever collected and no money moves (docs/security-and-rls.md). Kept so old orders still read. */
     OnlineDemo("online_demo", "Online payment (demo)"),
+    ;
+
+    companion object {
+        /** What a customer can choose today. Online payment comes back when a real payment provider is connected. */
+        val selectable: List<PaymentMethod> = listOf(CashOnDelivery)
+    }
 }
 
 data class Order(

@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getStaffUser, toPrincipal, verifyPassword, writeAudit } from "@/modules/access/repository";
 import { homePath } from "@/modules/access/permissions";
+import { allowShared } from "./shared-limit";
 import { clearFailures, isIpLocked, isLocked, recordFailure, recordIpFailure } from "./rate-limit";
 import { SESSION_COOKIE, SESSION_MAX_AGE, signSession } from "./session";
 
@@ -29,6 +30,12 @@ export async function login(_prev: LoginState, form: FormData): Promise<LoginSta
   const ip = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || h.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   if (isIpLocked(ip)) return { error: "Too many failed attempts from this connection. Wait 15 minutes and try again.", email };
   if (isLocked(email)) return { error: "Too many failed attempts. Wait 15 minutes and try again.", email };
+
+  // The same limits, counted where every server instance can see them (the counters above are per instance). Attempts, not only
+  // failures, are counted: a staff member signs in a few times a day, never ten times in a quarter of an hour.
+  const quarter = 15 * 60 * 1000;
+  if (!(await allowShared(`login-ip:${ip}`, 60, quarter))) return { error: "Too many sign-in attempts from this connection. Wait 15 minutes and try again.", email };
+  if (!(await allowShared(`login-email:${email.toLowerCase()}`, 10, quarter))) return { error: "Too many sign-in attempts. Wait 15 minutes and try again.", email };
 
   const uid = await verifyPassword(email, password);
   const user = uid ? await getStaffUser(uid) : null;

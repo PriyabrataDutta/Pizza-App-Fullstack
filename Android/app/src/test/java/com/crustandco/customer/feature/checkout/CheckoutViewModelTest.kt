@@ -7,6 +7,8 @@ import com.crustandco.customer.core.UiState
 import com.crustandco.customer.data.local.InMemoryCartStore
 import com.crustandco.customer.data.mock.MockPricingRepository
 import com.crustandco.customer.data.mock.demoProducts
+import com.crustandco.customer.data.local.Contact
+import com.crustandco.customer.data.local.InMemoryContactStore
 import com.crustandco.customer.domain.Address
 import com.crustandco.customer.domain.AddressRepository
 import com.crustandco.customer.domain.CartItem
@@ -81,8 +83,67 @@ class CheckoutViewModelTest {
     @After
     fun tearDown() = Dispatchers.resetMain()
 
-    private fun vm(couponCode: String? = null, addresses: FakeAddresses = FakeAddresses()) =
-        CheckoutViewModel(couponCode, cart, addresses, MockPricingRepository(latencyMs = 0), checkout, newKey = { "key-${++keyCounter}" })
+    private val contacts = InMemoryContactStore()
+
+    /** A checkout with the name and phone already filled in, as a customer who has ordered before would see it. */
+    private fun vm(couponCode: String? = null, addresses: FakeAddresses = FakeAddresses(), withContact: Boolean = true) =
+        CheckoutViewModel(couponCode, cart, addresses, MockPricingRepository(latencyMs = 0), checkout, newKey = { "key-${++keyCounter}" }, contacts = contacts)
+            .also {
+                if (withContact) {
+                    it.setContactName("Max Muster")
+                    it.setContactPhone("0281 123456")
+                }
+            }
+
+    @Test
+    fun `continue needs a name and a phone number the driver can call`() {
+        val vm = vm(withContact = false)
+        vm.continueToPayment()
+        assertEquals(CheckoutStep.Address, vm.state.value.step)
+
+        vm.setContactName("Max Muster")
+        vm.setContactPhone("abc")
+        vm.continueToPayment()
+        assertEquals(CheckoutStep.Address, vm.state.value.step)
+
+        vm.setContactPhone("+49 281 123456")
+        vm.continueToPayment()
+        assertEquals(CheckoutStep.Payment, vm.state.value.step)
+    }
+
+    @Test
+    fun `an order cannot be placed without contact details, whatever the screen does`() {
+        val vm = vm(withContact = false)
+        vm.placeOrder()
+        assertTrue(checkout.requests.isEmpty())
+    }
+
+    @Test
+    fun `the order carries the name and phone, and they are remembered for next time`() {
+        val vm = vm(withContact = false)
+        vm.setContactName("  Max Muster ")
+        vm.setContactPhone(" 0281 123456 ")
+        vm.continueToPayment()
+        vm.placeOrder()
+
+        val request = checkout.requests.single()
+        assertEquals("Max Muster", request.contactName)
+        assertEquals("0281 123456", request.contactPhone)
+        assertEquals(Contact("Max Muster", "0281 123456"), contacts.load())
+    }
+
+    @Test
+    fun `the next checkout starts with the remembered contact`() {
+        contacts.save(Contact("Max Muster", "0281 123456"))
+        val vm = vm(withContact = false)
+        assertEquals("Max Muster", vm.state.value.contactName)
+        assertTrue(vm.state.value.contactValid)
+    }
+
+    @Test
+    fun `only cash on delivery is offered`() {
+        assertEquals(listOf(PaymentMethod.CashOnDelivery), PaymentMethod.selectable)
+    }
 
     @Test
     fun `the first address is selected and the server quote loads`() {

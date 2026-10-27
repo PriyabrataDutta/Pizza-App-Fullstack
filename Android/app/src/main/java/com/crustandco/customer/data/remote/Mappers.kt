@@ -84,6 +84,8 @@ fun QuoteDto.toDomain() = Quote(
     deliveryFee = Money(deliveryFeeMinor, currency),
     total = Money(totalMinor, currency),
     couponCode = couponCode,
+    restaurantOpen = restaurant?.open ?: true,
+    closedMessage = restaurant?.message.orEmpty(),
 )
 
 fun CheckoutItem.toBody() = CartLineBody(productId = productId, portionKey = variantId, optionIds = optionIds, quantity = quantity)

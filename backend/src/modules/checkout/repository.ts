@@ -16,7 +16,10 @@ function must<T>(result: Result<T>, what: string): T {
 
 const db = () => adminClient();
 
-const customerOf = (r: { id: string; full_name: string | null; phone: string | null }): Customer => ({ id: r.id, fullName: r.full_name, phone: r.phone });
+const CUSTOMER_COLUMNS = "id, full_name, phone, is_blocked";
+const customerOf = (r: { id: string; full_name: string | null; phone: string | null; is_blocked: boolean }): Customer => ({
+  id: r.id, fullName: r.full_name, phone: r.phone, isBlocked: r.is_blocked,
+});
 const ADDRESS_COLUMNS = "id, customer_id, label, line1, locality, city, postal_code, instructions, is_default";
 
 export async function loadBundle(orderRows: OrderRow[]): Promise<OrderBundle[]> {
@@ -38,17 +41,33 @@ export async function loadBundle(orderRows: OrderRow[]): Promise<OrderBundle[]> 
 }
 
 export const supabaseCheckoutRepository: CheckoutRepository = {
+  // A customer owns one or more devices; each device holds one token (only its hash is stored). customers.token_hash is still written
+  // for the first device until the column is retired.
   async createCustomer(tokenHash) {
-    return customerOf(must(await db().from("customers").insert({ token_hash: tokenHash }).select("id, full_name, phone").single(), "create customer") as never);
+    const customer = must(await db().from("customers").insert({ token_hash: tokenHash }).select(CUSTOMER_COLUMNS).single(), "create customer") as never;
+    const device = await db().from("customer_devices").insert({ customer_id: (customer as { id: string }).id, token_hash: tokenHash });
+    if (device.error) {
+      await db().from("customers").delete().eq("id", (customer as { id: string }).id); // do not leave a customer nobody can sign in as
+      throw new Error(`checkout: create device: ${device.error.message}`);
+    }
+    return customerOf(customer);
   },
 
   async customerByTokenHash(hash) {
-    const row = must(await db().from("customers").select("id, full_name, phone").eq("token_hash", hash).maybeSingle(), "find customer");
-    return row ? customerOf(row as never) : null;
+    const row = must(
+      await db().from("customer_devices").select(`customers!inner(${CUSTOMER_COLUMNS})`).eq("token_hash", hash).is("revoked_at", null).maybeSingle(),
+      "find customer",
+    ) as unknown as { customers: Parameters<typeof customerOf>[0] } | null;
+    return row ? customerOf(row.customers) : null;
   },
 
   async touchCustomer(id) {
-    await db().from("customers").update({ last_seen_at: new Date().toISOString() }).eq("id", id);
+    const now = new Date().toISOString();
+    await db().from("customers").update({ last_seen_at: now }).eq("id", id);
+  },
+
+  async saveContact(customerId, name, phone) {
+    await db().from("customers").update({ full_name: name, phone }).eq("id", customerId);
   },
 
   async addresses(customerId) {

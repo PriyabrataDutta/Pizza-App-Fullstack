@@ -32,6 +32,8 @@ export interface OrderDto extends OrderSummaryDto {
   /** The address on one line, for display. */
   delivery_address: string;
   delivery: { label: string; line1: string; locality: string; city: string; postal_code: string; instructions: string | null };
+  /** Who to call; null for orders placed before contact details were collected. */
+  contact: { name: string | null; phone: string | null };
   lines: OrderLineDto[];
   history: { status: string; at: string; reason: string | null; actor: string }[];
 }
@@ -62,6 +64,7 @@ export function toOrderDto({ order: o, items, options, history }: OrderBundle): 
     estimated_minutes: o.estimated_minutes,
     delivery_address: oneLineAddress(address),
     delivery: { label: o.delivery_label, ...address, instructions: o.delivery_instructions },
+    contact: { name: o.contact_name ?? null, phone: o.contact_phone ?? null },
     lines: items.map((i) => ({
       name: i.product_name,
       portion: i.portion_label,

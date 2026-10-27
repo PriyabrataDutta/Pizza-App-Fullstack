@@ -7,6 +7,8 @@ import com.crustandco.customer.core.map
 import com.crustandco.customer.data.remote.AuthTokenProvider
 import com.crustandco.customer.data.remote.GuestSession
 import com.crustandco.customer.data.remote.apiCall
+import com.crustandco.customer.data.local.ContactStore
+import com.crustandco.customer.data.local.PrefsContactStore
 import com.crustandco.customer.data.local.DemoAuthRepository
 import com.crustandco.customer.data.local.InMemoryCartStore
 import com.crustandco.customer.data.local.KeystoreTokenStore
@@ -105,6 +107,9 @@ class AppContainer(val config: AppConfig, context: Context) {
 
     /** One cart for the whole app session. In memory only for now. */
     val cartStore: CartStore = InMemoryCartStore()
+
+    /** The name and phone given at the last checkout. */
+    val contactStore: ContactStore = PrefsContactStore(appContext)
 
     /** Welcome screen is shown once per app launch. Persisting this (DataStore) comes with sign-in in Phase 2. */
     var welcomeSeen: Boolean = false

@@ -3,6 +3,7 @@ import type { ResolvedProduct } from "../catalog/types";
 import { toOrderDto } from "./order-dto";
 import type { CouponRule, ZoneRule } from "./quote";
 import { CheckoutError, createCheckoutService, type CheckoutRepository } from "./service";
+import type { RestaurantStatus } from "../settings/service";
 import type { AddressRow, Customer, OrderBundle, OrderItemRow, OrderOptionRow, PlaceOrderPayload } from "./types";
 
 const uuid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -31,9 +32,10 @@ function fakeRepo() {
   let nextAddress = 1000, nextOrder = 1050, nextCustomer = 1;
   const repo: CheckoutRepository & { _orders: OrderBundle[]; _addresses: AddressRow[]; _customers: Map<string, Customer & { hash: string }> } = {
     _orders: orders, _addresses: addresses, _customers: customers,
-    async createCustomer(hash) { const c = { id: uuid(500 + nextCustomer++), fullName: null, phone: null, hash }; customers.set(hash, c); return c; },
+    async createCustomer(hash) { const c = { id: uuid(500 + nextCustomer++), fullName: null, phone: null, isBlocked: false, hash }; customers.set(hash, c); return c; },
     async customerByTokenHash(hash) { return customers.get(hash) ?? null; },
     async touchCustomer() {},
+    async saveContact(customerId, name, phone) { for (const c of customers.values()) if (c.id === customerId) { c.fullName = name; c.phone = phone; } },
     async addresses(customerId) { return addresses.filter((a) => a.customer_id === customerId); },
     async address(customerId, id) { return addresses.find((a) => a.customer_id === customerId && a.id === id) ?? null; },
     async insertAddress(customerId, fields) { const row = { id: uuid(nextAddress++), customer_id: customerId, ...fields }; addresses.push(row); return row; },
@@ -53,7 +55,7 @@ function fakeRepo() {
           id, order_number: `CC-${nextOrder++}`, customer_id: p.customer_id, status: "placed", payment_method: p.payment_method, payment_status: p.payment_method === "cod" ? "pending" : "demo_paid",
           currency: p.currency, subtotal_minor: p.subtotal_minor, discount_minor: p.discount_minor, tax_minor: p.tax_minor, delivery_fee_minor: p.delivery_fee_minor, total_minor: p.total_minor,
           coupon_code: p.coupon_code, estimated_minutes: p.estimated_minutes, delivery_label: p.address.label, delivery_line1: p.address.line1, delivery_locality: p.address.locality,
-          delivery_city: p.address.city, delivery_postal_code: p.address.postal_code, delivery_instructions: p.address.instructions, created_at: "2026-10-20T12:00:00Z",
+          delivery_city: p.address.city, delivery_postal_code: p.address.postal_code, delivery_instructions: p.address.instructions, contact_name: p.contact_name, contact_phone: p.contact_phone, created_at: "2026-10-20T12:00:00Z",
         },
         items, options, history: [{ new_status: "placed", reason: null, created_at: "2026-10-20T12:00:00Z", actor_label: "system" }],
       });
@@ -67,14 +69,17 @@ function fakeRepo() {
   return repo;
 }
 
+const OPEN: RestaurantStatus = { open: true, reason: null, message: "", extraPrepMinutes: 0, requireContactDetails: false };
+
 function setup() {
   const repo = fakeRepo();
   const menu = { removed: false };
+  const restaurant = { status: OPEN as RestaurantStatus };
   const svc = createCheckoutService({
-    repo, now: () => new Date("2026-10-20T12:00:00Z"),
+    repo, now: () => new Date("2026-10-20T12:00:00Z"), restaurantStatus: async () => restaurant.status,
     loadProduct: async (id) => (menu.removed ? null : id === SALAMI ? salami : id === BEER ? beer : null),
   });
-  return { repo, svc, menu };
+  return { repo, svc, menu, restaurant };
 }
 
 async function guest(svc: ReturnType<typeof setup>["svc"]) {
@@ -207,8 +212,8 @@ describe("checkout", () => {
     const { svc } = setup();
     const c = await guest(svc);
     const a = await svc.createAddress(c, home);
-    const order = await svc.checkout(c, { idempotency_key: key(2), address_id: a.id, payment_method: "online_demo", coupon_code: "WELCOME5", items: [item()] });
-    expect(order).toMatchObject({ discount_minor: 500, total_minor: 1500, coupon_code: "WELCOME5", payment_status: "demo_paid" });
+    const order = await svc.checkout(c, { idempotency_key: key(2), address_id: a.id, payment_method: "cod", coupon_code: "WELCOME5", items: [item()] });
+    expect(order).toMatchObject({ discount_minor: 500, total_minor: 1500, coupon_code: "WELCOME5", payment_status: "pending" });
   });
 
   it("enforces the minimum order of the area", async () => {
@@ -294,5 +299,76 @@ describe("checkout", () => {
     const dto = toOrderDto(repo._orders[0]);
     expect(dto.history).toEqual([{ status: "placed", at: "2026-10-20T12:00:00Z", reason: null, actor: "system" }]);
     expect(dto.tax_minor).toBe(0);
+  });
+});
+
+describe("launch rules", () => {
+  const key = (n: number) => `launch-${String(n).padStart(6, "0")}`;
+  async function ready() {
+    const ctx = setup();
+    const c = await guest(ctx.svc);
+    const a = await ctx.svc.createAddress(c, home);
+    const place = (over: Record<string, unknown> = {}, n = 1) =>
+      ctx.svc.checkout(c, { idempotency_key: key(n), address_id: a.id, payment_method: "cod", items: [item()], ...over } as never);
+    return { ...ctx, c, a, place };
+  }
+
+  it("refuses an order while the restaurant is closed, with its own message, and places nothing", async () => {
+    const { restaurant, place, repo } = await ready();
+    restaurant.status = { ...OPEN, open: false, reason: "switched_off", message: "Back at 18:00" };
+    const e = await fail(place());
+    expect(e).toMatchObject({ status: 409, code: "RESTAURANT_CLOSED", message: "Back at 18:00" });
+    expect(repo._orders).toHaveLength(0);
+  });
+
+  it("still returns an order placed before closing when the same request is retried", async () => {
+    const { restaurant, place } = await ready();
+    const first = await place();
+    restaurant.status = { ...OPEN, open: false, reason: "switched_off", message: "closed" };
+    expect((await place()).id).toBe(first.id);
+  });
+
+  it("refuses a blocked customer, but a retry of an earlier order still works", async () => {
+    const { c, place, repo } = await ready();
+    const first = await place({}, 1);
+    c.isBlocked = true;
+    expect((await fail(place({}, 2))).code).toBe("CUSTOMER_BLOCKED");
+    expect((await place({}, 1)).id).toBe(first.id);
+    expect(repo._orders).toHaveLength(1);
+  });
+
+  it("stores the name and phone on the order, and remembers them for next time", async () => {
+    const { place, repo } = await ready();
+    const order = await place({ contact_name: "  Max Muster ", contact_phone: "+49 281 123456" });
+    expect(order.contact).toEqual({ name: "Max Muster", phone: "+49 281 123456" });
+    expect([...repo._customers.values()][0]).toMatchObject({ fullName: "Max Muster", phone: "+49 281 123456" });
+  });
+
+  it("an order without contact details is fine until the restaurant requires them", async () => {
+    const { restaurant, place } = await ready();
+    expect((await place({}, 1)).contact).toEqual({ name: null, phone: null });
+    restaurant.status = { ...OPEN, requireContactDetails: true };
+    expect((await fail(place({}, 2))).code).toBe("CONTACT_REQUIRED");
+    expect((await place({ contact_name: "Max", contact_phone: "0281 123456" }, 3)).contact.name).toBe("Max");
+  });
+
+  it("uses the contact details given earlier when the rule is on and the app sends none", async () => {
+    const { restaurant, place } = await ready();
+    await place({ contact_name: "Max", contact_phone: "0281 123456" }, 1);
+    restaurant.status = { ...OPEN, requireContactDetails: true };
+    expect((await place({}, 2)).contact).toEqual({ name: "Max", phone: "0281 123456" });
+  });
+
+  it("adds the kitchen's extra minutes to the estimate, in the quote and on the order", async () => {
+    const { restaurant, place, svc, c, a } = await ready();
+    restaurant.status = { ...OPEN, extraPrepMinutes: 15 };
+    expect((await svc.quote(c, { items: [item()], address_id: a.id })).delivery.estimated_minutes).toBe(50);
+    expect((await place()).estimated_minutes).toBe(50);
+  });
+
+  it("tells the cart whether the restaurant is open", async () => {
+    const { restaurant, svc, c } = await ready();
+    restaurant.status = { ...OPEN, open: false, reason: "outside_hours", message: "Closed until 11:00" };
+    expect((await svc.quote(c, { items: [item()] })).restaurant).toEqual({ open: false, message: "Closed until 11:00", require_contact_details: false });
   });
 });

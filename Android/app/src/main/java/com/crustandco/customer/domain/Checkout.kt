@@ -64,6 +64,9 @@ data class Quote(
     val total: Money,
     /** The coupon that was applied, or null. */
     val couponCode: String?,
+    /** False while the restaurant is closed or has switched ordering off; [closedMessage] says why. */
+    val restaurantOpen: Boolean = true,
+    val closedMessage: String = "",
 )
 
 interface PricingRepository {
@@ -82,6 +85,9 @@ data class CheckoutRequest(
     val couponCode: String?,
     val items: List<CheckoutItem>,
     val instructions: String?,
+    /** Who the driver calls. */
+    val contactName: String? = null,
+    val contactPhone: String? = null,
 )
 
 interface CheckoutRepository {
