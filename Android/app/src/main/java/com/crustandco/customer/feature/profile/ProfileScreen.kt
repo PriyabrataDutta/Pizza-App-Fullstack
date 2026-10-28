@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -73,6 +74,7 @@ fun ProfileScreen(
     val authState by viewModel.authState.collectAsStateWithLifecycle()
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val notify = rememberNotifier()
+    val uriHandler = LocalUriHandler.current
     var aboutOpen by rememberSaveable { mutableStateOf(false) }
     var editOpen by rememberSaveable { mutableStateOf(false) }
     var confirmSignOut by rememberSaveable { mutableStateOf(false) }
@@ -84,6 +86,9 @@ fun ProfileScreen(
         ProfileRow(Ph.Heart, "Favorite Orders") { notify(comingSoon("Favourites")) },
         ProfileRow(Ph.Bell, "Notifications") { notify(comingSoon("Notifications")) },
         ProfileRow(Ph.Headset, "Help & Support") { notify(comingSoon("Help and support")) },
+        ProfileRow(Ph.Info, "Imprint") { uriHandler.openUri(config.legalUrl("impressum")) },
+        ProfileRow(Ph.ShieldCheck, "Privacy Policy") { uriHandler.openUri(config.legalUrl("datenschutz")) },
+        ProfileRow(Ph.ListBullets, "Terms & Conditions") { uriHandler.openUri(config.legalUrl("agb")) },
         ProfileRow(Ph.Info, "About") { aboutOpen = true },
     )
 

@@ -1,6 +1,8 @@
 package com.crustandco.customer.feature.checkout
 
 import com.crustandco.customer.core.designsystem.Motion
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.animateColorAsState
@@ -11,6 +13,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -355,7 +358,23 @@ private fun PaymentStep(
                 else -> "Place order · ${quote.total.format()}"
             }
             PrimaryButton(label, onClick = onPay, enabled = quote != null && quote.restaurantOpen, loading = state.placing, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp))
+            LegalNotice(Modifier.padding(top = 8.dp))
         }
+    }
+}
+
+/** What placing the order means, with the pages behind it one tap away. */
+@Composable
+private fun LegalNotice(modifier: Modifier = Modifier) {
+    val uri = LocalUriHandler.current
+    val config = LocalAppContainer.current.config
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val link = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)
+    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        Text("By ordering you accept our ", style = MaterialTheme.typography.labelMedium, color = muted)
+        Text("Terms", style = link, modifier = Modifier.heightIn(min = 32.dp).clickable(role = Role.Button) { uri.openUri(config.legalUrl("agb")) }.wrapContentHeight(Alignment.CenterVertically))
+        Text(" and ", style = MaterialTheme.typography.labelMedium, color = muted)
+        Text("Privacy Policy", style = link, modifier = Modifier.heightIn(min = 32.dp).clickable(role = Role.Button) { uri.openUri(config.legalUrl("datenschutz")) }.wrapContentHeight(Alignment.CenterVertically))
     }
 }
 

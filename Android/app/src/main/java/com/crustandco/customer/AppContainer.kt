@@ -44,6 +44,9 @@ data class AppConfig(
     val liveOrders: Boolean,
     val isDebug: Boolean,
 ) {
+    /** Address of a page on the restaurant's website, for example legalUrl("impressum"). The API lives under /api on the same site. */
+    fun legalUrl(page: String): String = apiBaseUrl.trimEnd('/').removeSuffix("/api") + "/" + page
+
     companion object {
         fun fromBuildConfig() = AppConfig(
             apiBaseUrl = BuildConfig.API_BASE_URL,

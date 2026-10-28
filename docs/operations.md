@@ -43,6 +43,8 @@ What this does not cover yet: error details. For stack traces and counts of fail
 
 ## 3. Still open before launch (needs you)
 
-- **Legal pages** (Impressum, Datenschutzerklärung, AGB, withdrawal information): these must carry the real business details and be checked by a lawyer. I need: legal name and form, full address, contact email and phone, VAT id (USt-IdNr.), the person responsible, the supervisory authority if any, and which tools process data (Supabase, Vercel, Telegram). I can then build the pages and link them from the app's Profile screen. I will not publish placeholder legal text.
+- **Legal pages**: Impressum (`/impressum`), Datenschutzerklärung (`/datenschutz`) and AGB (`/agb`) exist and open without a login. The app links to them (Profile, and under the "Place order" button). **They contain dummy business details and draft text**, and each page shows a warning banner saying so. To go live: (1) replace every value in `backend/src/modules/legal/business.ts` and set `placeholder` to `false`; (2) settle every `[bracketed decision]` in `backend/src/modules/legal/content.ts`; (3) have a lawyer check the German text. The tests fail while any "Platzhalter" or open decision remains once `placeholder` is `false`, so dummy text cannot be released by accident.
+  - Facts in the text that are not built yet, so the text stays careful: a deletion routine for inactive guests, and a log-retention rule (both are `[brackets]` in the privacy policy).
+  - Still to decide with the lawyer: the exact wording of the order button for German "Button-Lösung" (the app says "Place order · 17,00 €"; a clear obligation to pay such as "zahlungspflichtig bestellen" is usually required), allergen information, and the withdrawal notice.
 - **Staging and backups**: the Seoul project can serve as a staging copy for a while; backups need the Supabase Pro plan.
 - **Multi-factor sign-in for the dashboard** and a way to end all sessions.
