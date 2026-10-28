@@ -25,6 +25,8 @@ try {
   ok("robots.txt disallows everything", robots.status === 200 && /Disallow:\s*\//.test(await robots.text()));
   const home = await call("GET", "/api/categories");
   ok("categories answer, with noindex", home.status === 200 && /noindex/.test(home.headers.get("x-robots-tag") ?? ""));
+  const health = await call("GET", "/api/health");
+  ok("GET /api/health says the database is reachable", health.status === 200 && health.json?.ok === true && health.json?.database === "up", JSON.stringify(health.json));
   const status = await call("GET", "/api/restaurant");
   ok("GET /api/restaurant says whether we are open", status.status === 200 && typeof status.json.open === "boolean", JSON.stringify(status.json).slice(0, 200));
   console.log("       restaurant:", JSON.stringify({ open: status.json?.open, reason: status.json?.closed_reason }));

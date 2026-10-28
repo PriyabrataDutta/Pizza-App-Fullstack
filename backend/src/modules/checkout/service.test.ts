@@ -441,4 +441,29 @@ describe("speed-ups keep behaviour", () => {
     expect(await svc.authenticate(token)).not.toBeNull();
     expect(await svc.authenticate("cc1_" + "y".repeat(43))).toBeNull();
   });
+
+  it("tells the restaurant once when an order is created, and not again on a retry", async () => {
+    const repo = fakeRepo();
+    const placed = vi.fn();
+    const svc = createCheckoutService({ repo, now: () => new Date("2026-10-20T12:00:00Z"), loadProduct: async () => salami, onOrderPlaced: placed });
+    const { token } = await svc.registerGuest();
+    const c = (await svc.authenticate(token))!;
+    const a = await svc.createAddress(c, home);
+    const req = { idempotency_key: key(8), address_id: a.id, payment_method: "cod", items: [item()] } as never;
+    const first = await svc.checkout(c, req);
+    await svc.checkout(c, req); await svc.checkout(c, req);
+    expect(placed).toHaveBeenCalledTimes(1);
+    expect(placed.mock.calls[0][0]).toMatchObject({ number: first.number, total_minor: first.total_minor });
+  });
+
+  it("an alert that throws never fails the order", async () => {
+    const repo = fakeRepo();
+    const svc = createCheckoutService({ repo, now: () => new Date("2026-10-20T12:00:00Z"), loadProduct: async () => salami, onOrderPlaced: () => { throw new Error("telegram down"); } });
+    const { token } = await svc.registerGuest();
+    const c = (await svc.authenticate(token))!;
+    const a = await svc.createAddress(c, home);
+    const order = await svc.checkout(c, { idempotency_key: key(9), address_id: a.id, payment_method: "cod", items: [item()] } as never);
+    expect(order.number).toMatch(/^CC-/);
+    expect(repo._orders).toHaveLength(1);
+  });
 });

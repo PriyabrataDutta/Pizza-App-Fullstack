@@ -43,6 +43,8 @@ export interface CheckoutDeps {
   loadProduct: (id: string) => Promise<ResolvedProduct | null>;
   /** Whether the restaurant takes orders now (opening hours, the on/off switch) and its ordering rules. Defaults to always open. */
   restaurantStatus?: () => Promise<RestaurantStatus>;
+  /** Called once when an order is created (not when a retry returns an existing one). Must not throw; a failure here never fails the order. */
+  onOrderPlaced?: (order: OrderDto) => void;
   now?: () => Date;
 }
 
@@ -50,7 +52,7 @@ const MAX_ADDRESSES = 10;
 
 const ALWAYS_OPEN: RestaurantStatus = { open: true, reason: null, message: "", extraPrepMinutes: 0, requireContactDetails: false };
 
-export function createCheckoutService({ repo, loadProduct, restaurantStatus = async () => ALWAYS_OPEN, now = () => new Date() }: CheckoutDeps) {
+export function createCheckoutService({ repo, loadProduct, restaurantStatus = async () => ALWAYS_OPEN, onOrderPlaced, now = () => new Date() }: CheckoutDeps) {
   // last_seen_at is for housekeeping only. Writing it on every request cost a database round trip each time, so it is written
   // at most once every ten minutes per customer on each server instance.
   const lastTouched = new Map<string, number>();
@@ -230,7 +232,10 @@ export function createCheckoutService({ repo, loadProduct, restaurantStatus = as
       const bundle = await repo.order(customer.id, placed.orderId);
       if (!bundle) throw new Error("checkout: the order was placed but could not be read back");
 
-      return placed.created ? toOrderDto(bundle) : replay(bundle, req.items); // not created: a concurrent request with the same key won
+      if (!placed.created) return replay(bundle, req.items); // a concurrent request with the same key won: no second alert
+      const dto = toOrderDto(bundle);
+      try { onOrderPlaced?.(dto); } catch { /* an alert must never fail an order */ }
+      return dto;
     },
 
     // ---- Orders ----------------------------------------------------------------------------------------------------------------

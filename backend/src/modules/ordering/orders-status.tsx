@@ -1,11 +1,32 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { BellRing, CircleAlert, RefreshCw, Volume2, VolumeX, WifiOff, X } from "lucide-react";
+import { useState, useSyncExternalStore } from "react";
+import { BellRing, CircleAlert, MonitorUp, RefreshCw, Volume2, VolumeX, WifiOff, X } from "lucide-react";
 import { formatTime } from "@/shared/format";
 import { formatEuro } from "@/modules/catalog/money";
 import { prepareChime, setSoundOn, soundOn, subscribeSound } from "./chime";
+import { desktopAlertState, enableDesktopAlerts, type AlertPermission } from "./desktop-alert";
 import { useOrders } from "./orders-store";
+
+const never = () => () => undefined;
+
+/** Desktop notifications for new orders. The browser asks once; if it was refused, only the browser's settings can change that. */
+function DesktopAlertsButton() {
+  const [, rerender] = useState(0);
+  const state: AlertPermission = useSyncExternalStore(never, desktopAlertState, () => "unsupported");
+  if (state === "unsupported") return null;
+  if (state === "granted") {
+    return <span className="inline-flex min-h-8 items-center gap-1 text-ink-2"><MonitorUp className="size-3.5" aria-hidden /> Desktop alerts: on</span>;
+  }
+  if (state === "denied") {
+    return <span className="inline-flex min-h-8 items-center gap-1 text-warning"><MonitorUp className="size-3.5" aria-hidden /> Desktop alerts are blocked in this browser’s settings</span>;
+  }
+  return (
+    <button onClick={() => { prepareChime(); void enableDesktopAlerts().then(() => rerender((n) => n + 1)); }} className="inline-flex min-h-8 items-center gap-1 font-medium text-brand hover:underline">
+      <MonitorUp className="size-3.5" aria-hidden /> Turn on desktop alerts
+    </button>
+  );
+}
 
 /**
  * What the person at the counter needs to know about the connection and about changes: new orders that just arrived, a status
@@ -58,6 +79,7 @@ export function OrdersStatus() {
           {sound ? <Volume2 className="size-3.5" aria-hidden /> : <VolumeX className="size-3.5" aria-hidden />}
           New order sound: {sound ? "on" : "off"}
         </button>
+        <DesktopAlertsButton />
       </div>
     </div>
   );

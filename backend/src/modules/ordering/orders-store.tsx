@@ -4,7 +4,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAccess } from "@/modules/access/access-context";
 import { adminApi, ApiError } from "@/modules/catalog/admin-client";
 import { nextTransitions, type Order, type OrderStatus } from "./domain";
+import { formatEuro } from "@/modules/catalog/money";
 import { playChime, prepareChime } from "./chime";
+import { showDesktopAlert } from "./desktop-alert";
 import { fromAdminOrder } from "./from-api";
 
 interface OrdersApi {
@@ -31,6 +33,8 @@ interface OrdersApi {
 const Ctx = createContext<OrdersApi | null>(null);
 
 const POLL_MS = 8000;
+/** How often the sound repeats while an order is still waiting to be accepted. */
+const REMIND_MS = 20_000;
 
 /**
  * Orders from the database. Loaded when the dashboard opens, refreshed every few seconds while the tab is visible (and the moment
@@ -63,6 +67,10 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
         if (added.length > 0) {
           setArrivals((prev) => [...added, ...prev].slice(0, 5));
           playChime();
+          showDesktopAlert(
+            added.length === 1 ? `New order ${added[0].number}` : `${added.length} new orders`,
+            added.map((o) => `${o.number} · ${formatEuro(o.totalMinor)}`).join("\n"),
+          );
         }
       }
       known.current = new Set(merged.map((o) => o.id));
@@ -87,9 +95,9 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
     // Browsers allow sound only after the first click or tap on the page.
     window.addEventListener("pointerdown", prepareChime, { once: true });
     window.addEventListener("keydown", prepareChime, { once: true });
-    const timer = setInterval(() => {
-      if (document.visibilityState === "visible") void load();
-    }, POLL_MS);
+    // Checked even while the tab is in the background: that is exactly when an order is most likely to be missed. Browsers slow background
+    // timers down (to about once a minute), so the desktop notification and the repeating sound below matter most there.
+    const timer = setInterval(() => void load(), POLL_MS);
     const onVisible = () => {
       if (document.visibilityState === "visible") void load();
     };
@@ -105,6 +113,17 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
 
   // The tab title shows how many orders are waiting, so it is noticed from another tab or window.
   const waiting = orders.filter((o) => o.status === "placed").length;
+
+  // An order that nobody has accepted is not a one-time event: the chime repeats until it is accepted or rejected, and a desktop
+  // notification repeats if the page is hidden.
+  useEffect(() => {
+    if (!allowed || waiting === 0) return;
+    const nag = setInterval(() => {
+      playChime();
+      showDesktopAlert(`${waiting} order${waiting === 1 ? "" : "s"} waiting`, "Open the dashboard and accept or reject them.");
+    }, REMIND_MS);
+    return () => clearInterval(nag);
+  }, [allowed, waiting]);
   useEffect(() => {
     if (!allowed || waiting === 0) return;
     const original = document.title;
